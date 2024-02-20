@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Include your own stylesheet -->
+    <link rel="stylesheet" href="style-test.css">
+    <!-- Font Awesome for the burger menu -->
+    <script src="https://kit.fontawesome.com/8d59357f15.js" crossorigin="anonymous"></script>
+    
+    <!-- Include Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Fonts used: Fira Sans, Fira Sans Condensed, Source Serif 4 -->
+    <!-- Fira Sans Condensed -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200;0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;0,8..60,800;0,8..60,900;1,8..60,200;1,8..60,300;1,8..60,400;1,8..60,500;1,8..60,600;1,8..60,700;1,8..60,800;1,8..60,900&display=swap" rel="stylesheet">
+
+    <!-- Fira Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200;0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;0,8..60,800;0,8..60,900;1,8..60,200;1,8..60,300;1,8..60,400;1,8..60,500;1,8..60,600;1,8..60,700;1,8..60,800;1,8..60,900&display=swap" rel="stylesheet">
+
+    <!-- Source Serif 4 -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200;0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;0,8..60,800;0,8..60,900;1,8..60,200;1,8..60,300;1,8..60,400;1,8..60,500;1,8..60,600;1,8..60,700;1,8..60,800;1,8..60,900&display=swap" rel="stylesheet"> 
+
+</head>
+
+<body>
+
+    <header>
+    <!-- Navigation -->
+        <nav>
+            <div class="nav-icons">
+                <div class="nav-logo">
+                    <a href="#"><img class="logo" src="Logo and Name.svg" alt="Aster House"></a>
+                </div>
+                <input type="checkbox" id="check">
+                <label for="check" class="check-button">
+                    <i class="fa-solid fa-bars"></i>
+                </label>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="#home" data-toggle-section="main">Home</a></li>
+                <li class="nav-item"><a href="#services" data-toggle-section="main">Services</a></li>
+                <li class="nav-item"><a href="#expertise" data-toggle-section="expertiseApproach">Areas of Expertise</a></li>
+                <li class="nav-item"><a href="#approach" data-toggle-section="expertiseApproach">My Approach</a></li>
+                <li class="nav-item"><a href="#contact" data-toggle-section="main">Contact</a></li>
+            </ul>
+        </nav>
+    <!-- Navigation -->
+    </header>
+
+  <main class="responsive-body"> <!-- Responsive Body -->
+
+    <!-- Visible Section -->
+    <section id="mainSection">
+        <!-- Hero section Div -->
+        <article class="page-section content-right" id="home">
+            <div class="decoration hero-image-container">
+                <img src="assets/Dog portrait.webp">
+            </div>
+            <div class="content text-content">
+                <h1 class="title">Sarah Castle</h1>
+                <div class="subtitle">
+                    <div class="rule-title"></div>
+                    <h1 class="subtitle">Consultant Child and Adolescent Psychiatrist</h1>
+                </div>
+                    <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+            </div>
+        </article>
+        <!-- Hero section Div -->
+
+        <!-- Service Explanation -->
+        <article class="page-section service-section content-right" id="services">
+            <div class="decoration text-content">
+                <h2>Areas of Expertise</h2>
+                <div class="rule-decoration"></div>
+                <h5>Counselling, Psychotherapy, Cognitive Behavioural Therapy & Psychiatric Consultation.</h5>
+            </div>
+            <div class="content text-content text-only-row">
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. Feel free to drag and drop me anywhere you like on your page. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+                <p>This is a great space to write long text about your company and your services. You can use this space to go into a little more detail about your company. Talk about your team and what services you provide. Tell your visitors the story of how you came up with the idea for your business and what makes you different from your competitors. </p>
+                <button class="button" id="showExpertise">
+                    Read More
+                </button> 
+            </div>
+        </article>
+        <!-- Service Explanation -->
+
+        <!-- Contact -->
+        <article class="page-section contact-section content-right" id="contact"> 
+            <div class="decoration image-container">
+                <img src="assets/Cat 01.png">
+            </div>
+            <div class="content text-content">
+                <h2>Contact Me</h2>
+                <div class="rule-decoration"></div>
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+            </div>
+        </article>
+        <!-- Contact -->
+    </section>
+
+
+    <!-- HiddenSection -->
+    <section id="hiddenSection">
+        <!-- Areas of Expertise -->
+        <article class="page-section content-right" id="expertise">
+            <div class="decoration image-container">
+                <img src="assets/Dog portrait.webp">
+            </div>
+            <div class="content text-content">
+                <h2>Areas of Expertise</h2>
+
+                <h3>Counselling, Psychotherapy, Cognitive Behavioural Therapy & Psychiatric Consultation.</h3>
+                <div class="rule-decoration"></div>
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+
+                <h3>Cognitive Behavioural Therapy</h3>
+                <div class="rule-decoration"></div>
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+
+                <h3>Psychotherapy</h3>
+                <div class="rule-decoration"></div>
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+
+                <button class="button backButton">
+                    Read More
+                </button> 
+
+            </div>
+        </article>
+        
+        <article class="page-section content-left" id="approach">
+            <div class="decoration image-container">
+                <img src="assets/Dog Forest.png">
+            </div>
+            <div class="content text-content">
+                <h2>My Approach</h2>
+                <div class="rule-decoration"></div>
+
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. Feel free to drag and drop me anywhere you like on your page. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+                    
+                <p>This is a great space to write long text about your company and your services. You can use this space to go into a little more detail about your company. Talk about your team and what services you provide. Tell your visitors the story of how you came up with the idea for your business and what makes you different from your competitors. Make your company stand out and show your visitors who you are.</p>
+                    
+                <p>At Wix we’re passionate about making templates that allow you to build fabulous websites and it’s all thanks to the support and feedback from users like you! Keep up to date with New Releases and what’s Coming Soon in Wix ellaneous in Support. Feel free to tell us what you think and give us feedback in the Wix Forum. If you’d like to benefit from a professional designer’s touch, head to the Wix Arena and connect with one of our Wix Pro designers. Or if you need more help you can simply type your questions into the Support Forum and get instant answers. To keep up to date with everything Wix, including tips and things we think are cool, just head to the Wix Blog!</p>
+
+                <button class="button backButton">
+                    Read More
+                </button> 
+            </div>
+
+        </article>
+            <!-- Areas of Expertise -->
+    </section>
+
+
+
+
+    <footer>
+        Website produced by Aster House
+    </footer>
+  </main> <!-- Responsive Body -->
+
+  <!-- External JavaScript file -->
+  <script src="script.js"></script>
+
+</body>
+
+</html>

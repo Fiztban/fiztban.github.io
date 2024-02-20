@@ -1,0 +1,547 @@
+/* 
+CSS Resets no longer needed here are sample ones to use:
+https://andy-bell.co.uk/a-modern-css-reset/
+https://www.joshwcomeau.com/css/custom-css-reset/
+*/
+
+/* 
+Fonts used:
+font-family: 'Fira Sans', sans-serif;
+font-family: 'Fira Sans Condensed', sans-serif;
+font-family: 'Source Serif 4', serif;
+*/
+
+/* Import the reset.css file */
+@import 'reset.css';
+
+/* Light Reset
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+*/
+
+
+/* Variables for style */
+:root {
+  --heading-dark: #414746;
+  --text-blue: #032F69;
+  --text-colour: #70827F;
+  --text-highlight: #A0B8B4;
+  --mid-background: #D3E1DF;
+  --light-background: #F4F2F1;
+  --header-height: 100px;
+  --nav-height: 80px;
+  --nav-mobile-height: 60px;
+  --top-bot-padding: 100px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: white;
+  font-family: 'Source Serif 4', serif;
+  color: var(--text-colour);
+}
+
+header {
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+}
+
+.responsive-body {
+  margin: 0 auto;
+}
+
+
+/* ============ NAV BAR  ========= */
+
+nav {
+  font-family: 'Fira Sans Condensed', sans-serif;
+  background-color: rgba(255, 255, 255, .5);    /*  70% opaque white */
+  /* box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);  /* horizontal offset, vertical offset, blur, color */
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--nav-height);
+}
+
+.nav-logo {
+ margin-left: 20px;
+ font-family: 'Zen Maru Gothic', serif;
+}
+
+.logo {
+  height: calc(var(--nav-height) - 20px);
+}
+
+.nav-list {
+  list-style-type: none; /* Remove bullets */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end; /* Aligns children to the right */
+  width: 100%; /* Takes up the full width to push nav items to the right */
+}
+
+.check-button {
+  cursor: pointer;
+  display: none;
+}
+
+.nav-list li {
+  display: inline-block;
+  margin-right: 20px; /* Add some horizontal space between items */
+
+}
+
+/* If you don't want spacing on the last item */
+.nav-item:last-child {
+  margin-right: 15px;
+}
+
+/* Style the links (optional) */
+.nav-list li a {
+  list-style-type: none;
+  text-decoration: none;
+  padding: 8px;
+  text-align: center;
+  color: var(--heading-dark);
+}
+
+.nav-list li a:hover {
+  color: var(--text-highlight);
+  background-color: var(--light-background);
+}
+
+.nav-list li ul {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  padding: 0;
+}
+
+#check{
+  display: none;
+}
+
+/* This is the nav bar responsive styling as from 750 the navigation options become a burger menu */
+
+@media (max-width: 750px) {
+  /* Already in the 850px media bracket */
+  /* header {
+    position: relative;
+    background-color: white;
+  } */
+
+  nav {
+    flex-direction: column;
+    /* Already in the 850px media bracket */
+    /* position: fixed;
+    width: 100%;
+    height: var(--nav-mobile-height); */
+  }
+  
+  .nav-icons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: var(--nav-mobile-height);
+  }
+
+  .logo {
+    height: 50px;
+  }
+
+  .check-button {
+    display: block;
+    font-size: 20px;
+    padding-right: 20px;
+  }
+
+  .nav-list {
+    position: fixed;
+    flex-direction: column;
+    text-align: center;
+    right: -100%;
+    width: 100%;
+    top: var(--nav-mobile-height);
+    background-color: var(--text-highlight);
+    transition: .5s;
+  }
+
+  .nav-list-visible {
+    right: 0; /* Bring on-screen when class is added */
+  }
+
+  .nav-item {
+    width: 100%;
+    
+  }
+
+  .nav-item a:hover {
+    color: white;
+  }
+}
+
+/* ============ NAV BAR END ========= */
+
+
+/* ============ TEXT STYLING ========= */
+
+footer {
+  height: 4rem;
+  background-color: var(--heading-dark);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Fira Sans', sans-serif;
+  color: var(--heading-dark);
+  font-weight: 300;
+  text-transform: small-caps;
+  margin-bottom: 2rem;
+}
+
+h1.title {
+  font-weight: 300;
+  font-size: 110px;
+  line-height: 1em;
+  margin-bottom: 1rem;
+}
+
+h1.subtitle {
+  font-size: 24px;
+  margin-bottom: 1rem;
+}
+
+/*
+div.subtitle {
+  display: flex; /* Use flexbox 
+  align-items: center; /* Vertically center the items 
+  margin-bottom: 2rem;
+}
+*/
+
+h2 {
+  font-size: 35px;
+  margin-bottom: 1rem;
+}
+
+h3, h5 {
+  font-size: 20px;
+}
+
+main div {
+  justify-items: center;
+  align-items: center;
+}
+
+main p {
+  font-size: 14px;
+  line-height: 2em;
+  margin-bottom: 2em;
+}
+
+/* ============ TEXT STYLING END ========= */
+
+
+/* ============ DECORATIONS ========= */
+
+button {
+  width: 195px;
+  height: 43px;
+  background-color: var(--text-highlight);
+  color: white;
+  text-decoration: none;
+  padding: 0;
+  border: none;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: var(--mid-background);
+}
+
+.rule-title, .rule-title-mobile, .rule-decoration {
+  width: 60px;
+  height: 3px;
+  background-color: var(--text-colour);
+}
+
+.rule-title {
+  margin-right: 20px; /* Add margin to the right */
+  margin-bottom: 1.5rem;
+}
+
+.rule-title-mobile {
+  display: none;
+}
+
+.rule-decoration {
+  margin-bottom: 2.5rem;
+}
+
+/* ============ DECORATIONS END ========= */
+
+
+
+/* ============ SECTIONS DEFINITIONS STYLING ========= */
+
+/* Background Colours for Sections of choice */
+.bg-light {
+  background-color: var(--light-background);
+}
+
+.bg-mid {
+  background-color: var(--mid-background);
+}
+
+
+/* Flex Column and grid row definitions */
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0px; /* Adjust the gap between columns */
+  justify-items: center;
+  align-items: center;
+}
+
+.content-right {
+  grid-template-areas:
+          "decoration content"; /* Default layout */
+}
+
+.content-right.more-text-space {
+  grid-template-columns: 2fr 3fr;
+}
+
+.content-left {
+  grid-template-areas:
+          "content decoration"; /* Default layout */
+}
+
+.content-left.more-text-space {
+  grid-template-columns: 3fr 2fr;
+}
+
+.service-section {
+  background-color: var(--mid-background);
+}
+
+.contact-section {
+  background-color: var(--light-background);
+}
+
+
+/* Images: default behaviour is to fill total height of the container by just applying the .decoration class
+and will align center center, to change the behaviour add other classes */
+
+.decoration {
+  grid-area: decoration;
+  width: 100%;
+}
+
+/* Image container behaviour */
+.image-container, .hero-image-container {
+  width: 100%; /* Full width of the parent container */
+  overflow: hidden; /* Ensures the image does not exceed the container's boundaries */
+  align-self: center; /* aligns the image center vertically in cell */
+  height: 100%;
+}
+
+.hero-image-container {
+  max-height: auto; /* Set your maximum height here */
+}
+
+.image-container img, .hero-image-container img {
+  width: 100%; /* Makes the image fill the width of its container */
+  object-fit: cover; /* Ensures the image covers the full container area 
+  object-position: top center; /* Aligns the image from the top middle 
+  */
+  height: 100%; /* this needs to be 100% to use all image height then whether it fits vertically or width wise depend on the container settings for height */
+}
+
+/* This class allows an image to fill the container only width wise as preference for the desktop version by changing height of the container and image to auto */
+.width-image {
+  height: auto;
+}
+
+.width-image img {
+  height: auto;
+}
+
+
+/* Content behaviour */
+.content {
+  grid-area: content;
+}
+
+.text-content {
+  max-width: 490px;
+  /* margin:auto; interferes with the content aligning of cells in a grid */
+  padding-bottom: 0px;
+}
+
+.top-grid-align {
+  align-self: start;
+  height: 100%;
+}
+
+.content,
+.text-content {
+  padding-top: var(--top-bot-padding);
+  padding-bottom: var(--top-bot-padding);
+}
+
+/* Linked article removes the extra padding added to the text-content class  */
+.linked-content {
+  padding-top: 2em;
+}
+
+.no-pad-top,
+.no-pad {
+  padding-top: 0px;
+}
+
+.no-pad-bot,
+.no-pad {
+  padding-bottom:0px;
+}
+
+
+/* Specific section styling has to come after base styling*/
+.hero-section,
+.hero-section .image-container,
+.hero-section .image-container img {
+  max-height: 900px;
+}
+
+.hero-section .text-content {
+  align-self: center;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+
+.hidden {
+  display: none;
+}
+
+
+/* The ul list needs a bottom margin and a smaller inbetween margin */ 
+main div > ul {
+  margin-bottom: 2em;
+}
+
+main ul > li > ul {
+  margin-bottom: 0.5em;
+}
+
+
+/* These max-width parameters edit the appearance of text and margins for content and the title */
+@media (max-width: 1800px) {
+
+}
+
+/*
+
+@media (max-width: 1200px) {
+  .text-content {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .text-content {
+    max-width: 350px;
+  }
+}
+
+*/
+
+/* Smaller than 875 the website becomes a stacked feed (rather than 2 columns)
+and the navigation bar becomes fixed rather than transparent and overlayed */
+
+@media (max-width: 875px) {
+  header {
+    position: fixed;
+  }
+
+  nav {
+    position: relative;
+    width: 100%;
+    height: var(--nav-mobile-height);
+  }
+
+  .logo {
+    height: 40px;
+  }
+
+  article#home {
+    padding-top: var(--nav-mobile-height);
+  }
+
+  .grid-row,
+  .content-left.more-text-space,
+  .content-right.more-text-space {
+    grid-template-columns: 1fr;
+  }
+
+  .content-right {
+    grid-template-areas:
+            "decoration"
+            "content"; /* Default layout */
+  }
+
+  .content-left {
+    grid-template-areas:
+            "decoration"
+            "content"; /* Default layout */
+  }
+
+  .contact-section.content-right, .contact-section.content-left {
+    grid-template-areas:
+            "content"
+            "decoration";
+  }
+
+  .text-content {
+    max-width: 500px;
+  }
+  
+  .hero-image-container {
+    max-height: 500px; /* Set your maximum height here */
+  }
+  
+  .image-container {
+    max-height: 400px; /* Set your maximum height here */
+  }
+
+  .image-container img, .hero-image-container img {
+    transform: translateY(-20%); /* Aligns the image from the top middle */
+    
+  }
+}
+
+/* ============ SECTIONS DEFINITIONS STYLING END ========= */
