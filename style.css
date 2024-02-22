@@ -26,6 +26,7 @@ font-family: 'Source Serif 4', serif;
 /* Variables for style */
 :root {
   --heading-dark: #414746;
+  --km-blue: #234A84;
   --text-blue: #032F69;
   --text-colour: #70827F;
   --text-highlight: #A0B8B4;
@@ -449,6 +450,9 @@ main ul > li > ul {
 
 
 /* ============ MAINTENANCE PAGE ONLY ========= */
+body.maintenance section article h1 {
+  color: var(--km-blue);
+}
 body.maintenance {
   display: flex;
   justify-content: center;
