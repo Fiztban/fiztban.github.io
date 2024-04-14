@@ -348,10 +348,12 @@ and will align center center, to change the behaviour add other classes */
 
 .image-container img, .hero-image-container img {
   width: 100%; /* Makes the image fill the width of its container */
-  object-fit: cover; /* Ensures the image covers the full container area 
-  object-position: top center; /* Aligns the image from the top middle 
-  */
+  object-fit: cover; /* Ensures the image covers the full container area */
   height: 100%; /* this needs to be 100% to use all image height then whether it fits vertically or width wise depend on the container settings for height */
+}
+
+.hero-image-container img {
+  object-position: 50% 30%; /* Aligns the image from the top middle */
 }
 
 /* This class allows an image to fill the container only width wise as preference for the desktop version by changing height of the container and image to auto */
@@ -622,6 +624,10 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   .hero-section .text-content {
     padding-bottom: var(--top-bot-padding-mobile);
     padding-top: var(--top-bot-padding-mobile);
+  }
+
+  .hero-image-container img {
+    object-position: 50% 60%; /* Aligns the image from the top middle */
   }
 
   /* This allows sections with text in the decoration section (which would go on top automatically and be followed by the text-content content section to have no padding bottom to flow better */
