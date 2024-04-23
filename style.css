@@ -486,12 +486,6 @@ main ul > li > ul {
 }
 
 
-/* These max-width parameters edit the appearance of text and margins for content and the title */
-@media (max-width: 1800px) {
-
-}
-
-
 /* ============ MAINTENANCE PAGE ONLY ========= */
 body.maintenance section article h1 {
   color: var(--km-blue);
@@ -528,7 +522,7 @@ body.maintenance section article p {
 
 /* Smaller than below media the website becomes a stacked feed (rather than 2 columns)
 and the navigation bar becomes fixed rather than transparent and overlayed */
-@media (max-width: 1000px) {
+@media (max-width: 1080px) {
   /*======= MAIN BODY ========== */
   html {
     display: grid;
@@ -538,7 +532,7 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
 
   body,
   header {
-    width: 500px;
+    max-width: 750px;
   }
 
   body.maintenance {
@@ -559,8 +553,6 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
     align-items: center;
     height: var(--nav-mobile-height);
   }
-
-
 
   header .nav-left {
     height: var(--nav-mobile-height);
@@ -659,6 +651,11 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   
 
   /* ======= CONTENT ======== */
+  .content,
+  .linked-content {
+    width: 100%;
+  }
+
   article#home {
     padding-top: var(--nav-mobile-height);
   }
@@ -680,12 +677,25 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   }
 
   .hero-image-container img {
-    object-position: 50% 60%; /* Aligns the image from the top middle */
+    object-position: 50% 40%; /* Aligns the image from the top middle */
+  }
+
+  .c30img { /* shifts image down to 30% */
+    object-position: 50% 30%;
+  }
+
+  .c20img { /* shifts image down to 20% */
+    object-position: 50% 20%;
+  }
+
+  .c70img {
+    object-position: 50% 70%;
   }
 
   /* This allows sections with text in the decoration section (which would go on top automatically and be followed by the text-content content section to have no padding bottom to flow better */
   .decoration.text-content {
     padding-bottom: 0;
+    width: auto;
   }
 
   .decoration.text-content + .content.text-content {
@@ -718,7 +728,7 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   }
 
   .text-content {
-    max-width: 450px;
+    max-width: 90%;
   }
 
   body.maintenance section article.text-content {
@@ -768,6 +778,14 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   .pad-bot,
   #about div.pad-bot {
     padding-bottom: var(--top-bot-padding-mobile);
+  }
+
+  article#contact > div.content {
+    width: 100%;
+  }
+
+  .no-image {
+    padding-top: var(--top-bot-padding);
   }
     /* transform: translateY(-20%); */
   
