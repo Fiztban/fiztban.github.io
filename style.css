@@ -38,7 +38,7 @@ font-family: 'Source Serif 4', serif;
   --nav-height: 80px;
   --nav-mobile-height: 60px;
   --top-bot-padding: 100px;
-  --top-bot-padding-mobile: 60px;
+  --top-bot-padding-mobile: 30px;
 }
 
 html {
@@ -453,7 +453,7 @@ body.maintenance section article.text-content {
 .content.service-table {
   max-width: 600px;
   margin: auto;
-  padding: var(--top-bot-padding-mobile) 20px;
+  padding: var(--top-bot-padding) 20px;
 }
 
 .content-right.service-table {
@@ -617,15 +617,22 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
 
 
   /* ======= TEXT STYLING ========== */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-bottom: 1rem;
+  }
+  
   h1.title {
     font-size: 65px;
     line-height: 1em;
-    margin-bottom: 1rem;
   }
   
   h1.subtitle {
     font-size: 20px;
-    margin-bottom: 1rem;
   }
   
   /*
@@ -638,11 +645,16 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   
   h2 {
     font-size: 30px;
-    margin-bottom: 1rem;
   }
   
-  h3, h5 {
+  h3,
+  h5,
+  h6 {
     font-size: 18px;
+  }
+
+  .rule-decoration {
+    margin-bottom: 1.5rem;
   }
   
 
@@ -723,6 +735,10 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   
   .width-image img {
     height: 100%;
+  }
+
+  .content.service-table {
+    padding: var(--top-bot-padding-mobile) 20px;
   }
 
   /* */
