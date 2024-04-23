@@ -215,6 +215,12 @@ h3, h5 {
   font-size: 20px;
 }
 
+h6 {
+  font-size: 20px;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
 main div {
   justify-items: center;
   align-items: center;
@@ -434,6 +440,41 @@ body.maintenance section article.text-content {
   display: none;
 }
 
+/* Service Sales Table Unique Styling */
+.service-table {
+  padding: 0;
+}
+
+.service-table h3,
+.service-table p {
+  margin-bottom: 1em;
+}
+
+.content.service-table {
+  max-width: 600px;
+  margin: auto;
+  padding: var(--top-bot-padding-mobile) 20px;
+}
+
+.content-right.service-table {
+  grid-template-columns: 1fr 3fr;
+  margin: 20px 0;
+}
+
+.service-table img {
+  border-radius: 10px;
+}
+
+.service-table > div.text-content {
+  padding: 0;
+  max-width: none;
+  margin-left: 20px;
+}
+
+div.content.service-table > div:last-of-type {
+  margin-bottom: 2em;
+}
+/* END Service Sales Table Unique Styling */
 
 /* The ul list needs a bottom margin and a smaller inbetween margin */ 
 main div > ul {
@@ -640,12 +681,13 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   }
 
   .grid-row,
+  .content-right:not(.grid-row.service-table),
   .content-left.more-text-space,
   .content-right.more-text-space {
     grid-template-columns: 1fr;
   }
 
-  .content-right {
+  .content-right:not(.service-table) {
     grid-template-areas:
             "decoration"
             "content"; /* Default layout */

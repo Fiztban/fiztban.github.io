@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kinder Minds - Maintenance</title>
+    <title>Kinder Minds</title>
     <!-- FAVICON -->
     <link rel="icon" type="image/png" sizes="96x96" href="assets/km-favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/km-favicon-32x32.png">
@@ -31,22 +31,414 @@
 
     <!-- Source Serif 4 -->
     <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200;0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;0,8..60,800;0,8..60,900;1,8..60,200;1,8..60,300;1,8..60,400;1,8..60,500;1,8..60,600;1,8..60,700;1,8..60,800;1,8..60,900&display=swap" rel="stylesheet"> 
+
 </head>
 
-<body class="maintenance">
+<body>
 
-    <section >
-        <article class="text-content no-pad-top">
-            <img src="assets/KM Logo - Logo Only.svg" alt="Kinder Minds">
+    <header>
+    <!-- Navigation -->
+        <div class="nav-left">
+            <a href="#home" data-target="sec-home" class="nav-logo">
+                <img src="assets/KM Logo - Name Side Long.svg" alt="Kinder Minds">
+            </a>
+    
+            <label for="check" class="check-button">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            
+        </div>
+        <input type="checkbox" id="check">
 
-            <h1>Kinder Minds</h1>
-    
-            <p>Our website is currently being either upgraded or maintained and will be back up soon.</p>
-    
-            <p>If you would like to get in touch with us please use the email <a href="mailto:info@kinderminds.nz">info@kinderminds.nz</a></p>
+        <nav class="nav-list">
+            <ul>
+                <li><a href="#home" data-target="sec-home">Home</a></li>
+                <li><a href="#sec-service" data-target="sec-service">Service</a>
+                    <ul>
+                        <li><a href="#expertise" data-target="sec-service">What We Offer</a></li>
+                        <li><a href="#approach" data-target="sec-service">Our Approach</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Info for Patients</a>
+                    <ul>
+                        <li><a href="#">What is a Psychiatrist?</a></li>
+                        <li><a href="#">First Steps</a></li>
+                        <li><a href="#">Preparing Your Child</a></li>
+                        <li><a href="#">Confidentiality</a></li>
+                    </ul>
+                </li>
+                <li><a href="#about" data-target="sec-about">About</a>
+                    <ul>
+                        <li><a href="#who" data-target="sec-about">Who We Are</a></li>
+                        <li><a href="#mission" data-target="sec-about">Our Mission</a></li>
+                        <li><a href="#grow-km" data-target="sec-about">Growing Kinder Minds</a></li>
+                    </ul>
+                </li>
+                <li><a href="#team" data-target="sec-team">Meet the Team</a>
+                    <ul>
+                        <li><a href="#sarah" data-target="sec-team">Dr Sarah Giorgi</a></li>
+                        <li><a href="#edoardo" data-target="sec-team">Edoardo Giorgi</a></li>
+                    </ul>
+                </li>
+                <li><a href="#contact" data-target="sec-home">Contact</a>
+                   <!-- <ul>
+                        <li><a href="#contact" data-target="sec-home">Referals</a></li>
+                    </ul> -->
+                </li>
+            </ul>
+        </nav>
+    <!-- Navigation -->
+    </header>
+
+  <main class="responsive-body"> <!-- Responsive Body -->
+
+    <!-- Home Page -->
+    <section id="sec-home">
+        <!-- Hero section Div -->
+        <article class="grid-row content-right hero-section" id="home">
+            <div class="decoration image-container hero-image-container">
+                <img src="assets/2024.03.10 - Website Photos/2024.03.10_141157_IMG_v2.jpg">
+            </div>
+            <div class="content text-content">
+                <h1 class="title">Sarah Castle</h1>
+                <div class="subtitle">
+                    
+                    <h1 class="subtitle">Consultant Child and Adolescent Psychiatrist</h1>
+                    <div class="rule-title"></div>
+                </div>
+
+                    <p>Kinder Minds is the Northland-based vision of founder Dr. Sarah Castle, a Consultant Child and Adolescent Psychiatrist who trained at Imperial College, University College London and the Tavistock Clinic.</p>
+
+                    <p>Sarah focuses on a compassionate approach to understand each young person’s unique experiences and challenges. She has experience in leading child and adolescent mental health services in Northland. Her specialisms are trauma, neurodiversity ( Autism and ADHD), alongside a multitude of therapeutic interventions.</p>  
+                    
+                    <p>Her passion for mental health care is matched by her dedication to create a clinic that offers outstanding care for children and adolescents.</p>
+
+                    <button href="#about" data-target="sec-about">
+                        About Kinder Minds
+                    </button> 
+            </div>
+        </article>
+        <!-- Hero section Div -->
+
+        <!-- Service Explanation -->
+        <article class="grid-row content-right bg-mid">
+            <div class="decoration text-content">
+                <h2>How We Can Help</h2>
+                <div class="rule-decoration"></div>
+                <h6>We can help you with assessments of most psychiatric and psychological conditions, including (but not limited to):</h6>
+                <h5>
+                    <ul>
+                        <li>Autism Spectrum Disorders (ASD)</li>
+                        <li>Attention Deficit/Hyperactivity Disorder (ADHD)</li>
+                        <li>Trauma and Attachment</li>
+                        <li>Medication Review and Management</li>
+                        <li>Self-Harm</li>
+                        <li>Eating Disorders</li>
+                        <li>Mood and Behavioural Disorders</li>
+                        <li>Psychotic Disorders</li>
+                    </ul>
+                </h5>
+            </div>
+            <div class="content text-content">
+                <p>At Kinder Minds, we understand the world through the eyes of young people and their families facing mental health challenges. From the simple to the complex, our service is built to provide a safe haven where every young person feels understood, respected, and supported. Sarah's expertise in child and adolescent psychiatry together with her specialised knowledge in managing a spectrum of mental health issues, ensures that our care is not just professional but deeply empathetic and personalised. Whether it's navigating the intricacies of ADHD, ASD, or overcoming the effects of trauma, we are here to help young minds heal.</p>
+
+                <button href="#approach" data-target="sec-service">
+                    Our Services
+                </button> 
+            </div>
+        </article>
+        <!-- Service Explanation -->
+
+        <!-- Contact -->
+        <article class="grid-row content-right bg-light no-pad-top" id="contact"> 
+            <div class="decoration image-container">
+                <img src="assets/Cat 01.png">
+            </div>
+            <div class="content text-content">
+                <h2>Contact Me</h2>
+                <div class="rule-decoration"></div>
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+            </div>
+        </article>
+        <!-- Contact -->
+    </section>
+    <!-- Home Page -->
+
+
+    <!-- Service -->
+    <section id="sec-service">
+        <article class="grid-row content-right" id="expertise">
+            <div class="decoration image-container">
+                <img src="assets/Dog portrait.webp">
+            </div>
+            <div class="content service-table">
+                <h2>What We Offer</h2>
+
+          <!--      <h5>Autism Spectrum Disorders (ASD) <br/>
+                    Attention Deficit/Hyperactivity Disorder (ADHD) <br/>
+                    Trauma and Attachment <br/>
+                    Medication Review and Management <br/>
+                    Self-Harm <br/>
+                    Eating Disorders <br/>
+                    Mood and Behavioural Disorders <br/>
+                    Psychotic Disorders</h5> -->
+
+                <div class="grid-row content-right service-table">
+                    <div class="decoration image-container">
+                        <img src="https://www.novamentem.com/web4/wp-content/uploads/2024/01/FistBump2-scaled.jpg" alt="Test Image">
+                    </div>
+                    <div class="content text-content">
+                        <h3>Psychiatric Assessment</h3>
+                        <p>A one-session comprehensive psychiatric assessment to investigate and diagnose potential mental disorders or injuries of children and young people.</p>
+
+                        <p>Assessment duration: 1½ hours.</p>
+
+                        <p>Cost: $750</p>
+                    </div>
+                </div>
+
+                <div class="grid-row content-right service-table">
+                    <div class="decoration image-container">
+                        <img src="https://www.novamentem.com/web4/wp-content/uploads/2024/01/FistBump2-scaled.jpg" alt="Test Image">
+                    </div>
+                    <div class="content text-content">
+                        <h3>ADHD Assessment</h3>
+                        <p>Full ADHD assessment and testing, including a medication consult if required. This assessment consists of session(s) with a psychologist and/or a psychiatrist.</p>
+
+                        <p>Assessment duration: </p>
+                    </div>
+                </div>
+
+                <div class="grid-row content-right service-table">
+                    <div class="decoration image-container">
+                        <img src="https://www.novamentem.com/web4/wp-content/uploads/2024/01/FistBump2-scaled.jpg" alt="Test Image">
+                    </div>
+                    <div class="content text-content">
+                        <h3>Medication Consultation</h3>
+                        <p>Medication can be considered and prescribed if appropriate (Including special authority medications), ongoing follow up and review can be provided.</p>
+
+                        <p>Assessment duration: 1 hour.</p>
+
+                        <p>Cost: $540</p>
+                    </div>
+                </div>
+                    
+            <!--    <h3>Counselling, Psychotherapy, Cognitive Behavioural Therapy & Psychiatric Consultation.</h3>
+                <div class="rule-decoration"></div>
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+
+                <h3>Cognitive Behavioural Therapy</h3>
+                <div class="rule-decoration"></div>
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+
+                <h3>Psychotherapy</h3>
+                <div class="rule-decoration"></div>
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. I’m a great place for you to tell a story and let your users know a little more about you.</p> -->
+
+                <button class="button backButton">
+                    Back
+                </button> 
+
+            </div>
+        </article>
+
+        <!-- Approach -->
+        <article class="grid-row content-left" id="approach">
+            <div class="decoration image-container">
+                <img src="assets/Dog Forest.png">
+            </div>
+            <div class="content text-content">
+                <h2>Our Approach</h2>
+                <div class="rule-decoration"></div>
+
+                <p>I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. Feel free to drag and drop me anywhere you like on your page. I’m a great place for you to tell a story and let your users know a little more about you.</p>
+                    
+                <p>This is a great space to write long text about your company and your services. You can use this space to go into a little more detail about your company. Talk about your team and what services you provide. Tell your visitors the story of how you came up with the idea for your business and what makes you different from your competitors. Make your company stand out and show your visitors who you are.</p>
+                    
+                <p>At Wix we’re passionate about making templates that allow you to build fabulous websites and it’s all thanks to the support and feedback from users like you! Keep up to date with New Releases and what’s Coming Soon in Wix ellaneous in Support. Feel free to tell us what you think and give us feedback in the Wix Forum. If you’d like to benefit from a professional designer’s touch, head to the Wix Arena and connect with one of our Wix Pro designers. Or if you need more help you can simply type your questions into the Support Forum and get instant answers. To keep up to date with everything Wix, including tips and things we think are cool, just head to the Wix Blog!</p>
+
+                <button>
+                    Back
+                </button> 
+            </div>
+        </article>
+
+        
+
+    </section>
+    <!-- Service -->
+
+    <!-- About Kinder Minds -->
+    <section id="sec-about">
+        <article class="grid-row content-right" id="about">
+            <div class="decoration text-content pad-bot">
+
+                <h2 id="who">Who We Are</h2>
+                <div class="rule-decoration"></div>
+
+                <p>Kinder Minds is founded by Dr. Sarah Castle, a Consultant Child and Adolescent Psychiatrist with expertise in children and adolescents' mental health, and Edoardo Giorgi, the administrative director with a rich background in nuclear science. This partnership is the cornerstone of our clinic, dedicated to providing exceptional mental health care and supporting families through their healing journey, focusing on the unique needs of each young person we serve.</p>
+
+                <p>At the core of our clinic's mission is Sarah, whose deep passion and extensive training in psychiatry form the backbone of Kinder Minds' therapeutic approach. Originally from the United Kingdom and now based in New Zealand, she has refined her expertise through rigorous training at Imperial College London and further specialisation at the Tavistock Clinic in North London. Sarah's commitment to her field is evident in her holistic and innovative treatment methods, which address a spectrum of mental health issues, including depression, anxiety, ADHD, autism spectrum disorders, and trauma. Her philosophy centres on understanding the intricate worlds of young people, fostering an environment where their concerns, dreams, and challenges are met with empathy and expert care.</p>
+
+                <p>Edoardo, transitioning from nuclear science to lead Kinder Minds' operations, blends scientific precision with compassionate oversight. His commitment to a supportive environment is evident in his calm demeanour, meticulous attention to detail, and transparent communication. Edoardo ensures that our clinic's administrative framework actively supports the therapeutic process, making every family's journey with us feel informed, supported, and valued. </p>
+
+                <button href="#team" data-target="sec-team">
+                    Meet The Team
+                </button> 
+            </div>
+
+            <div class="content text-content">
+
+                <h2 id="mission">Our Mission</h2>
+                <div class="rule-decoration"></div>
+
+                <p>Here at Kinder Minds we are dedicated to providing exceptional mental health care and supporting families through their healing journey, focusing on the unique needs of each young person we serve.</p>
+
+                <p>Our aim is not just to treat but to transform the lives of children and adolescents by understanding their inner world and empowering them with the tools they need for recovery and resilience. Kinder Minds stands as a beacon of hope and healing, ready to support the mental health journey of young people and their families.</p>
+
+                <h2 id="grow-km">Growing Kinder Minds</h2>
+                <div class="rule-decoration"></div>
+
+                <p>Our aim is not just to treat but to transform the lives of children and adolescents by understanding their inner world and empowering them with the tools they need for recovery and resilience. Kinder Minds stands as a beacon of hope and healing, ready to support the mental health journey of young people and their families.</p>
+
+                <p>As these are Kinder Minds' early days we have a team of professionals that provide ‘as needed work’ for our patients, including CAMHS nurses with lived experience of neurodiversity, social workers with additional eating disorder experience and Psychology colleagues. </p>
+
+                <p>As Kinder Minds grows, we are committed to expanding into a multi-disciplinary service that will include psychologists, therapists, mental health nurses, and social workers, all with lived experience and specialized expertise. Our collaborative team approach will ensure the best possible and comprehensive care for the children and adolescents we serve.</p>
+            </div>
         </article>
     </section>
-   
+    <!-- About Kinder Minds -->
+
+    <!-- Meet The Team -->
+    <section id="sec-team">
+        <article class="grid-row content-right" id="team">
+            <div class="decoration image-container width-image">
+                <img src="assets/KM Logo - Logo Only Embellished.svg">
+            </div>
+
+            <div class="content text-content">
+
+                <h2>The Kinder Minds Team</h2>
+                <div class="rule-decoration"></div>
+
+                <p>At present Kinder Minds is setting its first roots and beginning to grow so the permanent team is comprised of its founding members, Dr. Sarah Castle, as its Medical Director, and Edoardo Giorgi, as its Administrative Director.</p>
+
+                <p>We are committed to delivering the best care possible to the young people of Northland and New Zealand so as we grow we will be calling on a team of professionals that provide ‘as needed work’ for our patients. This team has been grown from our established working relations with health professionals who are equally passionate about helping young people and include CAMHS nurses with lived experience of neurodiversity, social workers.</p>
+
+                <p>As we grow we expect to establish a growing permanent team to deliver our envisioned multi-disciplinary care to achieve the best possible outcomes for the young minds in need of healing.</p>
+
+                <button href="#grow-km" data-target="sec-about">
+                    Kinder Minds Growth
+                </button> 
+            </div>
+
+        </article>
+
+        <article class="flex-col bg-mid" id="sarah">
+            <div class="grid-row content-left more-text-space">
+                <div class="decoration image-container">
+                    <img src="assets/2024.03.10 - Website Photos/2024.03.10_141105_IMG.jpg">
+                </div>
+
+                <div class="content text-content no-pad-bot">
+
+                    <h2>Sarah Castle</h2>
+                    <div class="rule-decoration"></div>
+
+                    <p>Dr. Sarah Castle is at the heart of Kinder Minds' approach and commitment to helping young people and their families overcome the mental health challenges they face. Sarah brings a wealth of psychiatric and therapeutic expertise gained through her extensive training and specialisation. Sarah also held the position of Clinical Head of Department for Child and Adolescent Mental Health, Early intervention in Psychosis, Maternal Infant Mental Health and Forensic CAMHS Services, in Te Tai Tokerau DHB across Northland.</p>
+
+                    <p>Alongside formal clinical training, Sarah is passionate about working alongside families and Young People, to understand their inner world, concerns, worries, fantasies and dreams matter by giving them a voice. She often tries to work creativity and works outside of a one size fits all approach, to connect with ‘hard to reach’ children and young people.</p>
+
+                    <p>Sarah has a keen interest in the assessment and treatment of trauma and neurodiversity, including ASD and ADHD. Her expertise is broadened by additional training in Eye Movement Desensitization and Reprocessing (EMDR), Mentalization Based Therapy for Adolescents, Cognitive Behavioral Therapy for trauma, Dialectical Behavioral Therapy, and other talking therapies. Sarah is particularly skilled in supporting young people through the diagnostic process, including ADOS-II, and offering interventions that benefit them and their families post-diagnosis, demonstrating her comprehensive approach to mental health care.</p>
+
+                </div>
+            </div>
+
+            <div class="grid-row">
+                <div class="linked-content text-content top-grid-align">
+                    <h3>Medical Training</h3>
+                    <div class="rule-decoration"></div>
+
+                    <ul>
+                        <li>
+                            Imperial College
+                            <ul>
+                                <li>MBBS Medicine.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            University College London
+                            <ul>
+                                <li>Intercalated International Health with Medical Anthropology</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Maudsley Hospital (South London) & University College London: Core Psychiatric Training Rotations in:
+                            <ul>
+                                <li>Eating Disorders</li>
+                                <li>Adolescent Consult Liaison</li>
+                                <li>General Adult Psychiatry</li>
+                                <li>Adult Addictions</li>
+                                <li>Adult Psychotherapy</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Tavistock Clinic (North London)
+                            <ul>
+                                <li>Higher Training in Child and Adolescent Psychiatry.</li>
+                                <li>Including inpatient and Gloucester House, Specialist school placement </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="linked-content text-content top-grid-align">
+                    <h3>Therapeutic & Assessment Modalities offered</h3>
+                    <div class="rule-decoration"></div>
+
+                    <ul>
+                        <li>Autism Diagnostic Observation Schedule (ADOS-II)</li>
+                        <li>Eye Movement Desensitisation and Reprocessing (EMDR)</li>
+                        <li>Mentalisation Based Therapy (MBT) for Adolescents</li>
+                        <li>Cognitive Behavioural Therapy (CBT) for Trauma</li>
+                        <li>Dialectical Bevioural Therapy (DBT)</li>
+                        <li>Psychodynamic Psychotherapy</li>
+                    </ul>
+
+                    <button href="#sec-service" data-target="sec-service">
+                        Our Services
+                    </button> 
+                </div>
+            </div>
+        </article>
+
+        <article class="grid-row content-right more-text-space bg-light no-pad-bot" id="edoardo">
+            <div class="decoration image-container width-image">
+                <img src="assets/Edo Test 01.jpg">
+            </div>
+
+            <div class="content text-content">
+
+                <h2>Edoardo Giorgi</h2>
+                <div class="rule-decoration"></div>
+
+                <p>Edoardo fulfills the technical and administrative role of making sure Kinder Minds runs as smoothly as possible, and that the team has everything it needs to deliver on our mission to help young people and their families.</p>
+
+                <p>Edoardo beings a multitude of skills picked up along his squiggly career from being a Nuclear Scientist to being a Science Communicator and Technical Writer. Being a patient and calm individual with an exceptional eye for detail you can expect him to ensure the families and young people we care for receive all the support needed to remain up to date with treatment plans and appointments.</p>
+            </div>
+            
+        </article>
+    </section>
+    <!-- Meet The Team -->
+
+
+    <footer>
+        Website produced by Kinder Minds Limited
+    </footer>
+  </main> <!-- Responsive Body -->
+
+  <!-- External JavaScript file -->
+  <script src="script.js"></script> 
 
 </body>
 
