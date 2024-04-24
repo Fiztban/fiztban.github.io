@@ -1,61 +1,74 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const navElements = document.querySelectorAll('[data-target]');
-  const sections = document.querySelectorAll('main > section');
-  const check = document.getElementById('check'); // Get the checkbox element
-
-  function hideAllSectionsExcept(exceptId) {
+    const navElements = document.querySelectorAll('[data-target]');
+    const sections = document.querySelectorAll('main > section');
+    const check = document.getElementById('check'); // Get the checkbox element
+    const lookup = {
+      '#home': 'sec-home',
+      '#contact': 'sec-home',
+      '#sec-service': 'sec-service',
+      '#expertise': 'sec-service',
+      '#approach': 'sec-service',
+      '#about': 'sec-about',
+      '#who': 'sec-about',
+      '#mission': 'sec-about',
+      '#grow-km': 'sec-about',
+      '#team': 'sec-team',
+      '#sarah': 'sec-team',
+      '#edoardo': 'sec-team'
+    };
+  
+    function hideAllSectionsExcept(exceptId) {
       sections.forEach(section => {
-          section.classList.add('hidden');
+        section.classList.add('hidden');
       });
       const targetSection = document.getElementById(exceptId);
       if (targetSection) {
-          targetSection.classList.remove('hidden');
-          // Scroll to the target section if it's not 'sec-home'
-          if (exceptId !== 'sec-home') {
-              targetSection.scrollIntoView({ behavior: 'smooth' });
-          }
+        targetSection.classList.remove('hidden');
       }
-  }
-
-  // Initially hide all sections except 'sec-home'
-  hideAllSectionsExcept('sec-home');
-
-  navElements.forEach(element => {
+    }
+  
+    function handleHashChange() {
+      const currentHash = window.location.hash;
+      const targetSectionId = lookup[currentHash];
+      if (targetSectionId) {
+        hideAllSectionsExcept(targetSectionId);
+        // Ensure the browser has time to render the section before scrolling
+        setTimeout(() => {
+          const element = document.querySelector(currentHash);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100); // A slight delay to ensure the section is visible
+      } else {
+        hideAllSectionsExcept('sec-home');
+      }
+    }
+  
+    // Listen to hash change events
+    window.addEventListener('hashchange', handleHashChange);
+  
+    // Initial check for hash in URL on load
+    if (window.location.hash) {
+      handleHashChange();
+    } else {
+      hideAllSectionsExcept('sec-home');
+    }
+  
+    navElements.forEach(element => {
       element.addEventListener('click', function(event) {
-          const targetId = this.getAttribute('data-target');
-          const hrefAttribute = this.getAttribute('href');
-          const hashIndex = hrefAttribute.indexOf('#');
-          const hasHash = hashIndex !== -1;
-
-          hideAllSectionsExcept(targetId);
-
-          if (hasHash) {
-              event.preventDefault();
-              const anchorId = hrefAttribute.substring(hashIndex);
-              const anchorElement = document.querySelector(anchorId);
-              if (anchorElement) {
-                  setTimeout(() => {
-                      anchorElement.scrollIntoView({ behavior: 'smooth' });
-                  }, 300); // Adjust timing as needed
-              }
-          }
-
-          // Uncheck the checkbox when a nav-link is clicked
-          check.checked = false;
+        const hrefAttribute = this.getAttribute('href');
+        const hashIndex = hrefAttribute.indexOf('#');
+        const hasHash = hashIndex !== -1;
+  
+        if (hasHash) {
+          event.preventDefault();
+          const anchorId = hrefAttribute.substring(hashIndex);
+          window.location.hash = anchorId; // Update the URL hash
+        }
+  
+        // Uncheck the checkbox when a nav-link is clicked
+        check.checked = false;
       });
+    });
   });
-
-  // Add click listener for unchecking the checkbox when clicking outside the header
-  document.addEventListener('click', function(e) {
-      var header = document.querySelector('header');
-      // If the click happened outside of the header
-      if (!header.contains(e.target)) {
-          check.checked = false;
-      }
-  });
-
-  // Ensure that clicking on the label does not propagate and trigger the document click listener
-  document.querySelector('.check-button').addEventListener('click', function(e) {
-      e.stopPropagation();
-  });
-});
+  
