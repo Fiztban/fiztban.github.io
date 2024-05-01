@@ -188,36 +188,14 @@ h6 {
 
 h1.title {
   font-weight: 300;
-  font-size: 110px;
+  font-size: 100px;
   line-height: 1em;
   margin-bottom: 1rem;
+  margin-top: 2rem;
 }
 
 h1.subtitle {
   font-size: 24px;
-  margin-bottom: 1rem;
-}
-
-/*
-div.subtitle {
-  display: flex; /* Use flexbox 
-  align-items: center; /* Vertically center the items 
-  margin-bottom: 2rem;
-}
-*/
-
-h2 {
-  font-size: 35px;
-  margin-bottom: 1rem;
-}
-
-h3, h5 {
-  font-size: 20px;
-}
-
-h6 {
-  font-size: 20px;
-  font-style: italic;
   margin-bottom: 1rem;
 }
 
@@ -226,14 +204,33 @@ main div {
   align-items: center;
 }
 
+main p,
+main ul {
+  font-size: 15px;
+}
+
 main p {
-  font-size: 14px;
   line-height: 2em;
   margin-bottom: 2em;
 }
 
 main ul {
   padding-left: 20px;
+}
+
+h2 {
+  font-size: 35px;
+  margin-bottom: 1rem;
+}
+
+h3, h5, h5 > ul {
+  font-size: 20px;
+}
+
+h6 {
+  font-size: 20px;
+  font-style: italic;
+  margin-bottom: 1rem;
 }
 
 /* ============ TEXT STYLING END ========= */
@@ -451,9 +448,9 @@ body.maintenance section article.text-content {
 }
 
 .content.service-table {
-  max-width: 600px;
+  /* max-width: 600px; */
   margin: auto;
-  padding: var(--top-bot-padding) 20px;
+  padding: var(--top-bot-padding) 30px;
 }
 
 .content-right.service-table {
@@ -621,6 +618,7 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   h1.title {
     font-size: 65px;
     line-height: 1em;
+    margin-top: auto;
   }
   
   h1.subtitle {
@@ -749,6 +747,7 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
 
   .content.service-table {
     padding: var(--top-bot-padding-mobile) 20px;
+    max-width: unset;
   }
 
   /* */
