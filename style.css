@@ -188,10 +188,10 @@ h6 {
 
 h1.title {
   font-weight: 300;
-  font-size: 100px;
+  font-size: 90px;
   line-height: 1em;
   margin-bottom: 1rem;
-  margin-top: 2rem;
+  margin-top: 2.2rem;
 }
 
 h1.subtitle {
@@ -211,7 +211,11 @@ main ul {
 
 main p {
   line-height: 2em;
-  margin-bottom: 2em;
+  margin-bottom: 0.8rem;
+}
+
+div p:last-of-type {
+  margin-bottom: 2rem;
 }
 
 main ul {
