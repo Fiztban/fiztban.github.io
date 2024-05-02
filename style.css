@@ -238,6 +238,14 @@ h6 {
   margin-bottom: 1rem;
 }
 
+body a {
+  color: var(--heading-dark);
+}
+
+body a:hover {
+  color: var(--text-colour);
+}
+
 /* ============ TEXT STYLING END ========= */
 
 
