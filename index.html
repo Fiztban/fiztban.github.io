@@ -53,13 +53,13 @@
         <nav class="nav-list">
             <ul>
                 <li><a href="#home" data-target="sec-home">Home</a></li>
-                <li><a href="#sec-service" data-target="sec-service">Services</a>
+                <li class="has-submenu"><a href="#sec-service" data-target="sec-service">Services</a>
                     <ul>
                         <li><a href="#expertise" data-target="sec-service">What We Offer</a></li>
                         <li><a href="#approach" data-target="sec-service">Our Approach</a></li>
                     </ul>
                 </li>
-              <!--  <li><a href="#">Info for Patients</a>
+              <!--  <li class="has-submenu"><a href="#">Info for Patients</a>
                     <ul>
                         <li><a href="#">What is a Psychiatrist?</a></li>
                         <li><a href="#">First Steps</a></li>
@@ -67,14 +67,14 @@
                         <li><a href="#">Confidentiality</a></li>
                     </ul>
                 </li> -->
-                <li><a href="#mission" data-target="sec-about">About</a>
+                <li class="has-submenu"><a href="#sec-about" data-target="sec-about">About</a>
                     <ul>
                         <li><a href="#mission" data-target="sec-about">Our Mission</a></li>
                         <li><a href="#about" data-target="sec-about">Who We Are</a></li>
                         <li><a href="#grow-km" data-target="sec-about">Growing Kinder Minds</a></li>
                     </ul>
                 </li>
-                <li><a href="#team" data-target="sec-team">Meet the Team</a>
+                <li class="has-submenu"><a href="#sec-team" data-target="sec-team">Meet the Team</a>
                     <ul>
                         <li><a href="#sarah" data-target="sec-team">Dr Sarah Giorgi</a></li>
                         <li><a href="#edoardo" data-target="sec-team">Edoardo Giorgi</a></li>
@@ -123,7 +123,9 @@
         <!-- Hero section Div -->
 
 
-
+        <div>
+            Test Text
+        </div>
 
         <!-- Service Explanation -->
         <article class="grid-row content-right bg-mid">
@@ -263,20 +265,15 @@
                     </div>
                 </div>
 
-                <table class="buttons">
-                    <tr>
-                        <td>
-                            <button href="#team" class="inverted" data-target="sec-team">
-                                Meet the Team
-                            </button>
-                        </td>
-                        <td>
-                            <button href="#contact" data-target="sec-team">
-                                Contact Us
-                            </button> 
-                        </td>
-                    </tr>
-                </table>
+                <div class="button-grid-row">
+                    <button href="#team" class="inverted" data-target="sec-team">
+                        Meet the Team
+                    </button>
+
+                    <button href="#contact" data-target="sec-team">
+                        Contact Us
+                    </button> 
+                </div>
 
             </div>
         </article>

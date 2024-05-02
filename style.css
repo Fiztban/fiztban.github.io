@@ -206,7 +206,8 @@ main div {
 }
 
 main p,
-main ul {
+main ul,
+footer {
   font-size: 15px;
 }
 
@@ -288,14 +289,12 @@ button.inverted:focus {
   background-color: white;
 }
 
-
-
-table.buttons {
-  margin: auto;
+div.button-grid-row {
+  margin: unset;
 }
 
-table.buttons td {
-  padding: 0 20px;
+div.button-grid-row > button {
+  margin-top: 20px;
 }
 
 .rule-title, .rule-title-mobile, .rule-decoration {
@@ -339,7 +338,8 @@ table.buttons td {
   flex-direction: column;
 }
 
-.grid-row {
+.grid-row,
+.button-grid-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0px; /* Adjust the gap between columns */
@@ -500,7 +500,7 @@ body.maintenance section article.text-content {
 .content.service-table {
   /* max-width: 600px; */
   margin: auto;
-  padding: var(--top-bot-padding) 30px;
+  padding: var(--top-bot-padding) 30px 20px 30px;
 }
 
 .content-right.service-table {
@@ -566,6 +566,8 @@ body.maintenance section article p {
 
 
 /* ============ SCREEN SIZE STYLING ========= */
+
+
 
 /* Smaller than below media the website becomes a stacked feed (rather than 2 columns)
 and the navigation bar becomes fixed rather than transparent and overlayed */
@@ -757,6 +759,8 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
     grid-template-columns: 1fr;
   }
 
+
+
   .content-right:not(.service-table) {
     grid-template-areas:
             "decoration"
@@ -838,6 +842,26 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   }
     /* transform: translateY(-20%); */
   
+}
+
+/* Small Adjustment to make the service table size better as screens become smaller */
+@media (max-width:550px) {
+  .content.service-table {
+    padding: var(--top-bot-padding-mobile) 15px var(--top-bot-padding-mobile) 10px;
+  }
+
+}
+
+
+/* This is specifically to allwo buttons to change to column view whent he screen is too small for 2 buttons next to one another */
+@media (max-width:450px) {
+  div.button-grid-row {
+    grid-template-columns: 1fr; 
+  }
+
+  div.button-grid-row > button:first-of-type { 
+    margin: 15px 0;
+  }
 }
 
 /* ============ SCREEN SIZING STYLES END ========= */
