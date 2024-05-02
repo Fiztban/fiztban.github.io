@@ -49,7 +49,7 @@ body {
   background-color: white;
   font-family: 'Source Serif 4', serif;
   color: var(--text-colour);
-  min-width: 450px;
+  min-width: 350px;
 }
 
 .responsive-body {
