@@ -49,6 +49,7 @@ body {
   background-color: white;
   font-family: 'Source Serif 4', serif;
   color: var(--text-colour);
+  min-width: 450px;
 }
 
 .responsive-body {
@@ -372,6 +373,11 @@ and will align center center, to change the behaviour add other classes */
   height: auto;
 }
 
+/* Image Specific Positionings */
+article#approach img {
+  object-position: 80% 50%;
+  min-height: 400px;
+}
 
 /* Content behaviour */
 .content {
