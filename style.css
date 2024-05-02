@@ -331,6 +331,24 @@ div.button-grid-row > button {
   background-color: var(--mid-background);
 }
 
+/* ACC blurb styling announcing kinder minds does offer ACC services */
+article.acc-info {
+ text-align: center; 
+ padding: 20px 0;
+ color: var(--mid-background);
+ background-color: var(--text-highlight);
+}
+
+article.acc-info > h5 {
+  margin-bottom: 0.25rem;
+  color: white;
+}
+
+article.acc-info > p {
+  margin-bottom: 0;
+  line-height: 1;
+}
+
 
 /* Flex Column and grid row definitions */
 .flex-col {
@@ -494,33 +512,51 @@ body.maintenance section article.text-content {
 
 .service-table h3,
 .service-table p {
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
+  margin-top: 1em;
 }
 
 .content.service-table {
-  /* max-width: 600px; */
   margin: auto;
-  padding: var(--top-bot-padding) 30px 20px 30px;
+  padding: calc(var(--nav-height) + 30px) 30px 20px 30px;
 }
 
 .content-right.service-table {
   grid-template-columns: 1fr 3fr;
   margin: 20px 0;
+  background-color: var(--light-background);
+  border-radius: 20px;
+  max-width: 1200px;
+/*  box-shadow: 10px 5px 5px darkblue; */
+}
+
+.content-right.service-table:hover {
+  box-shadow: 10px 5px 5px var(--text-highlight);
+  transition: 0.5s;
 }
 
 .service-table img {
   border-radius: 10px;
+  max-width: 300px;
 }
 
 .service-table > div.text-content {
-  padding: 0;
+  padding: 0 10px 0px 20px;
   max-width: none;
-  margin-left: 20px;
 }
 
 div.content.service-table > div:last-of-type {
   margin-bottom: 2em;
 }
+
+div.content-right.service-table > div.image-container {
+  align-self: start;
+}
+
+div.content-right.service-table div.rule-decoration {
+  margin-bottom: 1rem;
+}
+
 /* END Service Sales Table Unique Styling */
 
 /* The ul list needs a bottom margin and a smaller inbetween margin */ 
@@ -630,7 +666,8 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
     width: 100%;
     background-color: var(--text-highlight);
     transition: .5s;
-    right: 100%;
+    bottom: 200%;
+    left: 200%;
     opacity: 0;
   }
 
@@ -652,7 +689,8 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   }
 
   #check:checked ~ .nav-list {
-    right: 0;
+    bottom: 0;
+    left: 0;
     opacity: 1;
   }
 
@@ -800,7 +838,7 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   }
 
   .content.service-table {
-    padding: var(--top-bot-padding-mobile) 20px;
+    padding: calc(var(--nav-mobile-height) + 20px) 20px 20px 20px;
     max-width: unset;
   }
 

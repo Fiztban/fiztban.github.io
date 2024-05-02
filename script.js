@@ -69,19 +69,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // New functionality for mobile navigation
-  if (window.innerWidth <= 1080) {
-      const hasSubmenu = document.querySelectorAll('.has-submenu');
-      hasSubmenu.forEach(function(item) {
-          item.addEventListener('click', function(e) {
-              const submenu = this.querySelector('ul');
-              if (submenu.style.display === 'block') {
-                  submenu.style.display = 'none';
-              } else {
-                  e.preventDefault(); // Prevent navigation
-                  submenu.style.display = 'block';
-              }
-          });
-      });
-  }
 });
