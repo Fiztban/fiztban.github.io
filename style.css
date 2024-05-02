@@ -259,11 +259,43 @@ button {
   text-decoration: none;
   padding: 0;
   border: none;
+  border-radius: 12px;
+}
+
+button.inverted {
+  color: var(--text-highlight);
+  background-color: white;
+  border-style: solid;
 }
 
 button:hover {
   cursor: pointer;
+  background-color: var(--text-colour);
+}
+
+button.inverted:hover {
+  color: var(--text-colour);
+  background-color: white;
+}
+
+button:focus {
   background-color: var(--mid-background);
+  color: var(--text-colour);
+}
+
+button.inverted:focus {
+  color: var(--mid-background);
+  background-color: white;
+}
+
+
+
+table.buttons {
+  margin: auto;
+}
+
+table.buttons td {
+  padding: 0 20px;
 }
 
 .rule-title, .rule-title-mobile, .rule-decoration {
