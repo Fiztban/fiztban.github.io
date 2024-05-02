@@ -291,6 +291,7 @@ button.inverted:focus {
 
 div.button-grid-row {
   margin: unset;
+  margin-bottom: 2em;
 }
 
 div.button-grid-row > button {
@@ -483,7 +484,7 @@ body.maintenance section article.text-content {
 }
 
 .pad-bot {
-  padding-top: var(--top-bot-padding);
+  padding-bottom: var(--top-bot-padding);
 }
 
 

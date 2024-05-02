@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const navElements = document.querySelectorAll('[data-target]');
+  const navElements = document.querySelectorAll('[data-target], .nav-list > ul > li > a');
   const sections = document.querySelectorAll('main > section');
-  const check = document.getElementById('check'); // Get the checkbox element
+  const check = document.getElementById('check');
   const lookup = {
     '#sec-service': 'sec-service',
     '#sec-team': 'sec-team',
@@ -56,6 +56,11 @@ document.addEventListener('DOMContentLoaded', function() {
   navElements.forEach(element => {
     element.addEventListener('click', function(event) {
       const hrefAttribute = this.getAttribute('href');
+      if (hrefAttribute === "") {
+        event.preventDefault(); // Stop the function if href is empty
+        return false; // Ensures that no further actions take place
+      }
+
       const hashIndex = hrefAttribute.indexOf('#');
       const hasHash = hashIndex !== -1;
 
@@ -68,5 +73,4 @@ document.addEventListener('DOMContentLoaded', function() {
       check.checked = false;
     });
   });
-
 });
