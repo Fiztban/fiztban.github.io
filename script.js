@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     '#sec-about': 'sec-about',
     '#home': 'sec-home',
     '#contact': 'sec-home',
-    '#expertise': 'sec-service',
+    '#services': 'sec-service',
     '#approach': 'sec-service',
     '#about': 'sec-about',
     '#who': 'sec-about',
