@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     '#grow-km': 'sec-about',
     '#team': 'sec-team',
     '#sarah': 'sec-team',
-    '#edoardo': 'sec-team'
+    '#edoardo': 'sec-team',
+    '#neve': 'sec-team'
   };
 
   function hideAllSectionsExcept(exceptId) {
