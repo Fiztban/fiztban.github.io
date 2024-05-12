@@ -769,6 +769,14 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
     object-position: 50% 40%; /* Aligns the image from the top middle */
   }
 
+  .c70img {
+    object-position: 50% 70%;
+  }
+
+  .c45img {
+    object-position: 50% 45%;
+  }
+
   .c30img { /* shifts image down to 30% */
     object-position: 50% 30%;
   }
@@ -777,9 +785,7 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
     object-position: 50% 20%;
   }
 
-  .c70img {
-    object-position: 50% 70%;
-  }
+
 
   /* This allows sections with text in the decoration section (which would go on top automatically and be followed by the text-content content section to have no padding bottom to flow better */
   .decoration.text-content {
