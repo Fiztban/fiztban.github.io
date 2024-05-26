@@ -266,6 +266,16 @@ button {
   border-radius: 12px;
 }
 
+button.wide-button {
+  width: 275px;
+}
+
+button.svg-button {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
 button.inverted {
   color: var(--text-highlight);
   background-color: white;
@@ -325,26 +335,35 @@ div.button-grid-row > button {
 
 
 /* ============ SECTIONS DEFINITIONS STYLING ========= */
-/* Footer */
-svg#footer-img {
-  width: 1.8em;
+.inline-svg {
+  width:1.4em;
+  height: auto;
+  display: unset;
+  margin-right: 0.4em;
 }
 
-a svg #fb_logo {
+/* Footer */
+svg.footer-img {
+  width: 1.8em;
+  margin: 0 0.3em;
+}
+
+a svg .svg_logo {
   transition: fill 0.3s;
   fill:white;
 }
 
-a:hover svg #fb_logo {
+a:hover svg .svg_logo {
   fill: var(--text-highlight);
 }
 
-a:active svg #fb_logo {
+a:active svg .svg_logo {
   fill: var(--text-colour);
 }
 
 div.footer-img {
   padding: 10px;
+  display: flex;
 }
 
 div.footer-text {
