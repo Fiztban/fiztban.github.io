@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     '#team': 'sec-team',
     '#sarah': 'sec-team',
     '#edoardo': 'sec-team',
-    '#neve': 'sec-team'
+    '#neve': 'sec-team',
     '#kezia': 'sec-team'
   };
 

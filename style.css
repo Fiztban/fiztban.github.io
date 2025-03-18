@@ -188,6 +188,8 @@ h6 {
   margin-bottom: 2rem;
 }
 
+
+
 h1.title {
   font-weight: 300;
   font-size: 90px;
@@ -648,6 +650,22 @@ body.maintenance section article p {
 
 /* ============ SECTIONS DEFINITIONS STYLING END ========= */
 
+/* Team Photo Image Sizing and Positionings */
+.profile_edo {
+  max-height: 800px;
+  object-position: 50% 20%;
+}
+
+.profile_neve {
+  max-height: 800px;
+  object-position: 50% 60%;
+}
+
+.profile_kezia {
+  height: 896.3px;
+  object-position: 60% 70%;
+}
+
 
 /* ============ SCREEN SIZE STYLING ========= */
 
@@ -832,6 +850,9 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
     object-position: 50% 20%;
   }
 
+  .profile_neve {
+    object-position: 50% 43%;
+  }
 
 
   /* This allows sections with text in the decoration section (which would go on top automatically and be followed by the text-content content section to have no padding bottom to flow better */
@@ -945,7 +966,7 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
 }
 
 
-/* This is specifically to allwo buttons to change to column view whent he screen is too small for 2 buttons next to one another */
+/* This is specifically to allow buttons to change to column view whent he screen is too small for 2 buttons next to one another */
 @media (max-width:450px) {
   div.button-grid-row {
     grid-template-columns: 1fr; 
