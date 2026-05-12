@@ -198,7 +198,7 @@ h1.title {
   margin-top: 2.2rem;
 }
 
-h1.subtitle {
+h2.subtitle {
   font-size: 24px;
   margin-bottom: 1rem;
 }
@@ -777,7 +777,7 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
     margin-top: auto;
   }
   
-  h1.subtitle {
+  h2.subtitle {
     font-size: 20px;
   }
   
