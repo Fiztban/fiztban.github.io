@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Intake link builder | Kinder Minds staff</title>
+
+    <!-- Internal tool. Never indexed, never referred. -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/Logos/km-favicon-32x32.png">
+    <link rel="stylesheet" href="../leaflets/leaflet.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=Fira+Sans+Condensed:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+
+<style>
+    /* Builder-specific styling. Palette and typography come from leaflet.css. */
+
+    .field { margin-bottom: 1.1rem; }
+
+    .field label {
+        display: block;
+        font-family: 'Fira Sans', system-ui, sans-serif;
+        font-weight: 600;
+        color: var(--km-blue);
+        margin-bottom: 0.3rem;
+    }
+
+    .field .hint {
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        margin-bottom: 0.35rem;
+    }
+
+    .field input[type="text"],
+    .field input[type="url"],
+    .field select,
+    textarea {
+        width: 100%;
+        padding: 0.55rem 0.7rem;
+        border: 1px solid var(--text-highlight);
+        border-radius: 8px;
+        font-family: 'Fira Sans', system-ui, sans-serif;
+        font-size: 0.95rem;
+        background-color: white;
+        color: var(--heading-dark);
+    }
+
+    .field input:focus-visible,
+    .field select:focus-visible,
+    textarea:focus-visible {
+        outline: 3px solid var(--km-blue);
+        outline-offset: 1px;
+    }
+
+    fieldset {
+        border: 1px solid var(--mid-background);
+        border-radius: var(--radius);
+        padding: 1.1rem 1.2rem;
+        margin-bottom: 1.5rem;
+        background-color: white;
+    }
+
+    legend {
+        font-family: 'Fira Sans', system-ui, sans-serif;
+        font-weight: 600;
+        color: var(--km-blue);
+        padding: 0 0.4rem;
+    }
+
+    .radio-row { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+    .radio-row label {
+        display: flex; align-items: center; gap: 0.45rem;
+        font-weight: 400; color: var(--heading-dark); margin: 0;
+    }
+    .radio-row input { width: 1.1rem; height: 1.1rem; accent-color: var(--km-blue); }
+
+    #output {
+        min-height: 6.5rem;
+        font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        word-break: break-all;
+        background-color: var(--light-background);
+    }
+
+    .actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.75rem; align-items: center; }
+
+    .actions .button { margin-top: 0; }
+
+    .copied {
+        font-family: 'Fira Sans', system-ui, sans-serif;
+        font-size: 0.9rem;
+        color: #2F6F4F;
+        font-weight: 600;
+    }
+    .copied[hidden] { display: none; }
+
+    /* Diagnostics: what the builder read back out of the pasted URLs. */
+    .diagnostics { margin-top: 1rem; font-size: 0.9rem; }
+
+    .diagnostics table { width: 100%; border-collapse: collapse; }
+    .diagnostics th, .diagnostics td {
+        text-align: left; padding: 0.35rem 0.5rem;
+        border-bottom: 1px solid var(--mid-background);
+        font-family: ui-monospace, Consolas, monospace; font-size: 0.85rem;
+    }
+    .diagnostics th {
+        font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+        color: var(--text-muted); font-weight: 600;
+    }
+
+    .alert {
+        border-radius: 8px;
+        padding: 0.7rem 0.9rem;
+        margin-top: 0.8rem;
+        font-family: 'Fira Sans', system-ui, sans-serif;
+        font-size: 0.92rem;
+    }
+    .alert[hidden] { display: none; }
+    .alert.bad  { background: #FBEAEA; border: 1px solid #D9A0A0; color: #7A2020; }
+    .alert.warn { background: #FDF6E3; border: 1px solid #E8D9A8; color: #6B551A; }
+    .alert.good { background: #EDF6F0; border: 1px solid #BFD8CB; color: #23543C; }
+</style>
+</head>
+
+<body>
+
+    <header class="leaflet-header">
+        <div class="wrap">
+            <a href="../index.html" aria-label="Kinder Minds home">
+                <img src="../assets/Logos/KM%20Logo%20-%20Name%20Side%20Long.svg" alt="Kinder Minds">
+            </a>
+            <div class="header-contact">Staff tool &mdash; not for clients</div>
+        </div>
+    </header>
+
+    <div class="title-block">
+        <div class="wrap">
+            <p class="eyebrow">Internal</p>
+            <h1>Intake link builder</h1>
+            <p class="subtitle">Paste the three Zanda form links, get one link to drop into the Missive template.</p>
+        </div>
+    </div>
+
+    <main class="wrap">
+
+        <fieldset>
+            <legend>1 &middot; Who and what</legend>
+
+            <div class="field">
+                <label for="in-name">Client first name</label>
+                <p class="hint">Used throughout the page &mdash; &ldquo;Is Éilis 16 or older?&rdquo;. Leave blank to use &ldquo;your child&rdquo;. Names ending in s take a bare apostrophe (Éilis&rsquo; report).</p>
+                <input type="text" id="in-name" placeholder="Éilis" autocomplete="off">
+            </div>
+
+            <div class="field">
+                <label for="in-ref">If no name is given, refer to them as</label>
+                <p class="hint">Only used when the name field is blank &mdash; a name always wins. Lets the page read naturally either way.</p>
+                <select id="in-ref">
+                    <option value="">your child (default)</option>
+                    <option value="son">your son</option>
+                    <option value="daughter">your daughter</option>
+                    <option value="teen">your young person</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="in-service">Service</label>
+                <select id="in-service">
+                    <option value="guide/adhd-child-assessment.html">ADHD Assessment (Under 18s) — $1,500, Nurse Practitioner</option>
+                    <option value="guide/adhd-child-assessment-complex.html">ADHD Assessment (Under 18s), complex — $1,800, Dr Castle</option>
+                    <option value="guide/adhd-asd-combined-assessment.html">Combined ADHD &amp; Autism (Under 18s) — $3,000</option>
+                    <option value="guide/adhd-titration-clinic.html">ADHD Titration Clinic — $250/$350 + monthly</option>
+                    <option value="" disabled>ASD Assessment Pathway — guide not yet built</option>
+                    <option value="" disabled>Post-Diagnostic Support — guide not yet built</option>
+                    <option value="" disabled>Psychiatric Services — guide not yet built</option>
+                </select>
+            </div>
+
+            <div class="field" id="dx-field">
+                <label>Where was the ADHD diagnosed?</label>
+                <p class="hint">Titration Clinic only. Choosing &ldquo;by Kinder Minds&rdquo; removes the $350 outside-diagnosis fee and its caveats, so the family only sees the price they will actually pay.</p>
+                <div class="radio-row">
+                    <label><input type="radio" name="dx" value="" checked> Not known / diagnosed elsewhere</label>
+                    <label><input type="radio" name="dx" value="km"> By Kinder Minds</label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Consent branch</label>
+                <p class="hint">Leave on &ldquo;Let the family choose&rdquo; unless you already know the age &mdash; the page asks them anyway.</p>
+                <div class="radio-row">
+                    <label><input type="radio" name="age" value="" checked> Let the family choose</label>
+                    <label><input type="radio" name="age" value="16plus"> Pre-set: 16 or older</label>
+                    <label><input type="radio" name="age" value="under16"> Pre-set: under 16</label>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>2 &middot; The three Zanda links</legend>
+            <p class="hint" style="margin-bottom:1rem">Copy each straight out of Zanda or the Missive template. Paste them whole &mdash; no need to trim or encode anything.</p>
+
+            <div class="field">
+                <label for="in-reg">New Patient Registration Form</label>
+                <input type="url" id="in-reg" placeholder="https://clientportal.zandahealth.com/clientportal/kinderminds/customform/…" autocomplete="off" spellcheck="false">
+            </div>
+
+            <div class="field">
+                <label for="in-c1">Combined Consent &amp; Information Form &mdash; Guardian 1 (or the young person)</label>
+                <input type="url" id="in-c1" placeholder="https://clientportal.zandahealth.com/clientportal/kinderminds/customform/…" autocomplete="off" spellcheck="false">
+            </div>
+
+            <div class="field">
+                <label for="in-c2">Combined Consent &amp; Information Form &mdash; Guardian 2</label>
+                <p class="hint">Only used by the under-16 branch. Leave blank if the young person is consenting for themselves.</p>
+                <input type="url" id="in-c2" placeholder="https://clientportal.zandahealth.com/clientportal/kinderminds/customform/…" autocomplete="off" spellcheck="false">
+            </div>
+
+            <!-- Reads the client hash and form number back out of each pasted URL, so
+                 a link copied from the wrong client's record is caught before it is sent. -->
+            <div class="diagnostics">
+                <table>
+                    <thead>
+                        <tr><th>Form</th><th>Client profile hash</th><th>Form no.</th></tr>
+                    </thead>
+                    <tbody id="diag-body"></tbody>
+                </table>
+            </div>
+
+            <div class="alert bad"  id="alert-mismatch" hidden></div>
+            <div class="alert warn" id="alert-dupe" hidden></div>
+            <div class="alert good" id="alert-ok" hidden></div>
+        </fieldset>
+
+        <fieldset>
+            <legend>3 &middot; The link to send</legend>
+
+            <div class="field">
+                <label>Link format</label>
+                <p class="hint">Short is the same link, just compressed &mdash; the client hash and form numbers instead of three full URLs.</p>
+                <div class="radio-row">
+                    <label><input type="radio" name="fmt" value="short" checked> Short <span style="color:var(--text-muted)">(recommended)</span></label>
+                    <label><input type="radio" name="fmt" value="full"> Full URLs</label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="in-site">Site address</label>
+                <input type="text" id="in-site" value="https://kinderminds.nz" autocomplete="off" spellcheck="false">
+            </div>
+
+            <div class="field">
+                <label for="output">Generated link</label>
+                <textarea id="output" readonly rows="4" aria-live="polite"></textarea>
+            </div>
+
+            <p class="hint" id="len-note" style="margin-top:-0.6rem"></p>
+
+            <div class="actions">
+                <button type="button" class="button" id="copy-btn">Copy link</button>
+                <a class="button" id="preview-btn" target="_blank" rel="noopener">Preview</a>
+                <span class="copied" id="copied-msg" hidden>Copied</span>
+            </div>
+        </fieldset>
+
+    </main>
+
+    <footer class="leaflet-footer">
+        <div class="wrap">Kinder Minds internal tool &middot; nothing typed here is sent anywhere</div>
+    </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  var fields = ['in-name', 'in-ref', 'in-service', 'in-reg', 'in-c1', 'in-c2', 'in-site'];
+
+  /* The diagnosis-origin question only means anything on the Titration Clinic. */
+  function syncDxVisibility() {
+    var f = $('dx-field');
+    if (f) { f.style.display = /titration/.test($('in-service').value) ? '' : 'none'; }
+  }
+
+  /* Zanda custom-form URLs look like:
+       …/clientportal/kinderminds/customform/<client-hash>/<form-number>
+     Pulling both segments back out lets us verify all three links belong to
+     the same client before the link is sent. */
+  function parseZanda(url) {
+    var m = String(url || '').match(/\/customform\/([^\/\s?#]+)\/(\d+)/i);
+    return m ? { hash: m[1], form: m[2] } : null;
+  }
+
+  function isHttps(v) { return /^https:\/\//i.test(String(v || '').trim()); }
+
+  var ROWS = [
+    { key: 'reg', input: 'in-reg', label: 'Registration' },
+    { key: 'c1',  input: 'in-c1',  label: 'Consent 1' },
+    { key: 'c2',  input: 'in-c2',  label: 'Consent 2' }
+  ];
+
+  function build() {
+    var name = $('in-name').value.trim();
+    var service = $('in-service').value;
+    var site = $('in-site').value.trim().replace(/\/+$/, '');
+    var age = document.querySelector('input[name="age"]:checked').value;
+
+    var parsed = {}, hashes = [], forms = [], invalid = [];
+    var body = '';
+
+    ROWS.forEach(function (row) {
+      var raw = $(row.input).value.trim();
+      var p = raw ? parseZanda(raw) : null;
+      parsed[row.key] = raw;
+
+      if (raw && !isHttps(raw)) { invalid.push(row.label); }
+      if (p) { hashes.push(p.hash); forms.push(p.form); }
+
+      body += '<tr><td>' + row.label + '</td>'
+            + '<td>' + (p ? p.hash : (raw ? '—' : '')) + '</td>'
+            + '<td>' + (p ? p.form : (raw ? '—' : '')) + '</td></tr>';
+    });
+
+    $('diag-body').innerHTML = body;
+
+    /* --- checks --- */
+    var uniqueHashes = hashes.filter(function (h, i) { return hashes.indexOf(h) === i; });
+    var mismatch = uniqueHashes.length > 1;
+
+    var supplied = ROWS.map(function (r) { return parsed[r.key]; }).filter(Boolean);
+    var dupe = supplied.length > 1 &&
+               supplied.some(function (v, i) { return supplied.indexOf(v) !== i; });
+
+    var mEl = $('alert-mismatch'), dEl = $('alert-dupe'), oEl = $('alert-ok');
+
+    mEl.hidden = !mismatch && !invalid.length;
+    if (mismatch) {
+      mEl.textContent = 'These links belong to ' + uniqueHashes.length +
+        ' different client profiles (' + uniqueHashes.join(', ') +
+        '). Check you copied all three from the same client record.';
+    } else if (invalid.length) {
+      mEl.textContent = 'Not a valid https:// link: ' + invalid.join(', ') + '.';
+    }
+
+    dEl.hidden = !dupe;
+    if (dupe) { dEl.textContent = 'Two or more of these links are identical — likely a paste error.'; }
+
+    oEl.hidden = !(hashes.length >= 2 && !mismatch && !dupe && !invalid.length);
+    if (!oEl.hidden) {
+      oEl.textContent = 'All links belong to client profile ' + uniqueHashes[0] +
+                        ' · forms ' + forms.join(', ') + '.';
+    }
+
+    /* --- the link --- */
+    var fmt = document.querySelector('input[name="fmt"]:checked').value;
+
+    /* The short form needs every supplied link to sit under one client hash;
+       if they do not, fall back to full URLs rather than emit a wrong link. */
+    var canShorten = fmt === 'short' && uniqueHashes.length === 1 && !invalid.length &&
+                     ROWS.every(function (r) { return !parsed[r.key] || parseZanda(parsed[r.key]); });
+
+    var ref = $('in-ref').value;
+    var dx = document.querySelector('input[name="dx"]:checked').value;
+
+    syncDxVisibility();
+
+    var qs = [];
+    if (name) { qs.push('name=' + encodeURIComponent(name)); }
+    /* ref is only consulted when there is no name, so omit it when one is set. */
+    if (!name && ref) { qs.push('ref=' + ref); }
+    if (age)  { qs.push('age=' + age); }
+    if (dx && /titration/.test(service)) { qs.push('dx=' + dx); }
+
+    if (canShorten) {
+      qs.push('client=' + encodeURIComponent(uniqueHashes[0]));
+      ROWS.forEach(function (row) {
+        var p = parsed[row.key] ? parseZanda(parsed[row.key]) : null;
+        if (p) { qs.push(row.key + '=' + p.form); }
+      });
+    } else {
+      ROWS.forEach(function (row) {
+        var v = parsed[row.key];
+        if (v && isHttps(v)) { qs.push(row.key + '=' + encodeURIComponent(v)); }
+      });
+    }
+
+    var url = site + '/' + service + (qs.length ? '?' + qs.join('&') : '');
+    $('output').value = url;
+
+    var lenEl = $('len-note');
+    if (lenEl) {
+      lenEl.textContent = url.length + ' characters'
+        + (fmt === 'short' && !canShorten ? ' — could not shorten, using full URLs' : '');
+    }
+
+    var prev = $('preview-btn');
+    if (service) { prev.href = url; prev.removeAttribute('aria-disabled'); }
+    else { prev.removeAttribute('href'); prev.setAttribute('aria-disabled', 'true'); }
+  }
+
+  fields.forEach(function (id) {
+    $(id).addEventListener('input', build);
+    $(id).addEventListener('change', build);
+  });
+  document.querySelectorAll('input[name="age"], input[name="fmt"], input[name="dx"]').forEach(function (r) {
+    r.addEventListener('change', build);
+  });
+
+  $('copy-btn').addEventListener('click', function () {
+    var out = $('output');
+    var done = function () {
+      var msg = $('copied-msg');
+      msg.hidden = false;
+      window.setTimeout(function () { msg.hidden = true; }, 1800);
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(out.value).then(done, function () {
+        out.select(); document.execCommand('copy'); done();
+      });
+    } else {
+      /* file:// and plain http fall back to the old path */
+      out.select();
+      document.execCommand('copy');
+      done();
+    }
+  });
+
+  build();
+})();
+</script>
+
+</body>
+</html>

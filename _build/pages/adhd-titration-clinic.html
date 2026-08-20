@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Your ADHD Titration Clinic | Kinder Minds</title>
+    <meta name="description" content="The Kinder Minds ADHD Titration Clinic: how we start and adjust ADHD medication safely, what it costs, and what we need from you each week.">
+
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
+
+    <link rel="icon" type="image/png" sizes="96x96" href="../assets/Logos/km-favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/Logos/km-favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/Logos/km-favicon-16x16.png">
+
+    <link rel="stylesheet" href="guide.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Fira+Sans+Condensed:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <script>
+    (function () {
+      var q = new URLSearchParams(window.location.search);
+      var has = ['reg', 'c1', 'c2'].some(function (k) { return (q.get(k) || '').trim(); });
+      var personalised = has || (q.get('name') || '').trim();
+      document.documentElement.classList.add(personalised ? 'mode-guide' : 'mode-leaflet');
+
+      /* dx=km means we diagnosed the ADHD ourselves, so this family is already
+         registered with us and has nothing to complete at the consent stage.
+         Set here rather than in the shared script, so the assumption can never
+         leak onto a page where a new registration genuinely is required. */
+      if ((q.get('dx') || '').trim().toLowerCase() === 'km') {
+        document.documentElement.classList.add('reg-complete');
+      }
+    })();
+    </script>
+
+    <script src="../intake/intake.js" defer></script>
+    <script src="guide.js" defer></script>
+</head>
+
+<body>
+
+    <header class="site-banner">
+        <div class="wrap">
+            <a class="banner-logo" href="../index.html" aria-label="Kinder Minds home">
+                <img src="../assets/Logos/km-logo-name-below.svg" alt="Kinder Minds">
+            </a>
+        </div>
+    </header>
+
+    <div class="title-block">
+        <div class="wrap">
+            <p class="eyebrow">ADHD Titration Clinic</p>
+            <h1>Starting ADHD medication</h1>
+            <p class="subtitle">What happens at each stage, and what we need from you</p>
+            <p class="for-whom" id="for-whom" hidden></p>
+        </div>
+    </div>
+
+    <div class="progress-wrap">
+        <div class="wrap progress-inner">
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p class="progress-label" id="progress-label" role="status" aria-live="polite">Loading&hellip;</p>
+            <button type="button" class="expand-all" id="expand-all">Expand all</button>
+            <button type="button" class="reset-button" id="reset-progress">Reset</button>
+        </div>
+    </div>
+
+    <main class="wrap">
+
+        <p class="lede guide-only">Welcome to this interactive guide to help you navigate <span data-name-slot="possessive">your child&rsquo;s</span> care in our ADHD Titration Clinic.</p>
+        <p class="lede leaflet-only">Welcome to this guide to our ADHD Titration Clinic.</p>
+
+        <p>Our goal is simple: to find the right medication and dose safely and with close support, and then hand care back to your GP once things are settled. Below is a summary of how the clinic works, followed by a flow of the next steps. <span class="guide-only">You can tick off the steps on this page as you go.</span></p>
+
+        <p class="task-note guide-only">Please note that this page saves per device &mdash; opening the same link on another device will not remember what you have ticked here.</p>
+
+        <div class="notice" id="default-links-notice">
+            <p><strong>Your registration forms are not loaded.</strong> Please open the personalised link we emailed you &mdash; your forms are unique to you, so they only appear when you use that link. If you cannot find it, email <a href="mailto:info@kinderminds.nz">info@kinderminds.nz</a> and we will resend it.</p>
+        </div>
+
+        <!-- ============ HOW IT WORKS ============ -->
+        <section class="intro-panel" id="about-assessment">
+            <button type="button" class="stage-head panel-head" aria-expanded="true" aria-controls="about-body">
+                <span class="stage-head-text">
+                    <span class="panel-title">How the ADHD Titration Clinic works</span>
+                    <span class="stage-peek">What titration means, what it costs, and what&rsquo;s included each month</span>
+                </span>
+                <span class="stage-check" aria-hidden="true"></span>
+                <span class="stage-chev" aria-hidden="true"></span>
+            </button>
+
+            <div class="stage-body" id="about-body">
+
+                <div class="sub-block">
+                    <h3>What &ldquo;titration&rdquo; means</h3>
+                    <p><span class="term">Titration</span> is the process of starting an ADHD medication and carefully adjusting the dose &mdash; a little at a time &mdash; until we find the amount that works well and is safe. While we do this, our Clinical Nurse Specialist keeps a close eye on how things are going, week by week.</p>
+                </div>
+
+                <div class="sub-block">
+                    <h3>Cost of getting started</h3>
+                    <p class="external-dx">Your first step is one appointment &mdash; with Dr Sarah Castle or our Nurse Practitioner &mdash; to begin medication safely. The fee depends on where the ADHD was diagnosed.</p>
+                    <p class="km-dx-only">Your first step is one appointment &mdash; with Dr Sarah Castle or our Nurse Practitioner &mdash; to begin medication safely.</p>
+
+                    <div class="price-grid external-dx">
+                        <div class="price-card">
+                            <p class="eyebrow">Diagnosed by Kinder Minds</p>
+                            <p class="price">$250</p>
+                            <p>(inc GST) First appointment for people we have already diagnosed with ADHD. We confirm it is safe to start, begin the medication, and set your plan.</p>
+                        </div>
+                        <div class="price-card">
+                            <p class="eyebrow">Diagnosed somewhere else</p>
+                            <p class="price">$350</p>
+                            <p>(inc GST) First appointment including a review of the outside assessment, confirming the diagnosis and safety before we begin.</p>
+                        </div>
+                    </div>
+
+                    <div class="price-single km-dx-only">
+                        <p class="price">$250</p>
+                        <p class="price-what">(inc GST) First appointment. We confirm it is safe to start, begin the medication, and set your plan.</p>
+                    </div>
+
+                    <div class="highlight external-dx">
+                        <p>If an outside assessment is not detailed enough, a further assessment may be needed at additional cost. We will always tell you before anything is booked.</p>
+                    </div>
+                </div>
+
+                <div class="sub-block">
+                    <h3>Ongoing monthly monitoring</h3>
+                    <p>Once you have started, ongoing care runs as a simple monthly subscription. This covers the weekly follow-up, safety monitoring and prescriptions &mdash; so there are no separate invoices for each script.</p>
+
+                    <div class="price-grid">
+                        <div class="price-card">
+                            <p class="eyebrow">Stimulant medication</p>
+                            <p class="price">$150 per calendar month</p>
+                            <p>(inc GST) Weekly nurse follow-up, review of the weekly observations, dose adjustments, and the month&rsquo;s prescription &mdash; all included.</p>
+                        </div>
+                        <div class="price-card">
+                            <p class="eyebrow">Atomoxetine only</p>
+                            <p class="price">$50 per calendar month</p>
+                            <p>(inc GST) Lighter monthly monitoring for people settled on atomoxetine, which does not need such frequent checks. The prescription is included.</p>
+                        </div>
+                    </div>
+
+                    <div class="highlight">
+                        <p><strong>Your first month:</strong> the first-appointment fee (<span class="term">$250</span> or <span class="term">$350</span>) covers starting the medication with the doctor. It does <strong>not</strong> include the nurse follow-up for that first month &mdash; the monthly monitoring fee is charged in addition, from your first month.</p>
+                        <p>Monitoring is billed per calendar month. We are not able to offer part-months, such as two weeks.</p>
+                    </div>
+                </div>
+
+                <div class="sub-block">
+                    <h3>What&rsquo;s included every month</h3>
+                    <ul class="included">
+                        <li>Weekly nurse follow-up</li>
+                        <li>Review of your weekly observations</li>
+                        <li>Advice on any dose changes</li>
+                        <li>Your prescriptions for the month, organised by the nurse</li>
+                    </ul>
+                </div>
+
+                <div class="sub-block">
+                    <h3>Dose adjustments and medication switches</h3>
+                    <p>Dose adjustments are handled by our nurse as part of your monthly follow-up. A change to a different medication is at Dr Castle&rsquo;s discretion &mdash; it may involve an additional 15-minute doctor&rsquo;s appointment (<span class="term">$100 inc GST</span>) to discuss the switch, or may be managed by our Clinical Nurse Specialist.</p>
+                </div>
+
+                <div class="sub-block">
+                    <h3>Your prescriptions</h3>
+                    <p>We send scripts electronically to your nominated pharmacy for you to pick up &mdash; so there is nothing to collect from us. Just let us know which pharmacy you would like to use.</p>
+                </div>
+
+                <div class="action-panel">
+                    <label class="tick">
+                        <input type="checkbox" id="step-read" data-step-tick>
+                        <span>I have read how the clinic works</span>
+                    </label>
+                </div>
+
+            </div>
+        </section>
+
+        <ol class="task-steps">
+
+            <!--@include registration-consent-->
+
+            <!-- ============ 2 · GETTING STARTED ============ -->
+            <li id="step-2">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-2">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag you">Your action</span>
+                        <span class="stage-title">Getting started</span>
+                        <span class="stage-peek">One appointment to begin medication safely</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-2" hidden>
+                    <p class="pill-line">
+                        <span class="pill pill-time">1 appointment</span>
+                        <span class="pill pill-mode">In person or online</span>
+                        <span class="pill pill-who">Dr Castle or Nurse Practitioner</span>
+                    </p>
+                    <p>Your first step is a single appointment to check safety and begin the medication. We confirm it is safe to start, discuss the choice of medication, and set your plan.</p>
+                    <p class="external-dx">If the ADHD was diagnosed somewhere else, we review that assessment first to confirm the diagnosis and that it is safe to begin.</p>
+                    <p class="external-dx">The fee depends on where the ADHD was diagnosed &mdash; <span class="term">$250</span> if we diagnosed it, or <span class="term">$350</span> if it was diagnosed elsewhere and we need to review that assessment first.</p>
+                    <p class="km-dx-only">Because we made the diagnosis, this first appointment is <span class="term">$250 (inc GST)</span>.</p>
+                    <div class="action-panel">
+                        <label class="tick">
+                            <input type="checkbox" id="step-first-appt" data-step-tick>
+                            <span>My first appointment is booked</span>
+                        </label>
+                    </div>
+                </div>
+            </li>
+
+            <!-- ============ 3 · WEEKLY OBSERVATIONS ============ -->
+            <li id="step-3">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-3">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag you">Your action</span>
+                        <span class="stage-title">Weekly observations</span>
+                        <span class="stage-peek">Four simple measurements, emailed to us each week</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-3" hidden>
+                    <p class="pill-line"><span class="pill pill-note">Every week, while titrating</span></p>
+
+                    <p>Each week we need four simple physical observations. These help us keep you safe and spot any changes early.</p>
+
+                    <ul class="included">
+                        <li>Height</li>
+                        <li>Weight</li>
+                        <li>Blood pressure</li>
+                        <li>Pulse</li>
+                    </ul>
+
+                    <div class="callout">
+                        <h4>Where to get these done</h4>
+                        <p>You can have them measured at your GP or at a local pharmacy. The most important thing is to use <strong>the same equipment each time</strong> &mdash; that way we can see genuine trends over the weeks, rather than differences caused by different machines.</p>
+                    </div>
+
+                    <div class="highlight">
+                        <p>Please email your results to <a href="mailto:info@kinderminds.nz">info@kinderminds.nz</a> each week, and we will let you know if anything needs to change.</p>
+                    </div>
+
+                    <div class="action-panel">
+                        <label class="tick">
+                            <input type="checkbox" id="step-observations" data-step-tick>
+                            <span>I know where I am getting the weekly observations done</span>
+                        </label>
+                    </div>
+                </div>
+            </li>
+
+            <!-- ============ 4 · FINDING THE RIGHT DOSE ============ -->
+            <li class="info" id="step-4">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-4">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag us">We do this</span>
+                        <span class="stage-title">Finding the right dose</span>
+                        <span class="stage-peek">Weekly check-ins while we adjust</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-4" hidden>
+                    <p class="pill-line">
+                        <span class="pill pill-who">Clinical Nurse Specialist</span>
+                        <span class="pill pill-note">Weekly</span>
+                    </p>
+                    <p>Our Clinical Nurse Specialist reviews the observations you send in (<a class="step-link" href="#step-3">step 3</a>) and follows up with you each week, adjusting the dose a little at a time until we find the amount that works well and is safe.</p>
+                    <p>Dose adjustments are handled by the nurse as part of this follow-up. A change to a different medication is at Dr Castle&rsquo;s discretion, and may involve an additional 15-minute doctor&rsquo;s appointment.</p>
+                </div>
+            </li>
+
+            <!-- ============ 5 · A STABLE DOSE ============ -->
+            <li class="info" id="step-5">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-5">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag us">We do this</span>
+                        <span class="stage-title">A stable dose</span>
+                        <span class="stage-peek">Things settle, and monitoring eases</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-5" hidden>
+                    <p>Once the dose works well and is safe, things settle. Weekly checks are no longer needed as often, and we start preparing to hand ongoing prescribing back to your GP.</p>
+                </div>
+            </li>
+
+            <!-- ============ 6 · BACK TO YOUR GP ============ -->
+            <li class="info" id="step-6">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-6">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag us">We do this</span>
+                        <span class="stage-title">Back to your GP</span>
+                        <span class="stage-peek">Discharge letter, included at no extra cost</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-6" hidden>
+                    <p>Once you are settled on a stable, safe dose, we write a discharge letter to your GP asking them to take over ongoing prescribing. This is included at no extra cost.</p>
+                    <p>We first confirm your GP is happy to take over. Once care is handed back, your GP looks after all of your ADHD care from that point.</p>
+                    <p class="pill-line"><span class="pill pill-note">Discharge letter included</span></p>
+                </div>
+            </li>
+
+        </ol>
+
+        <section class="after-stages" id="other-situations">
+            <h2>Other situations</h2>
+
+            <div class="callout">
+                <h4>Just need a Special Authority?</h4>
+                <p>A <span class="term">Special Authority</span> is an approval that lets your GP prescribe ADHD medication with the government subsidy. This is a commencement only, with no ongoing monitoring by us: we confirm it is safe to start, discuss the choice of medication, and write to your GP to set up the Special Authority &mdash; under the <span class="term">$250</span> first-appointment fee. We would first need email confirmation that your GP is happy to manage the titration.</p>
+            </div>
+
+            <div class="callout">
+                <h4>If your GP cannot take over</h4>
+                <p>We can keep monitoring and prescribing for you at <span class="term">$150 per calendar month</span>, or <span class="term">$50 per calendar month</span> for atomoxetine only.</p>
+            </div>
+
+            <div class="callout">
+                <h4>Coming back later</h4>
+                <p>If you have been discharged and later need a dose change or medication review, whether a doctor&rsquo;s appointment is needed &mdash; or whether it is a simple dose change our Clinical Nurse Specialist can manage &mdash; is at the doctor&rsquo;s discretion. A new calendar-month monitoring period begins so we can follow you up safely.</p>
+            </div>
+        </section>
+
+        <!--@include page-foot-->

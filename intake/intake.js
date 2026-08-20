@@ -66,16 +66,79 @@
 
   var anyLinkSupplied = !!(links.reg || links.c1 || links.c2);
 
+  /* A link carrying a client's name is personalised whether or not it also
+     carries forms — an existing patient starting titration has nothing new to
+     sign, but should still get the interactive guide. */
+  var personalised = anyLinkSupplied || !!(params.get('name') || '').trim();
+
+  /* Two modes. Without a personalised link there is no workflow to complete,
+     so the page presents as a plain leaflet; with one it becomes the saveable
+     guide. Published as a class on <html> — pages that define no rules for it
+     (the standalone intake page) are unaffected. A matching inline script in
+     the guide's <head> sets this before first paint to avoid a flash; this
+     line is the authoritative correction once the links are validated. */
+  document.documentElement.classList.remove('mode-leaflet', 'mode-guide');
+  document.documentElement.classList.add(personalised ? 'mode-guide' : 'mode-leaflet');
+
+  /* Where the ADHD was diagnosed. When we diagnosed it ourselves — which is
+     the case whenever this page is linked from one of our own assessments —
+     the fees and caveats that only apply to an outside diagnosis are noise,
+     and quoting a price the family will never pay invites confusion. */
+  if ((params.get('dx') || '').trim().toLowerCase() === 'km') {
+    document.documentElement.classList.add('dx-km');
+  }
+
   /* ---------- personalisation ---------- */
 
   var rawName = (params.get('name') || '').trim().slice(0, 40);
 
+  /* With no name the page still has to read naturally, so every mention falls
+     back to a generic referent. `ref` chooses which one; a whitelist keeps the
+     page's grammar predictable and stops arbitrary text being injected into
+     dozens of sentences. */
+  var REFERENTS = {
+    child: 'your child',
+    son: 'your son',
+    daughter: 'your daughter',
+    teen: 'your young person',
+    'young person': 'your young person'
+  };
+
+  var fallbackName = REFERENTS[(params.get('ref') || '').trim().toLowerCase()] || REFERENTS.child;
+
+  /* English possessive: a name already ending in s takes a bare apostrophe
+     (Éilis' report), anything else takes apostrophe-s (Tāne's report). The
+     generic fallbacks — "your child", "your son" — never end in s, so they
+     always take the full form. */
+  function possessive(name) {
+    return /s$/i.test(name) ? name + '’' : name + '’s';
+  }
+
+  function capitalise(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
   function applyName() {
     /* textContent everywhere — never innerHTML — so a name from the query
        string can never inject markup. */
-    var display = rawName || 'your child';
+    var display = rawName || fallbackName;
+
     document.querySelectorAll('[data-name-slot]').forEach(function (el) {
-      el.textContent = display;
+      /* Slot kinds:
+           (empty)         Éilis            plain mention
+           cap             Éilis            sentence-initial (matters only for
+                                            the lower-case generic fallbacks)
+           possessive      Éilis’ / Tāne’s  possessive, apostrophe chosen by name
+           cap-possessive  as above, sentence-initial */
+      var kind = el.getAttribute('data-name-slot') || '';
+      var out;
+
+      if (kind === 'possessive')          { out = possessive(display); }
+      else if (kind === 'cap-possessive') { out = capitalise(possessive(display)); }
+      else if (kind === 'cap')            { out = capitalise(display); }
+      else                                { out = display; }
+
+      el.textContent = out;
     });
 
     if (rawName) {
@@ -105,8 +168,11 @@
       }
     });
 
+    /* The "forms not loaded" notice is only meaningful when forms were
+       expected. If registration is already complete, none were. */
     var notice = document.getElementById('default-links-notice');
-    if (notice && anyLinkSupplied) { notice.hidden = true; }
+    var expectsForms = !document.documentElement.classList.contains('reg-complete');
+    if (notice && (anyLinkSupplied || !expectsForms)) { notice.hidden = true; }
   }
 
   /* ---------- saved state ---------- */
@@ -153,6 +219,13 @@
     over.hidden = (choice !== '16plus');
     under.hidden = (choice !== 'under16');
 
+    /* A 16-or-older answer tells us more than which forms are needed — it also
+       settles other age-dependent wording on the page (a 16-year-old is
+       necessarily over 9, so that qualifier can drop away). */
+    var root = document.documentElement;
+    root.classList.toggle('age-16plus', choice === '16plus');
+    root.classList.toggle('age-under16', choice === 'under16');
+
     /* Ticks inside a hidden branch must not count toward progress. */
     updateProgress();
   }
@@ -176,13 +249,35 @@
 
   /* ---------- tick boxes ---------- */
 
+  /* Which ticks count toward progress.
+
+     Deliberately does NOT consult ancestor visibility: on the combined guide a
+     stage folded shut by the accordion still owes its ticks to the denominator,
+     so collapsing a stage must not make the total jump around. Only two things
+     genuinely remove a tick from the count. */
+  function tickCounts(box) {
+    /* Nothing in the registration stage counts once registration is already
+       complete. Needed as its own rule: a preset consent branch un-hides
+       itself inside the hidden wrapper, so neither the branch check nor the
+       label check below would catch it, and the family would be told to
+       complete steps they cannot see. */
+    if (document.documentElement.classList.contains('reg-complete')
+        && box.closest('#step-registration')) { return false; }
+
+    /* A tick inside a consent branch counts only when that branch is chosen. */
+    var branch = box.closest('.branch');
+    if (branch && branch.hidden) { return false; }
+
+    /* Leaflet mode hides the tick's own label via stylesheet. */
+    var label = box.closest('.tick');
+    if (label && window.getComputedStyle(label).display === 'none') { return false; }
+
+    return true;
+  }
+
   function visibleTicks() {
     return Array.prototype.filter.call(
-      document.querySelectorAll('.tick input[type="checkbox"]'),
-      function (box) {
-        /* offsetParent is null when the element or an ancestor is hidden */
-        return box.offsetParent !== null;
-      }
+      document.querySelectorAll('.tick input[type="checkbox"]'), tickCounts
     );
   }
 

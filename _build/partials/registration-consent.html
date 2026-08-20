@@ -1,0 +1,156 @@
+            <!-- ============ 2 · REGISTRATION & CONSENT ============ -->
+            <li id="step-registration">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-registration">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag you reg-needed">Your action</span>
+                        <span class="stage-tag ok reg-done">Already done</span>
+                        <span class="stage-title">Registration &amp; consent forms</span>
+                        <span class="stage-peek reg-needed">We cannot book anything until these are in</span>
+                        <span class="stage-peek reg-done">Completed when you registered with us</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+
+                <div class="stage-body" id="body-registration" hidden>
+
+                    <!-- Shown when the client is already registered with us. -->
+                    <div class="reg-done">
+                        <p>You are already registered with us, so there is nothing to complete here. Your Patient Registration Form and Consent and Terms of Service Form(s) were completed when <span data-name-slot>your child</span> first came to Kinder Minds, and still apply.</p>
+                        <p>If anything has changed &mdash; a new address, a new legal guardian, or a change in who holds guardianship &mdash; please let us know and we will send you an updated form.</p>
+                    </div>
+
+                    <div class="reg-needed">
+                    <p>To be able to start booking the next steps, we need both of the following completed:</p>
+                    <ul class="included">
+                        <li>Patient Registration Form for <span data-name-slot>your child</span></li>
+                        <li>Consent and Terms of Service Form(s)</li>
+                    </ul>
+
+                    <p>Which Consent and Terms of Service Form(s) are needed depends on whether <span data-name-slot>your child</span> can give consent for themselves.</p>
+
+                    <!-- Leaflet mode: both cases explained, since there is no chooser. -->
+                    <div class="consent-rules leaflet-only">
+                        <h4>If the young person is 16 or older</h4>
+                        <p>Under the Care of Children Act 2004 they consent for themselves, so only <strong>one</strong> Consent and Terms of Service Form is needed, completed by them. The Patient Registration Form can be completed by the young person or by any of their parents or guardians.</p>
+
+                        <h4>If the child is under 16</h4>
+                        <p>We require consent from <strong>all legal guardians</strong> for our non-routine psychiatric services, so <strong>two</strong> copies of the Consent and Terms of Service Form are needed &mdash; one for each parent or legal guardian.</p>
+
+                        <p>We will email you a personalised link with your own forms ready to complete.</p>
+                    </div>
+
+                    <fieldset class="age-question guide-only">
+                        <legend>Is <span data-name-slot>your child</span> 16 or older?</legend>
+                        <div class="age-options">
+                            <label>
+                                <input type="radio" name="age-consent" value="16plus">
+                                <span>Yes &mdash; 16 or older</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="age-consent" value="under16">
+                                <span>No &mdash; under 16</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- BRANCH A: 16 or older -->
+                    <div class="branch" id="branch-16plus" hidden>
+                        <div class="branch-intro">
+                            <p>Because <span data-name-slot>your child</span> is 16 or older, they consent for themselves under the Care of Children Act 2004. So we only need <strong>one</strong> Consent and Terms of Service Form, completed by <span data-name-slot>your child</span>.</p>
+                            <p>The Patient Registration Form can be completed by either <span data-name-slot>your child</span> or any of their parents or guardians.</p>
+                            <p>Parents and guardians are still welcome to be involved throughout the assessment &mdash; this is separate from the consent process.</p>
+                        </div>
+
+                        <div class="highlight">
+                            <p>If <span data-name-slot>your child</span> may need support to make this decision, please contact us before completing the forms.</p>
+                        </div>
+
+                        <ul class="form-list">
+                            <li class="form-card">
+                                <span class="form-name term">Patient Registration Form</span>
+                                <span class="form-who">Completed by <span data-name-slot>your child</span> or any parent or guardian</span>
+                                <a class="button" data-form="reg" target="_blank" rel="noopener">Open form</a>
+                                <label class="tick">
+                                    <input type="checkbox" id="form-reg-a">
+                                    <span>Submitted</span>
+                                </label>
+                            </li>
+                            <li class="form-card">
+                                <span class="form-name term">Consent and Terms of Service Form</span>
+                                <span class="form-who">Completed by <span data-name-slot>your child</span></span>
+                                <a class="button" data-form="c1" target="_blank" rel="noopener">Open form</a>
+                                <label class="tick">
+                                    <input type="checkbox" id="form-c1-a">
+                                    <span>Submitted</span>
+                                </label>
+                            </li>
+                        </ul>
+
+                        <div class="action-panel">
+                            <label class="tick">
+                                <input type="checkbox" id="step-forms-a" data-step-tick>
+                                <span>All my registration and consent forms are submitted</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- BRANCH B: under 16 -->
+                    <div class="branch" id="branch-under16" hidden>
+                        <div class="branch-intro">
+                            <p>Because <span data-name-slot>your child</span> is under 16, we require consent from <strong>all legal guardians</strong> for our non-routine psychiatric services. Two copies of the Consent and Terms of Service Form are needed &mdash; one for each parent or legal guardian.</p>
+                        </div>
+
+                        <div class="highlight">
+                            <p>Please note that under the Care of Children Act 2004, the other parent or legal guardian still needs to be informed and to provide consent &mdash; even if you are separated, or if they currently reside outside New Zealand.</p>
+                        </div>
+
+                        <p>To forward the consent form to the other parent or guardian you can either:</p>
+                        <ul class="included">
+                            <li>Forward the link to this page to them; or</li>
+                            <li>Ask us to send the link to this page to them directly, using the contact details you provide.</li>
+                        </ul>
+                        <p>Please tell us if more than two copies are needed (for example, where a third legal guardian is involved).</p>
+
+                        <ul class="form-list">
+                            <li class="form-card">
+                                <span class="form-name term">Patient Registration Form</span>
+                                <span class="form-who">Completed once, by either parent or guardian</span>
+                                <a class="button" data-form="reg" target="_blank" rel="noopener">Open form</a>
+                                <label class="tick">
+                                    <input type="checkbox" id="form-reg-b">
+                                    <span>Submitted</span>
+                                </label>
+                            </li>
+                            <li class="form-card">
+                                <span class="form-name term">Consent and Terms of Service Form &mdash; Guardian 1</span>
+                                <span class="form-who">Completed by the first parent or legal guardian</span>
+                                <a class="button" data-form="c1" target="_blank" rel="noopener">Open form</a>
+                                <label class="tick">
+                                    <input type="checkbox" id="form-c1-b">
+                                    <span>Submitted</span>
+                                </label>
+                            </li>
+                            <li class="form-card">
+                                <span class="form-name term">Consent and Terms of Service Form &mdash; Guardian 2</span>
+                                <span class="form-who">Completed by the second parent or legal guardian</span>
+                                <a class="button" data-form="c2" target="_blank" rel="noopener">Open form</a>
+                                <label class="tick">
+                                    <input type="checkbox" id="form-c2-b">
+                                    <span>Submitted</span>
+                                </label>
+                            </li>
+                        </ul>
+
+                        <div class="action-panel">
+                            <label class="tick">
+                                <input type="checkbox" id="step-forms-b" data-step-tick>
+                                <span>All my registration and consent forms are submitted</span>
+                            </label>
+                        </div>
+                    </div>
+                    </div><!-- /.reg-needed -->
+                </div>
+            </li>
+
