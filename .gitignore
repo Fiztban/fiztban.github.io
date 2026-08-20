@@ -1,1 +1,5 @@
 node_modules/
+
+# Single-file builds from forms/build-single-file.py. Generated, and they
+# hard-code a client hash — they must never reach a public repo or web server.
+*.local.html
