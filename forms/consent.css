@@ -1,0 +1,493 @@
+/* ==========================================================================
+   Kinder Minds — conditional consent form
+   Prototype front-end for the Zanda "Intake - Combined Consent and
+   Information Forms" custom form.
+
+   Inherits the guide page's visual language wholesale — banner, palette,
+   accordion, pills, highlight — and adds only the vocabulary a form needs:
+   questions, option cards, gates, a signature pad and a review table.
+
+   The chain is: reset.css -> leaflet.css -> intake.css -> guide.css -> here.
+   ========================================================================== */
+
+@import '../guide/guide.css';
+
+:root {
+  --gate-bg:      #EEF6F9;
+  --gate-line:    #9FC6D4;
+  --derived-bg:   #F0EEF8;
+  --derived-line: #B9AFD8;
+  --warn-bg:      #FDF6E3;
+  --warn-line:    #E8D9A8;
+}
+
+/* ============ QUESTIONS ========= */
+
+.q {
+  margin: 1.35rem 0;
+}
+
+.q-label {
+  display: block;
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-weight: 600;
+  color: var(--brand-deep);
+  margin-bottom: 0.15rem;
+}
+
+/* The plain-language gloss that sits under a question. Never a substitute for
+   the legal text — it only says why we are asking. */
+.q-help {
+  font-size: 0.94rem;
+  color: var(--text-muted);
+  margin-bottom: 0.7rem;
+}
+
+.q.missing .q-label { color: #8A3324; }
+
+.q.missing .opt-list,
+.q.missing .text-input,
+.q.missing .sig-wrap {
+  outline: 2px solid #C4704F;
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+/* ============ OPTION CARDS ========= */
+/* Radio and checkbox options are drawn as full-width cards. Consent options
+   run to several lines, and a bare radio next to a wrapped paragraph is hard
+   to associate and harder still to hit on a phone. */
+
+.opt-list {
+  display: grid;
+  gap: 0.55rem;
+  list-style: none;
+}
+
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.opt:hover { border-color: var(--gate-line); background-color: var(--inset-bg); }
+
+.opt input {
+  flex: none;
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-top: 0.12rem;
+  accent-color: var(--banner-top);
+  cursor: pointer;
+}
+
+.opt input:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+.opt-text { flex: 1 1 auto; font-size: 0.98rem; }
+
+/* A short lead-in on an option whose full text is long. */
+.opt-text strong {
+  display: block;
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  color: var(--brand-deep);
+  margin-bottom: 0.1rem;
+}
+
+.opt:has(input:checked) {
+  border-color: var(--banner-top);
+  background-color: var(--gate-bg);
+  box-shadow: inset 0 0 0 1px var(--banner-top);
+}
+
+/* ============ TEXT INPUTS ========= */
+
+.text-input,
+.text-area {
+  width: 100%;
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  font-size: 1rem;
+  color: #000;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background-color: white;
+}
+
+.text-input:focus,
+.text-area:focus {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--banner-top);
+}
+
+.text-area { min-height: 5.5rem; resize: vertical; }
+
+/* A guardian's three details, laid out as one block but written back to Zanda
+   as a single textarea in its own "Full name: / Mobile number: / Email
+   address:" shape. */
+.person-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.7rem;
+}
+
+.person-grid label {
+  display: block;
+  font-size: 0.86rem;
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.person-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.95rem 1.05rem;
+  background-color: var(--inset-bg);
+  margin-bottom: 0.8rem;
+}
+
+.person-card h4 { margin-bottom: 0.6rem; font-size: 1rem; }
+
+.person-card .optional {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ============ THE GATE ========= */
+/* An optional section opens from a single tick. Unticked is a real answer, not
+   an unanswered question — see the derivation table in consent.js. */
+
+.gate {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1rem 1.15rem;
+  border: 2px solid var(--gate-line);
+  border-radius: var(--radius);
+  background-color: var(--gate-bg);
+  cursor: pointer;
+  margin: 1.25rem 0;
+}
+
+.gate input {
+  flex: none;
+  width: 1.45rem;
+  height: 1.45rem;
+  margin-top: 0.05rem;
+  accent-color: var(--banner-top);
+  cursor: pointer;
+}
+
+.gate input:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+.gate-text {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-weight: 600;
+  color: var(--brand-deep);
+}
+
+.gate-note {
+  display: block;
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* Everything the gate controls. */
+.gated {
+  border-left: 3px solid var(--gate-line);
+  padding-left: 1.1rem;
+  margin: 1.1rem 0 1.1rem 0.4rem;
+}
+
+.gated[hidden] { display: none; }
+
+/* Shown in the gate's place when it is left unticked. */
+.gate-closed {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  background-color: var(--inset-bg);
+  border-radius: var(--radius);
+  padding: 0.7rem 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.gate-closed[hidden] { display: none; }
+
+/* ============ VERBATIM LEGAL TEXT ========= */
+/* Rendered straight from the Zanda composition. Never retyped here: if the
+   wording in Zanda changes, this changes with it. */
+
+.legal {
+  font-size: 0.98rem;
+}
+
+.legal h4 {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-size: 1rem;
+  color: var(--subtitle);
+  margin: 1.2rem 0 0.35rem;
+}
+
+.legal ul { margin: 0 0 0.9rem 1.1rem; }
+.legal li { margin-bottom: 0.3rem; }
+.legal p { margin-bottom: 0.8rem; }
+.legal > :last-child { margin-bottom: 0; }
+
+/* Long reference passages fold away; the substance is still one click off and
+   still prints. */
+.reader {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background-color: white;
+  margin: 1rem 0;
+}
+
+.reader > summary {
+  cursor: pointer;
+  padding: 0.8rem 1rem;
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-weight: 600;
+  color: var(--brand-deep);
+  list-style: none;
+}
+
+.reader > summary::-webkit-details-marker { display: none; }
+
+.reader > summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.5rem;
+  color: var(--banner-top);
+  transition: transform 0.15s ease;
+}
+
+.reader[open] > summary::before { transform: rotate(90deg); }
+.reader > summary:hover { background-color: var(--inset-bg); }
+.reader > summary:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: -3px; }
+
+.reader .legal { padding: 0 1rem 1rem; }
+
+/* ============ NEVE ========= */
+
+.dog-photo {
+  width: 100%;
+  max-width: 22rem;
+  border-radius: var(--radius);
+  display: block;
+  margin: 0 0 1rem;
+}
+
+/* ============ SIGNATURE ========= */
+
+.sig-wrap {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background-color: white;
+  overflow: hidden;
+  max-width: 30rem;
+}
+
+.sig-pad {
+  display: block;
+  width: 100%;
+  height: 170px;
+  touch-action: none;          /* a finger must draw, not scroll the page */
+  cursor: crosshair;
+  background-color: white;
+}
+
+.sig-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--line);
+  background-color: var(--inset-bg);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.sig-clear {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-size: 0.85rem;
+  background: none;
+  border: 1px solid var(--text-muted);
+  color: var(--heading-dark);
+  border-radius: 999px;
+  padding: 0.1rem 0.7rem;
+  cursor: pointer;
+}
+
+.sig-clear:hover { background-color: var(--mid-background); }
+
+/* ============ REVIEW ========= */
+
+.review-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+  margin: 1rem 0;
+}
+
+.review-table th,
+.review-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.6rem 0.7rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.review-table th {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  color: var(--brand-deep);
+  white-space: nowrap;
+}
+
+.review-table thead th {
+  border-bottom: 2px solid var(--brand-deep);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.review-table .addr {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.review-table tr.unanswered td { background-color: var(--warn-bg); }
+
+/* Marks a value the page worked out rather than one the reader typed. Every
+   such value is shown, always — a consent form must never write an answer the
+   signer cannot see. */
+.tag {
+  display: inline-block;
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  margin-left: 0.35rem;
+  vertical-align: 0.08em;
+  white-space: nowrap;
+}
+
+.tag-derived { background-color: var(--derived-bg); color: #43377A; border: 1px solid var(--derived-line); }
+.tag-you     { background-color: #E7EEF3; color: #10405C; }
+.tag-empty   { background-color: var(--warn-bg); color: #7A5E12; border: 1px solid var(--warn-line); }
+
+.sig-thumb {
+  max-width: 12rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background-color: white;
+}
+
+/* ============ PAYLOAD PREVIEW ========= */
+
+.payload {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  background-color: #0E2430;
+  color: #CFE6EF;
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  max-height: 22rem;
+  overflow: auto;
+  white-space: pre;
+  margin: 0.8rem 0;
+}
+
+.payload-bar {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ============ BLOCKING NOTICES ========= */
+
+.blocker {
+  background-color: #FBEDE9;
+  border: 2px solid #C4704F;
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  margin: 1.25rem 0;
+}
+
+.blocker h3 { color: #8A3324; margin-bottom: 0.35rem; }
+.blocker p:last-child { margin-bottom: 0; }
+
+.blocker[hidden] { display: none; }
+
+/* ============ CONDITIONAL BLOCKS ========= */
+
+.when[hidden] { display: none; }
+
+/* ============ STEP FOOTER ========= */
+
+.step-foot {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 1.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.step-foot .button { margin-top: 0; }
+
+.step-status {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.step-status.ok { color: var(--ok-green); font-weight: 600; }
+
+.button.secondary {
+  background-color: transparent;
+  color: var(--banner-top);
+  border: 1px solid var(--banner-top);
+}
+
+.button.secondary:hover { background-color: var(--inset-bg); color: var(--brand-deep); }
+
+.button[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============ PRINT ========= */
+
+@media print {
+  .gated[hidden], .when[hidden], .gate-closed[hidden] { display: none !important; }
+  .reader > summary { display: none; }
+  .reader { border: none; }
+  .reader .legal { padding: 0; }
+  .payload, .step-foot, .sig-bar { display: none; }
+  .opt { break-inside: avoid; }
+}

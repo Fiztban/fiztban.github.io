@@ -1,0 +1,12 @@
+{
+  "name": "km-consent-form-tools",
+  "private": true,
+  "description": "Dev-only tooling for forms/. The published page itself has no dependencies and no build step.",
+  "scripts": {
+    "test": "node consent.test.js",
+    "check": "node capture-form.mjs --check"
+  },
+  "devDependencies": {
+    "jsdom": "^26.0.0"
+  }
+}

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Consent and information form | Kinder Minds</title>
+    <meta name="description" content="Kinder Minds combined consent and information form.">
+
+    <!-- Unlisted, and the URL carries a client identifier. Never indexed, and
+         the query string must never leak through a Referer header. -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
+
+    <link rel="icon" type="image/png" sizes="96x96" href="../assets/Logos/km-favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/Logos/km-favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/Logos/km-favicon-16x16.png">
+
+    <link rel="stylesheet" href="consent.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Fira+Sans+Condensed:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <script src="consent.js" defer></script>
+</head>
+
+<body>
+
+    <header class="site-banner">
+        <div class="wrap">
+            <a class="banner-logo" href="../index.html" aria-label="Kinder Minds home">
+                <img src="../assets/Logos/km-logo-name-below.svg" alt="Kinder Minds">
+            </a>
+        </div>
+    </header>
+
+    <div class="title-block">
+        <div class="wrap">
+            <p class="eyebrow">Consent &amp; Information</p>
+            <h1>Before we can see you</h1>
+            <p class="subtitle">One form, answered in the order that applies to you</p>
+            <p class="for-whom" id="for-whom" hidden></p>
+        </div>
+    </div>
+
+    <div class="progress-wrap">
+        <div class="wrap progress-inner">
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p class="progress-label" id="progress-label" role="status" aria-live="polite">Loading&hellip;</p>
+            <button type="button" class="expand-all" id="expand-all">Expand all</button>
+            <button type="button" class="reset-button" id="reset-progress">Reset</button>
+        </div>
+    </div>
+
+    <main class="wrap">
+
+        <!-- Boot failures: skeleton drift, or the snapshot not loading. -->
+        <div class="blocker" id="boot-error" hidden>
+            <h3></h3>
+            <p></p>
+        </div>
+
+        <div id="form-body">
+
+            <div class="notice" id="no-link-notice" hidden>
+                <p><strong>This page is not linked to a client record.</strong> It is running as a demonstration, so nothing here can be submitted. Open the personalised link we emailed you to work against a real form.</p>
+            </div>
+
+            <p class="lede">This form covers everything Kinder Minds needs before your first appointment &mdash; who you are, your rights, our terms, and a few choices that are entirely up to you.</p>
+
+            <p>You will only be shown the parts that apply to you. Your answers are saved on this device as you go, so you can stop and come back.</p>
+
+            <!-- ============ PROTOTYPE NOTICE ============ -->
+            <div class="notice">
+                <p><strong>Prototype.</strong> This page demonstrates the conditional pathway and builds the exact payload Zanda expects, but it does not submit &mdash; Zanda&rsquo;s API sends no CORS headers, so a browser on this domain cannot post to it. See step 7. Target: <span id="target-form" class="term"></span>.</p>
+            </div>
+
+            <!-- ============ ABOUT THIS FORM ============ -->
+            <section class="intro-panel" id="about-form">
+                <button type="button" class="stage-head panel-head" aria-expanded="false" aria-controls="about-body">
+                    <span class="stage-head-text">
+                        <span class="panel-title">What this form covers, and who can sign it</span>
+                        <span class="stage-peek">Background reading &mdash; open it if you want the detail before starting</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+
+                <div class="stage-body" id="about-body" hidden>
+                    <div data-legal="0.0,1.0"></div>
+                </div>
+            </section>
+
+            <ol class="task-steps">
+
+                <!-- ================================================================
+                     STEP 1 — identity and authority
+                     Zanda sections 2, 2.1, 2.2, 2.3, 2.3.1, 2.3.2, 2.3.3, 2.4
+                     Four Zanda fields, but which of them are asked depends
+                     entirely on the answer to "who is completing this".
+                     ================================================================ -->
+                <li id="step-who">
+                    <span class="stage-num" aria-hidden="true"></span>
+                    <button type="button" class="stage-head" aria-expanded="true" aria-controls="body-who">
+                        <span class="stage-head-text">
+                            <span class="stage-tag you">You</span>
+                            <span class="stage-title">Who this form is for</span>
+                            <span class="stage-peek">The Client&rsquo;s name, and who is giving consent</span>
+                        </span>
+                        <span class="stage-check" aria-hidden="true"></span>
+                        <span class="stage-chev" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="stage-body" id="body-who">
+
+                        <div class="q">
+                            <label class="q-label" for="client-name">Who is this form about?</label>
+                            <p class="q-help">The person who will be seen by Kinder Minds. We call them &ldquo;the Client&rdquo; throughout.</p>
+                            <input class="text-input" type="text" id="client-name" data-answer="clientName"
+                                   autocomplete="off" placeholder="Full name of the Client">
+                        </div>
+
+                        <div class="q">
+                            <span class="q-label">And who is filling this in?</span>
+                            <p class="q-help">This decides which of the remaining questions apply to you.</p>
+                            <ul class="opt-list">
+                                <li><label class="opt">
+                                    <input type="radio" name="completedBy" value="0" data-field="completedBy">
+                                    <span class="opt-text"><strong>I am the Client, consenting for myself</strong><span data-opt-text="3.0.0"></span></span>
+                                </label></li>
+                                <li><label class="opt">
+                                    <input type="radio" name="completedBy" value="1" data-field="completedBy">
+                                    <span class="opt-text"><strong>I am a parent or legal guardian, consenting for them</strong><span data-opt-text="3.0.1"></span></span>
+                                </label></li>
+                            </ul>
+                        </div>
+
+                        <!-- ---- Client consenting for themselves ---- -->
+                        <div class="when" data-when="self" hidden>
+                            <div class="highlight">
+                                <p><strong>That is all we need here.</strong> The guardian questions do not apply to you, and we will record them as &ldquo;not applicable&rdquo; on your behalf. You will see exactly what we record at step 7 before you sign.</p>
+                            </div>
+
+                            <details class="reader">
+                                <summary>If you are under 18: how we communicate with your parents or guardians</summary>
+                                <div class="legal" data-legal="8.1"></div>
+                            </details>
+                        </div>
+
+                        <!-- ---- Guardian branch ---- -->
+                        <div class="when" data-when="guardian" hidden>
+
+                            <details class="reader">
+                                <summary>Why we need consent from every legal guardian</summary>
+                                <div class="legal" data-legal="4.0"></div>
+                            </details>
+
+                            <div class="q">
+                                <span class="q-label">Are you the Client&rsquo;s only legal guardian?</span>
+                                <p class="q-help">Being the main caregiver, or the only parent involved day to day, does not by itself make someone a sole guardian &mdash; open the note below if you are unsure.</p>
+
+                                <details class="reader">
+                                    <summary>What counts as a sole guardian</summary>
+                                    <div class="legal" data-legal="5.0"></div>
+                                </details>
+
+                                <ul class="opt-list">
+                                    <li><label class="opt">
+                                        <input type="radio" name="soleGuardian" value="0" data-field="soleGuardian">
+                                        <span class="opt-text"><strong>Yes &mdash; I am the sole legal guardian</strong><span data-opt-text="5.1.0"></span></span>
+                                    </label></li>
+                                    <li><label class="opt">
+                                        <input type="radio" name="soleGuardian" value="1" data-field="soleGuardian">
+                                        <span class="opt-text"><strong>No &mdash; there are other legal guardians</strong><span data-opt-text="5.1.1"></span></span>
+                                    </label></li>
+                                </ul>
+                            </div>
+
+                            <!-- Guardian details. Three fields in, one Zanda textarea out. -->
+                                <div class="person-card">
+                                    <h4>Your details</h4>
+                                    <div class="person-grid">
+                                        <div>
+                                            <label for="g1-name">Full name</label>
+                                            <input class="text-input" type="text" id="g1-name" data-answer="g1Name" autocomplete="name">
+                                        </div>
+                                        <div>
+                                            <label for="g1-mobile">Mobile number</label>
+                                            <input class="text-input" type="tel" id="g1-mobile" data-answer="g1Mobile" autocomplete="tel">
+                                        </div>
+                                        <div>
+                                            <label for="g1-email">Email address</label>
+                                            <input class="text-input" type="email" id="g1-email" data-answer="g1Email" autocomplete="email">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <div class="when" data-when="guardian-multi" hidden>
+                                <div class="person-card">
+                                    <h4>Second legal guardian</h4>
+                                    <div class="person-grid">
+                                        <div>
+                                            <label for="g2-name">Full name</label>
+                                            <input class="text-input" type="text" id="g2-name" data-answer="g2Name">
+                                        </div>
+                                        <div>
+                                            <label for="g2-mobile">Mobile number</label>
+                                            <input class="text-input" type="tel" id="g2-mobile" data-answer="g2Mobile">
+                                        </div>
+                                        <div>
+                                            <label for="g2-email">Email address</label>
+                                            <input class="text-input" type="email" id="g2-email" data-answer="g2Email">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="person-card">
+                                    <h4>Third legal guardian <span class="optional">&mdash; only if there is one</span></h4>
+                                    <div class="person-grid">
+                                        <div>
+                                            <label for="g3-name">Full name</label>
+                                            <input class="text-input" type="text" id="g3-name" data-answer="g3Name">
+                                        </div>
+                                        <div>
+                                            <label for="g3-mobile">Mobile number</label>
+                                            <input class="text-input" type="tel" id="g3-mobile" data-answer="g3Mobile">
+                                        </div>
+                                        <div>
+                                            <label for="g3-email">Email address</label>
+                                            <input class="text-input" type="email" id="g3-email" data-answer="g3Email">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="q">
+                                    <span class="q-label">May we contact the other guardians?</span>
+                                    <p class="q-help">We have to give every guardian the same information and their own copy of this form before we can start.</p>
+
+                                    <details class="reader">
+                                        <summary>Why we are legally required to do this</summary>
+                                        <div class="legal" data-legal="7.0"></div>
+                                    </details>
+
+                                    <ul class="opt-list">
+                                        <li><label class="opt">
+                                            <input type="radio" name="contactOthers" value="0" data-field="contactOthers">
+                                            <span class="opt-text"><strong>Yes &mdash; please contact them</strong></span>
+                                        </label></li>
+                                        <li><label class="opt">
+                                            <input type="radio" name="contactOthers" value="1" data-field="contactOthers">
+                                            <span class="opt-text"><strong>No &mdash; I will pass the form on myself</strong><span data-opt-text="7.1.1"></span></span>
+                                        </label></li>
+                                    </ul>
+
+                                    <div class="highlight">
+                                        <div data-legal="7.2"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="when" data-when="guardian-sole" hidden>
+                                <div class="highlight">
+                                    <p><strong>No other guardians to list.</strong> We will skip the questions about contacting them, and record that question as &ldquo;not applicable&rdquo;. Step 7 shows you exactly what gets recorded before you sign.</p>
+                                </div>
+                            </div>
+
+                            <details class="reader">
+                                <summary>How we communicate with guardians once care starts</summary>
+                                <div class="legal" data-legal="8.2"></div>
+                            </details>
+                        </div>
+
+                        <div class="step-foot">
+                            <button type="button" class="button" data-next="step-info">Continue</button>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- ================================================================
+                     STEP 2 — rights and information handling (Zanda section 3)
+                     No Zanda fields at all: 16 blocks of prose. The tick is
+                     local, and the actual record is the declaration in step 6.
+                     ================================================================ -->
+                <li id="step-info">
+                    <span class="stage-num" aria-hidden="true"></span>
+                    <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-info">
+                        <span class="stage-head-text">
+                            <span class="stage-tag us">Read</span>
+                            <span class="stage-title">Your rights, and what we do with your information</span>
+                            <span class="stage-peek">Services, your legal rights, privacy, and who we share with</span>
+                        </span>
+                        <span class="stage-check" aria-hidden="true"></span>
+                        <span class="stage-chev" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="stage-body" id="body-info" hidden>
+
+                        <div class="legal" data-legal="9.0"></div>
+
+                        <details class="reader">
+                            <summary>What we offer, and what it costs</summary>
+                            <div class="legal" data-legal="9.1"></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary>Your rights under New Zealand law</summary>
+                            <div class="legal" data-legal="9.2,9.3,9.4"></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary>When we share information &mdash; and the rare times we must without consent</summary>
+                            <div class="legal" data-legal="9.5,9.6"></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary>How we collect, use and store your information</summary>
+                            <div class="legal" data-legal="9.7-9.13"></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary>Accessing or correcting your information, and how to complain</summary>
+                            <div class="legal" data-legal="9.14,9.15"></div>
+                        </details>
+
+                        <label class="tick">
+                            <input type="checkbox" id="read-3" data-ui="read3">
+                            <span>I have read this section.</span>
+                        </label>
+
+                        <div class="step-foot">
+                            <button type="button" class="button" data-next="step-terms">Continue</button>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- ================================================================
+                     STEP 3 — terms of service (Zanda section 4)
+                     28 prose blocks, no fields. Grouped by what a reader would
+                     actually go looking for rather than by clause number.
+                     ================================================================ -->
+                <li id="step-terms">
+                    <span class="stage-num" aria-hidden="true"></span>
+                    <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-terms">
+                        <span class="stage-head-text">
+                            <span class="stage-tag us">Read</span>
+                            <span class="stage-title">Our terms of service</span>
+                            <span class="stage-peek">Fees, cancellations, prescriptions, and guardian responsibilities</span>
+                        </span>
+                        <span class="stage-check" aria-hidden="true"></span>
+                        <span class="stage-chev" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="stage-body" id="body-terms" hidden>
+
+                        <div class="legal" data-legal="10.0"></div>
+
+                        <details class="reader">
+                            <summary>What we provide, and how appointments are booked</summary>
+                            <div class="legal" data-legal="10.1,10.2,10.3"></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary>Privacy, safety and the limits of our service</summary>
+                            <div class="legal" data-legal="10.4,10.5"></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary>Fees, payment, and what happens if you cancel</summary>
+                            <div class="legal" data-legal="10.6-10.10"></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary>Prescriptions, ACC, insurance and record keeping</summary>
+                            <div class="legal" data-legal="10.11-10.14"></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary>Our liability, and unpaid accounts</summary>
+                            <div class="legal" data-legal="10.15,10.16"></div>
+                        </details>
+
+                        <details class="reader" data-when="guardian" hidden>
+                            <summary>Responsibilities where a Client is under 18</summary>
+                            <div class="legal" data-legal="10.17-10.25"></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary>Changes to these terms, and governing law</summary>
+                            <div class="legal" data-legal="10.26,10.27"></div>
+                        </details>
+
+                        <label class="tick">
+                            <input type="checkbox" id="read-4" data-ui="read4">
+                            <span>I have read and accept these terms of service.</span>
+                        </label>
+
+                        <div class="step-foot">
+                            <button type="button" class="button" data-next="step-scribe">Continue</button>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- ================================================================
+                     STEP 4 — automatic scribe (Zanda sections 5 and 5.5)
+                     A genuine either/or, so deliberately NOT a gate: an
+                     untouched tick box cannot be told apart from a considered
+                     "no", and this one records an audio-recording consent.
+                     ================================================================ -->
+                <li id="step-scribe">
+                    <span class="stage-num" aria-hidden="true"></span>
+                    <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-scribe">
+                        <span class="stage-head-text">
+                            <span class="stage-tag you">Your choice</span>
+                            <span class="stage-title">Recording appointments for note-taking</span>
+                            <span class="stage-peek">Optional. Either answer is fine, and it will not affect your care</span>
+                        </span>
+                        <span class="stage-check" aria-hidden="true"></span>
+                        <span class="stage-chev" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="stage-body" id="body-scribe" hidden>
+
+                        <div class="legal" data-legal="11.0,11.1"></div>
+
+                        <details class="reader">
+                            <summary>What happens to the recordings, and how long we keep them</summary>
+                            <div class="legal" data-legal="11.2,11.3"></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary>Your right to decline or withdraw</summary>
+                            <div class="legal" data-legal="11.4"></div>
+                        </details>
+
+                        <div class="q">
+                            <span class="q-label">Do you consent to us using Heidi?</span>
+                            <ul class="opt-list">
+                                <li><label class="opt">
+                                    <input type="radio" name="scribeConsent" value="0" data-field="scribeConsent">
+                                    <span class="opt-text"><strong>Yes</strong><span data-opt-text="12.0.0"></span></span>
+                                </label></li>
+                                <li><label class="opt">
+                                    <input type="radio" name="scribeConsent" value="1" data-field="scribeConsent">
+                                    <span class="opt-text"><strong>No</strong><span data-opt-text="12.0.1"></span></span>
+                                </label></li>
+                            </ul>
+                        </div>
+
+                        <div class="legal" data-legal="12.1"></div>
+
+                        <div class="step-foot">
+                            <button type="button" class="button" data-next="step-dog">Continue</button>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- ================================================================
+                     STEP 5 — therapy dog (Zanda sections 6, 6.4, 6.5)
+                     The gate pattern. One tick opens the waiver; leaving it
+                     shut IS the answer. The two 6.4 acknowledgements are
+                     required of everyone, so the risk summary sits ABOVE the
+                     gate where every reader sees it before deciding.
+                     ================================================================ -->
+                <li id="step-dog">
+                    <span class="stage-num" aria-hidden="true"></span>
+                    <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-dog">
+                        <span class="stage-head-text">
+                            <span class="stage-tag you">Optional</span>
+                            <span class="stage-title">Meeting Neve, our therapy dog</span>
+                            <span class="stage-peek">Entirely optional &mdash; skip it in one tick if you would rather not</span>
+                        </span>
+                        <span class="stage-check" aria-hidden="true"></span>
+                        <span class="stage-chev" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="stage-body" id="body-dog" hidden>
+
+                        <img class="dog-photo" src="../assets/Used/Neve_cropped.jpg"
+                             alt="Neve, a golden retriever, lying down calmly">
+
+                        <div class="legal" data-legal="13.0,13.2"></div>
+
+                        <!-- Shown to everyone, above the gate: these two facts are
+                             what the required 6.4 acknowledgements record, and they
+                             are recorded whether or not the reader opts in. -->
+                        <div class="highlight">
+                            <div class="legal" data-legal="13.4"></div>
+                            <p>You can change your mind about Neve at any time, before or after any appointment.</p>
+                            <p class="q-help" data-legal="14.2"></p>
+                        </div>
+
+                        <label class="gate">
+                            <input type="checkbox" id="dog-gate" data-ui="dogGate">
+                            <span class="gate-text">I would like to request that Neve joins our in-person appointments
+                                <span class="gate-note">Leave this unticked if you would rather she did not &mdash; nothing else in this section will be asked, and your care is unaffected.</span>
+                            </span>
+                        </label>
+
+                        <div class="gate-closed" data-when="dog-out">
+                            <p style="margin:0;"><strong>Recorded as: no therapy dog.</strong> Nothing further is needed here. You can tick the box above at any time if you change your mind.</p>
+                        </div>
+
+                        <div class="gated" data-when="dog-in" hidden>
+                            <h3>Therapy Dog Interaction Waiver</h3>
+                            <p class="q-help">Because Neve will be in the room, we need you to read and agree to the following.</p>
+
+                            <div class="legal" data-legal="13.5,13.6,13.7"></div>
+
+                            <div class="legal" data-legal="15.1"></div>
+
+                            <label class="gate">
+                                <input type="checkbox" id="dog-waiver" data-ui="dogWaiver">
+                                <span class="gate-text">I agree to the Therapy Dog Interaction Waiver above
+                                    <span class="gate-note">This is what records your &ldquo;yes&rdquo; to therapy dog participation.</span>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="step-foot">
+                            <button type="button" class="button" data-next="step-sign">Continue</button>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- ================================================================
+                     STEP 6 — declaration and signature (Zanda section 7)
+                     ================================================================ -->
+                <li id="step-sign">
+                    <span class="stage-num" aria-hidden="true"></span>
+                    <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-sign">
+                        <span class="stage-head-text">
+                            <span class="stage-tag you">You</span>
+                            <span class="stage-title">Declaration and signature</span>
+                            <span class="stage-peek">Four confirmations, your name, and your signature</span>
+                        </span>
+                        <span class="stage-check" aria-hidden="true"></span>
+                        <span class="stage-chev" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="stage-body" id="body-sign" hidden>
+
+                        <div class="q">
+                            <span class="q-label">Please confirm all four.</span>
+                            <p class="q-help" data-legal="16.1"></p>
+                            <ul class="opt-list">
+                                <li><label class="opt">
+                                    <input type="checkbox" name="declaration" value="0" data-field="declaration">
+                                    <span class="opt-text" data-opt-text="16.0.0"></span>
+                                </label></li>
+                                <li><label class="opt">
+                                    <input type="checkbox" name="declaration" value="1" data-field="declaration">
+                                    <span class="opt-text" data-opt-text="16.0.1"></span>
+                                </label></li>
+                                <li><label class="opt">
+                                    <input type="checkbox" name="declaration" value="2" data-field="declaration">
+                                    <span class="opt-text" data-opt-text="16.0.2"></span>
+                                </label></li>
+                                <li><label class="opt">
+                                    <input type="checkbox" name="declaration" value="3" data-field="declaration">
+                                    <span class="opt-text" data-opt-text="16.0.3"></span>
+                                </label></li>
+                            </ul>
+                        </div>
+
+                        <div class="q">
+                            <label class="q-label" for="signer-name">Full name of the person signing</label>
+                            <input class="text-input" type="text" id="signer-name" data-answer="signerName" autocomplete="name">
+                        </div>
+
+                        <div class="q">
+                            <span class="q-label">Signature</span>
+                            <div class="sig-wrap">
+                                <canvas class="sig-pad" id="sig-pad" aria-label="Signature area"></canvas>
+                                <div class="sig-bar">
+                                    <span class="step-status" id="sig-status">Sign above using your mouse or finger</span>
+                                    <button type="button" class="sig-clear" id="sig-clear">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-foot">
+                            <button type="button" class="button" data-next="step-review">Review my answers</button>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- ================================================================
+                     STEP 7 — review
+                     Every Zanda field and the value that would be written to it,
+                     including the ones the pathway answered on the reader's
+                     behalf. Nothing is recorded that is not shown here.
+                     ================================================================ -->
+                <li id="step-review">
+                    <span class="stage-num" aria-hidden="true"></span>
+                    <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-review">
+                        <span class="stage-head-text">
+                            <span class="stage-tag ok">Check</span>
+                            <span class="stage-title">Review everything before it is recorded</span>
+                            <span class="stage-peek">All 14 fields, including the ones we filled in for you</span>
+                        </span>
+                        <span class="stage-check" aria-hidden="true"></span>
+                        <span class="stage-chev" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="stage-body" id="body-review" hidden>
+
+                        <p>This is exactly what would be written to your form. Answers marked <span class="tag tag-derived">Set for you</span> were worked out from the pathway rather than typed by you &mdash; check them as carefully as the rest.</p>
+
+                        <div class="blocker" id="review-blocker" hidden>
+                            <h3>Not finished yet</h3>
+                            <p>Still needed: <span id="review-missing"></span></p>
+                        </div>
+
+                        <div style="overflow-x:auto;">
+                            <table class="review-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Question</th>
+                                        <th scope="col">Zanda field</th>
+                                        <th scope="col">Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="review-body"></tbody>
+                            </table>
+                        </div>
+
+                        <h3>The payload</h3>
+                        <p class="q-help">What a proxy would POST to <span class="term">/api/v1/kinderminds/CustomForm/Save</span>. <code>status: 2</code> is an auto-draft &mdash; the same call Zanda&rsquo;s own page makes every five seconds. Submitting for real would be <code>status: 0</code>.</p>
+
+                        <div class="payload" id="payload"></div>
+
+                        <div class="payload-bar">
+                            <button type="button" class="button secondary" id="copy-payload">Copy payload</button>
+                            <a class="button" data-zanda-link target="_blank" rel="noopener noreferrer">Open the real Zanda form</a>
+                        </div>
+
+                        <div class="highlight">
+                            <p><strong>Why there is no submit button.</strong> Zanda&rsquo;s API returns no <code>Access-Control-Allow-Origin</code> header, so this page cannot post to it from the browser. A small server-side proxy would close that gap: it would call <span class="term">GetForm</span> to fetch the live composition and its <code>id</code>, hand this page the form, then post the completed composition back to <span class="term">Save</span>.</p>
+                        </div>
+                    </div>
+                </li>
+
+            </ol>
+
+            <div class="after-stages">
+                <h2>Need help?</h2>
+                <p>If anything here is unclear, or you are not sure which option applies to you, email <a href="mailto:info@kinderminds.nz">info@kinderminds.nz</a> and we will talk it through with you before you sign.</p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="leaflet-footer">
+        <div class="wrap">
+            <p>Kinder Minds Limited &middot; Whang&#257;rei, New Zealand &middot; <a href="mailto:info@kinderminds.nz">info@kinderminds.nz</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>
