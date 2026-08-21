@@ -537,6 +537,121 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
        d.getElementById('progress-label').textContent);
   }
 
+  // ======================================================================
+  // A guardian we cannot reach is a dead end: every legal guardian has to be
+  // sent their own copy before appointments can be booked.
+  console.log('\n15. Guardian contact details');
+  {
+    const note = (w, p) => w.document.querySelector(`[data-person-note="${p}"]`);
+    const left = w => w.document.getElementById('progress-label').textContent;
+
+    const w = await boot({ seed: SIGNED });
+    set(w, '#client-name', 'Tama Example');
+    pick(w, 'completedBy', 1);
+    pick(w, 'soleGuardian', 0);                      // sole: one guardian needed
+    tick(w, 'read-1'); tick(w, 'read-3'); tick(w, 'read-4');
+    pick(w, 'scribeConsent', 0);
+    tickAll(w, 'declaration');
+
+    ok(note(w, 'g1').hidden, 'no nagging before an entry is started');
+    ok(!w.document.getElementById('review-blocker').hidden, 'incomplete while g1 is empty');
+
+    set(w, '#g1-name', 'Aroha Example');
+    ok(!note(w, 'g1').hidden, 'a name with no contact is flagged');
+    ok(/mobile number or an email/.test(note(w, 'g1').textContent), 'and says what is needed');
+    ok(!w.document.getElementById('review-blocker').hidden, 'still incomplete');
+
+    set(w, '#g1-mobile', '021 000 111');
+    ok(note(w, 'g1').hidden, 'a mobile is enough');
+    ok(w.document.getElementById('review-blocker').hidden, 'sole guardian needs only the one');
+
+    // Email alone is equally acceptable.
+    const w2 = await boot({ seed: SIGNED });
+    set(w2, '#client-name', 'Tama Example');
+    pick(w2, 'completedBy', 1); pick(w2, 'soleGuardian', 0);
+    set(w2, '#g1-name', 'Aroha'); set(w2, '#g1-email', 'a@example.com');
+    ok(note(w2, 'g1').hidden, 'an email is enough');
+
+    // Not sole: two complete guardians.
+    const w3 = await boot({ seed: SIGNED });
+    set(w3, '#client-name', 'Tama Example');
+    pick(w3, 'completedBy', 1); pick(w3, 'soleGuardian', 1);
+    tick(w3, 'read-1'); tick(w3, 'read-3'); tick(w3, 'read-4');
+    pick(w3, 'scribeConsent', 0); pick(w3, 'contactOthers', 0);
+    tickAll(w3, 'declaration');
+    set(w3, '#g1-name', 'Aroha'); set(w3, '#g1-mobile', '021 1');
+    ok(!w3.document.getElementById('review-blocker').hidden, 'a second guardian is required');
+    set(w3, '#g2-name', 'Sam');
+    ok(!note(w3, 'g2').hidden, 'and must also be contactable');
+    set(w3, '#g2-email', 's@example.com');
+    ok(w3.document.getElementById('review-blocker').hidden, 'complete with two');
+
+    // A third is optional — but half of one is not "optional", it is wrong.
+    const before = left(w3);
+    set(w3, '#g3-name', 'Half Entered');
+    ok(!note(w3, 'g3').hidden, 'a half-filled third guardian is flagged');
+    ok(!w3.document.getElementById('review-blocker').hidden, 'and blocks completion');
+    ok(left(w3) !== before, 'and joins the count only once started', before + ' -> ' + left(w3));
+    set(w3, '#g3-mobile', '021 3');
+    ok(w3.document.getElementById('review-blocker').hidden, 'complete once contactable');
+  }
+
+  // ======================================================================
+  console.log('\n16. The signature name carries across');
+  {
+    const signer = w => w.document.getElementById('signer-name').value;
+
+    const w = await boot();
+    set(w, '#client-name', 'Tama Example');
+    pick(w, 'completedBy', 1);
+    set(w, '#g1-name', 'Aroha Example');
+    ok(signer(w) === 'Aroha Example', 'guardian 1 fills the signature name', signer(w));
+
+    set(w, '#g1-name', 'Aroha Renamed');
+    ok(signer(w) === 'Aroha Renamed', 'and follows a correction');
+
+    // The payload has to agree with what the reader can see in the field.
+    ok(fieldOf(payload(w), 16, 2).text === 'Aroha Renamed',
+       'the payload matches the visible field');
+
+    set(w, '#signer-name', 'I Sign Differently');
+    set(w, '#g1-name', 'Changed Again');
+    ok(signer(w) === 'I Sign Differently', 'editing it by hand stops the carry for good');
+
+    const w2 = await boot();
+    set(w2, '#client-name', 'Self Example');
+    pick(w2, 'completedBy', 0);
+    ok(signer(w2) === 'Self Example', 'a self-consenting client carries their own name');
+
+    // Carried, not invented — the review says where it came from.
+    const row = [...w2.document.querySelectorAll('#review-body tr')]
+      .find(tr => tr.querySelector('th').textContent.includes('person signing'));
+    ok(/Set for you/.test(row.textContent), 'shown as carried on the review');
+    ok(/section 2\.1/.test(row.textContent), 'and says where from', row.textContent.slice(0, 120));
+  }
+
+  // ======================================================================
+  console.log('\n17. Section 2 carries numbered headings too');
+  {
+    const w = await boot();
+    const d = w.document;
+
+    const nums = [...d.querySelectorAll('#body-who h4.clause')]
+      .map(h => h.querySelector('.clause-num').textContent);
+    ['2.1', '2.2', '2.3', '2.3.1', '2.3.2', '2.3.3', '2.4'].forEach(n =>
+      ok(nums.includes(n), `${n} present`));
+
+    ok(!!d.getElementById('s-2-3-2'), '2.3.2 is anchored');
+    // Which also gives the "see Section 2.3.2" citation somewhere exact.
+    const link = [...d.querySelectorAll('a.xref')].find(a => /2\.3\.2/.test(a.textContent));
+    ok(!!link && link.getAttribute('href') === '#s-2-3-2',
+       'the 2.3.2 citation now points at the clause, not the step',
+       link ? link.getAttribute('href') : 'no link');
+
+    ok(d.getElementById('client-name').getAttribute('aria-labelledby') === 's-2-1',
+       'the client name input is labelled by its heading');
+  }
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })();

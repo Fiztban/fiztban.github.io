@@ -555,3 +555,23 @@ a.xref:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px
 @media print {
   a.xref { text-decoration: none; font-weight: 600; }
 }
+
+/* ============ GUARDIAN CARD NOTES ========= */
+/* Shown on the card once an entry is started but still unusable — a guardian
+   we cannot reach is a dead end that otherwise only surfaces days later, when
+   someone tries to send them their copy of the form. */
+
+.person-note {
+  font-size: 0.92rem;
+  color: #7A4A1E;
+  background-color: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  margin: 0.7rem 0 0;
+}
+
+.person-note[hidden] { display: none; }
+
+/* A numbered heading standing in for a question label. */
+.q > h4.clause { margin-top: 0; margin-bottom: 0.15rem; }

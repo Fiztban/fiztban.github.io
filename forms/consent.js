@@ -350,6 +350,22 @@
     /* Step titles come from the form's own section labels, so the pathway
        never renames a section of the document it is rendering. The number is
        carried by the badge in the gutter, so the title drops it. */
+    /* Section 2's sub-sections are questions rather than prose, so their
+       numbered headings live on the composition's section labels rather than on
+       a field. Registered as anchors like any other clause, which also gives
+       "see Section 2.3.2" somewhere exact to point. */
+    document.querySelectorAll('[data-section-heading]').forEach(function (host) {
+      var section = composition[+host.getAttribute('data-section-heading')];
+      var head = splitHeading(section && section.label);
+      if (!head) { return; }
+
+      var id = anchorFor(head.number);
+      headingIds[head.number] = id;
+      host.id = id;
+      host.innerHTML = '<span class="clause-num">' + head.number + '</span> ' +
+                       escapeText(head.title);
+    });
+
     document.querySelectorAll('[data-section-title]').forEach(function (host) {
       var section = composition[+host.getAttribute('data-section-title')];
       var head = splitHeading(section && section.label);
@@ -663,7 +679,19 @@
 
     /* --- Section 7: declaration --- */
     set('declaration', Array.isArray(answers.declaration) ? answers.declaration.slice() : []);
-    set('signerName', answers.signerName || '');
+
+    /* The person signing has already given their name — as the Client where
+       they are consenting for themselves, or as Legal Guardian 1 where they
+       are not. Carrying it forward saves typing it twice and saves the two
+       disagreeing. It stops the moment they edit the signature name
+       themselves, and it is shown on the review as a carried-over value so
+       nobody signs a name they did not put there. */
+    var carried = (!ui.signerEdited) && signerSource();
+    if (carried) {
+      set('signerName', carried.name, 'Taken from the name you gave in ' + carried.from);
+    } else {
+      set('signerName', answers.signerName || '');
+    }
     set('signature', answers.signature || '');
 
     return r;
@@ -671,28 +699,83 @@
 
   function has(v) { return v !== null && v !== undefined && v !== ''; }
 
+  /* Writes the carried name into `answers` so the input, the review and the
+     payload cannot disagree about what is being signed. Only ever fills a
+     field the reader has not touched. */
+  function carrySignerName() {
+    if (ui.signerEdited) { return; }
+    var source = signerSource();
+    var next = source ? source.name : '';
+    if (answers.signerName !== next) {
+      answers.signerName = next;
+      syncInputs();
+    }
+  }
+
+  /* Where the signature name can be taken from, given who is completing. */
+  function signerSource() {
+    if (answers.completedBy === OPT.completedBy.self) {
+      var client = (answers.clientName || '').trim();
+      return client ? { name: client, from: 'section 2.1, as the Client' } : null;
+    }
+    if (answers.completedBy === OPT.completedBy.guardian) {
+      var g1 = personFields('g1').name;
+      return g1 ? { name: g1, from: 'section 2.3.2, as Legal Guardian 1' } : null;
+    }
+    return null;
+  }
+
+  /* A guardian entry is only useful if we can reach them. Every legal
+     guardian has to be sent their own copy of this form before appointments
+     can be booked, so a name with no mobile and no email is a dead end that
+     only surfaces days later when someone tries to send it. Either contact
+     method will do; both is better but we do not insist. */
+  function personComplete(prefix) {
+    var f = personFields(prefix);
+    return !!f.name && !!(f.mobile || f.email);
+  }
+
+  /* Half-filled entries are worse than empty ones — they look answered. */
+  function personStarted(prefix) {
+    var f = personFields(prefix);
+    return !!(f.name || f.mobile || f.email);
+  }
+
+  function personFields(prefix) {
+    return {
+      name:   (answers[prefix + 'Name'] || '').trim(),
+      mobile: (answers[prefix + 'Mobile'] || '').trim(),
+      email:  (answers[prefix + 'Email'] || '').trim()
+    };
+  }
+
   /* Three inputs in, one Zanda textarea out — in the shape the field's own
      placeholder asks for, so a reader of the PDF sees what they expect. */
   function person(prefix) {
-    var name = (answers[prefix + 'Name'] || '').trim();
-    var mob  = (answers[prefix + 'Mobile'] || '').trim();
-    var mail = (answers[prefix + 'Email'] || '').trim();
-    if (!name && !mob && !mail) { return ''; }
-    return 'Full name: ' + name + '\nMobile number: ' + mob + '\nEmail address: ' + mail;
+    var f = personFields(prefix);
+    if (!f.name && !f.mobile && !f.email) { return ''; }
+    return 'Full name: ' + f.name + '\nMobile number: ' + f.mobile + '\nEmail address: ' + f.email;
   }
 
   /* ====================================================================== */
   /* What is still outstanding                                              */
   /* ====================================================================== */
 
-  /* Which Zanda fields this pathway actually needs, given the answers so far.
-     Guardian names are not `required` in Zanda but are the whole point of the
-     guardian branch, so the page enforces them itself. */
-  function outstanding() {
+  /* What this pathway needs, given the answers so far — as one pass that
+     yields both the outstanding items and the total. These were two functions
+     that had to be kept in agreement by hand, and they had already drifted:
+     adding the third-guardian check to one and not the other made the progress
+     bar quietly wrong. One pass cannot disagree with itself.
+
+     Guardian details are not `required` in Zanda, but collecting them is the
+     entire point of the guardian branch, so the page enforces them here. */
+  function progressState() {
     var r = resolve();
     var missing = [];
+    var total = 0;
 
     function need(key, ok) {
+      total++;
       if (!ok) { missing.push(key); }
     }
 
@@ -701,11 +784,21 @@
 
     if (answers.completedBy === OPT.completedBy.guardian) {
       need('soleGuardian', has(r.soleGuardian.value));
-      need('guardian1', !!r.guardian1.value);
+
+      /* A name and at least one way to reach them: one guardian if sole, two
+         if not. Zanda marks these fields optional, but the whole guardian
+         branch exists to collect them, so the page enforces it itself. */
+      need('guardian1', personComplete('g1'));
+
       if (answers.soleGuardian === OPT.soleGuardian.notSole) {
-        need('guardian2', !!r.guardian2.value);
+        need('guardian2', personComplete('g2'));
         need('contactOthers', has(r.contactOthers.value));
       }
+
+      /* A third guardian is optional. It only joins the count once someone
+         starts filling it in — a half-filled entry must not pass as complete,
+         but an untouched one should not be pending either. */
+      if (personStarted('g3')) { need('guardian3', personComplete('g3')); }
     }
 
     need('scribeConsent', has(r.scribeConsent.value));
@@ -721,8 +814,10 @@
     need('signerName', !!r.signerName.value.trim());
     need('signature', !!r.signature.value);
 
-    return missing;
+    return { missing: missing, total: total };
   }
+
+  function outstanding() { return progressState().missing; }
 
   /* ====================================================================== */
   /* Payload                                                                */
@@ -795,6 +890,24 @@
     });
   }
 
+  /* Says what is missing on the card itself. Only once an entry has been
+     started — prompting for a contact detail on a guardian nobody has named
+     yet would just be noise. */
+  function markPersonNotes() {
+    document.querySelectorAll('[data-person-note]').forEach(function (note) {
+      var prefix = note.getAttribute('data-person-note');
+      var started = personStarted(prefix);
+      var f = personFields(prefix);
+
+      note.hidden = !started || personComplete(prefix);
+      if (note.hidden) { return; }
+
+      note.textContent = !f.name
+        ? 'Please give this guardian\u2019s full name.'
+        : 'Please give at least one way to contact ' + f.name + ' \u2014 a mobile number or an email address.';
+    });
+  }
+
   function syncInputs() {
     /* Radios and checkboxes bound to a Zanda field. */
     document.querySelectorAll('[data-field]').forEach(function (input) {
@@ -824,10 +937,11 @@
   }
 
   function updateProgress() {
-    var missing = outstanding();
-    /* Denominator is everything this pathway asks of the reader, which moves
-       as the pathway branches — so it is recomputed, never cached. */
-    var total = requiredCount();
+    /* The denominator moves as the pathway branches, so it is recomputed with
+       the missing list rather than cached alongside it. */
+    var state = progressState();
+    var missing = state.missing;
+    var total = state.total;
     var done = Math.max(0, total - missing.length);
     var pct = total ? Math.round((done / total) * 100) : 0;
 
@@ -841,20 +955,9 @@
     }
 
     markSteps(missing);
+    markPersonNotes();
   }
 
-  /* Must stay in step with outstanding(): client name, who is completing,
-     scribe consent, the three read ticks, declaration, signer name, signature. */
-  function requiredCount() {
-    var n = 9;
-    if (answers.completedBy === OPT.completedBy.guardian) {
-      n += 2;                                      /* sole? + guardian 1   */
-      if (answers.soleGuardian === OPT.soleGuardian.notSole) {
-        n += 2;                                    /* guardian 2 + contact */
-      }
-    }
-    return n;
-  }
 
   /* A step is done when nothing it owns is outstanding. */
   /* The therapy dog step is answered the moment the page loads — leaving the
@@ -897,6 +1000,7 @@
   }
 
   function refresh() {
+    carrySignerName();
     applyConditionals();
     updateProgress();
     renderReview();
@@ -1319,7 +1423,12 @@
     /* Plain text inputs, including the ones composed into a guardian block. */
     document.querySelectorAll('[data-answer]').forEach(function (input) {
       input.addEventListener('input', function () {
-        answers[input.getAttribute('data-answer')] = input.value;
+        var key = input.getAttribute('data-answer');
+        answers[key] = input.value;
+
+        /* Once they have typed their own signature name, stop overwriting it. */
+        if (key === 'signerName') { ui.signerEdited = true; }
+
         refresh();
       });
     });

@@ -138,16 +138,16 @@
                         <div class="legal" data-legal="1.0"></div>
 
                         <div class="q">
-                            <label class="q-label" for="client-name">Who is this form about?</label>
+                            <h4 class="clause" data-section-heading="2"></h4>
                             <p class="q-help">The person who will be seen by Kinder Minds. We call them &ldquo;the Client&rdquo; throughout.</p>
-                            <input class="text-input" type="text" id="client-name" data-answer="clientName"
+                            <input class="text-input" type="text" id="client-name" data-answer="clientName" aria-labelledby="s-2-1"
                                    autocomplete="off" placeholder="Full name of the Client">
                         </div>
 
                         <div class="q">
-                            <span class="q-label">And who is filling this in?</span>
+                            <h4 class="clause" data-section-heading="3"></h4>
                             <p class="q-help">This decides which of the remaining questions apply to you.</p>
-                            <ul class="opt-list">
+                            <ul class="opt-list" role="radiogroup" aria-labelledby="s-2-2">
                                 <li><label class="opt">
                                     <input type="radio" name="completedBy" value="0" data-field="completedBy">
                                     <span class="opt-text"><strong>I am the Client, consenting for myself</strong><span data-opt-text="3.0.0"></span></span>
@@ -174,13 +174,15 @@
                         <!-- ---- Guardian branch ---- -->
                         <div class="when" data-when="guardian" hidden>
 
+                            <h4 class="clause" data-section-heading="4"></h4>
+
                             <details class="reader">
-                                <summary>Why we need consent from every legal guardian</summary>
+                                <summary>Why consent is needed from every legal guardian</summary>
                                 <div class="legal" data-legal="4.0"></div>
                             </details>
 
                             <div class="q">
-                                <span class="q-label">Are you the Client&rsquo;s only legal guardian?</span>
+                                <h4 class="clause" data-section-heading="5"></h4>
                                 <p class="q-help">Being the main caregiver, or the only parent involved day to day, does not by itself make someone a sole guardian &mdash; open the note below if you are unsure.</p>
 
                                 <details class="reader">
@@ -188,7 +190,7 @@
                                     <div class="legal" data-legal="5.0"></div>
                                 </details>
 
-                                <ul class="opt-list">
+                                <ul class="opt-list" role="radiogroup" aria-labelledby="s-2-3-1">
                                     <li><label class="opt">
                                         <input type="radio" name="soleGuardian" value="0" data-field="soleGuardian">
                                         <span class="opt-text"><strong>Yes &mdash; I am the sole legal guardian</strong><span data-opt-text="5.1.0"></span></span>
@@ -201,6 +203,9 @@
                             </div>
 
                             <!-- Guardian details. Three fields in, one Zanda textarea out. -->
+                                <h4 class="clause" data-section-heading="6"></h4>
+                                <p class="q-help">For each guardian we need a full name and at least one way to reach them &mdash; a mobile number or an email address. Every guardian has to be sent their own copy of this form before appointments can be booked.</p>
+
                                 <div class="person-card">
                                     <h4>Your details</h4>
                                     <div class="person-grid">
@@ -217,6 +222,7 @@
                                             <input class="text-input" type="email" id="g1-email" data-answer="g1Email" autocomplete="email">
                                         </div>
                                     </div>
+                                    <p class="person-note" data-person-note="g1" hidden></p>
                                 </div>
 
                             <div class="when" data-when="guardian-multi" hidden>
@@ -236,6 +242,7 @@
                                             <input class="text-input" type="email" id="g2-email" data-answer="g2Email">
                                         </div>
                                     </div>
+                                    <p class="person-note" data-person-note="g2" hidden></p>
                                 </div>
 
                                 <div class="person-card">
@@ -254,10 +261,11 @@
                                             <input class="text-input" type="email" id="g3-email" data-answer="g3Email">
                                         </div>
                                     </div>
+                                    <p class="person-note" data-person-note="g3" hidden></p>
                                 </div>
 
                                 <div class="q">
-                                    <span class="q-label">May we contact the other guardians?</span>
+                                    <h4 class="clause" data-section-heading="7"></h4>
                                     <p class="q-help">We have to give every guardian the same information and their own copy of this form before we can start.</p>
 
                                     <details class="reader">
@@ -265,7 +273,7 @@
                                         <div class="legal" data-legal="7.0"></div>
                                     </details>
 
-                                    <ul class="opt-list">
+                                    <ul class="opt-list" role="radiogroup" aria-labelledby="s-2-3-3">
                                         <li><label class="opt">
                                             <input type="radio" name="contactOthers" value="0" data-field="contactOthers">
                                             <span class="opt-text"><strong>Yes &mdash; please contact them</strong></span>
@@ -287,6 +295,8 @@
                                     <p><strong>No other guardians to list.</strong> We will skip the questions about contacting them, and record that question as &ldquo;not applicable&rdquo;. Step 7 shows you exactly what gets recorded before you sign.</p>
                                 </div>
                             </div>
+
+                            <h4 class="clause" data-section-heading="8"></h4>
 
                             <details class="reader">
                                 <summary>How we communicate with guardians once care starts</summary>
