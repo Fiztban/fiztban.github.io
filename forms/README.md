@@ -85,7 +85,7 @@ The page needs `client` and `form` query parameters, the same shape `staff/link-
 already produces for the intake guide:
 
 ```
-forms/combined-consent.html?client=0Vhl5VibLxq&form=2920&name=Tāne
+forms/combined-consent.html?client=AbCdEfGhIjK&form=1234&name=Tāne
 ```
 
 Serve over HTTP — `fetch` will not load the snapshot from a `file://` URL, and

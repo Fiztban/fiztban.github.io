@@ -34,7 +34,7 @@ function storageKey(client, form) {
 }
 
 async function boot(opts = {}) {
-  const query = '?client=0Vhl5VibLxq&form=2920';
+  const query = '?client=AbCdEfGhIjK&form=1234';
   const dom = new JSDOM(HTML, {
     url: 'http://127.0.0.1:8765/forms/combined-consent.html' + query,
     runScripts: 'outside-only',
@@ -59,7 +59,7 @@ async function boot(opts = {}) {
 
   // Seed a prior visit so the signature (which needs real drawing) is present.
   if (opts.seed) {
-    w.localStorage.setItem(storageKey('0Vhl5VibLxq', '2920'), JSON.stringify(opts.seed));
+    w.localStorage.setItem(storageKey('AbCdEfGhIjK', '1234'), JSON.stringify(opts.seed));
   }
 
   const body = opts.snapshot || SNAP;

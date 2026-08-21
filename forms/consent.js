@@ -31,8 +31,8 @@
    ────────────────────────────────────────────────────────────────────────────
 
    URL PARAMETERS
-     client   the client's Zanda profile hash   e.g. client=0Vhl5VibLxq
-     form     the custom form number            e.g. form=2920
+     client   the client's Zanda profile hash   e.g. client=AbCdEfGhIjK
+     form     the custom form number            e.g. form=1234
      name     optional, personalises the page
 
    Built to match intake.js: no dependencies, no build step, ES5 syntax.
