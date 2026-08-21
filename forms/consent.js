@@ -680,18 +680,7 @@
     /* --- Section 7: declaration --- */
     set('declaration', Array.isArray(answers.declaration) ? answers.declaration.slice() : []);
 
-    /* The person signing has already given their name — as the Client where
-       they are consenting for themselves, or as Legal Guardian 1 where they
-       are not. Carrying it forward saves typing it twice and saves the two
-       disagreeing. It stops the moment they edit the signature name
-       themselves, and it is shown on the review as a carried-over value so
-       nobody signs a name they did not put there. */
-    var carried = (!ui.signerEdited) && signerSource();
-    if (carried) {
-      set('signerName', carried.name, 'Taken from the name you gave in ' + carried.from);
-    } else {
-      set('signerName', answers.signerName || '');
-    }
+    set('signerName', answers.signerName || '');
     set('signature', answers.signature || '');
 
     return r;
@@ -699,30 +688,29 @@
 
   function has(v) { return v !== null && v !== undefined && v !== ''; }
 
-  /* Writes the carried name into `answers` so the input, the review and the
-     payload cannot disagree about what is being signed. Only ever fills a
-     field the reader has not touched. */
-  function carrySignerName() {
-    if (ui.signerEdited) { return; }
-    var source = signerSource();
-    var next = source ? source.name : '';
-    if (answers.signerName !== next) {
-      answers.signerName = next;
-      syncInputs();
-    }
+  /* Deliberately loose. The job is to catch a slip — a missing @, a phone
+     number with letters in it — not to adjudicate what is a valid address or
+     number. Anything stricter starts rejecting real people: NZ mobiles are
+     written 021 234 5678, +64 21 234 5678 and (09) 123 4567 alike, and the
+     official email grammar admits far more than any regex here would. */
+  var EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var PHONE_SHAPE = /^[+()\d\s-]+$/;
+
+  function emailLooksRight(v) { return !v || EMAIL_SHAPE.test(v); }
+
+  function phoneLooksRight(v) {
+    if (!v) { return true; }
+    return PHONE_SHAPE.test(v) && (v.match(/\d/g) || []).length >= 7;
   }
 
-  /* Where the signature name can be taken from, given who is completing. */
-  function signerSource() {
-    if (answers.completedBy === OPT.completedBy.self) {
-      var client = (answers.clientName || '').trim();
-      return client ? { name: client, from: 'section 2.1, as the Client' } : null;
-    }
-    if (answers.completedBy === OPT.completedBy.guardian) {
-      var g1 = personFields('g1').name;
-      return g1 ? { name: g1, from: 'section 2.3.2, as Legal Guardian 1' } : null;
-    }
-    return null;
+  /* Which guardians this pathway actually needs, given who is completing and
+     whether they are sole. The third is never required — but must be usable if
+     someone starts it. */
+  function personRequired(prefix) {
+    if (answers.completedBy !== OPT.completedBy.guardian) { return false; }
+    if (prefix === 'g1') { return true; }
+    if (prefix === 'g2') { return answers.soleGuardian === OPT.soleGuardian.notSole; }
+    return false;
   }
 
   /* A guardian entry is only useful if we can reach them. Every legal
@@ -732,7 +720,9 @@
      method will do; both is better but we do not insist. */
   function personComplete(prefix) {
     var f = personFields(prefix);
-    return !!f.name && !!(f.mobile || f.email);
+    if (!f.name) { return false; }
+    if (!phoneLooksRight(f.mobile) || !emailLooksRight(f.email)) { return false; }
+    return !!(f.mobile || f.email);
   }
 
   /* Half-filled entries are worse than empty ones — they look answered. */
@@ -890,22 +880,58 @@
     });
   }
 
-  /* Says what is missing on the card itself. Only once an entry has been
-     started — prompting for a contact detail on a guardian nobody has named
-     yet would just be noise. */
+  /* Says what is wrong on the card itself, rather than leaving it to the
+     blocker at the end of the form.
+
+     A REQUIRED guardian says so while still empty — leaving it silent means a
+     second guardian can be skipped entirely and the only complaint arrives at
+     the review, several steps later. An OPTIONAL one stays quiet until someone
+     starts it, because prompting for details on a guardian nobody has named is
+     just noise. */
   function markPersonNotes() {
     document.querySelectorAll('[data-person-note]').forEach(function (note) {
       var prefix = note.getAttribute('data-person-note');
-      var started = personStarted(prefix);
       var f = personFields(prefix);
+      var required = personRequired(prefix);
 
-      note.hidden = !started || personComplete(prefix);
-      if (note.hidden) { return; }
+      var message = personProblem(prefix, f, required);
+      note.hidden = !message;
+      if (message) { note.textContent = message; }
 
-      note.textContent = !f.name
-        ? 'Please give this guardian\u2019s full name.'
-        : 'Please give at least one way to contact ' + f.name + ' \u2014 a mobile number or an email address.';
+      /* Point at the offending field, not just the card. */
+      mark(prefix + '-mobile', !phoneLooksRight(f.mobile));
+      mark(prefix + '-email', !emailLooksRight(f.email));
     });
+  }
+
+  function mark(id, bad) {
+    var input = el(id);
+    if (input) { input.classList.toggle('invalid', !!bad); }
+  }
+
+  function personProblem(prefix, f, required) {
+    var who = f.name || 'this guardian';
+
+    if (!personStarted(prefix)) {
+      return required
+        ? 'Please give this guardian\u2019s full name and at least one way to contact them.'
+        : null;
+    }
+
+    if (!phoneLooksRight(f.mobile)) {
+      return 'That mobile number does not look right. Digits, spaces, and + ( ) - are all fine.';
+    }
+    if (!emailLooksRight(f.email)) {
+      return 'That email address does not look right \u2014 it should look like name@example.co.nz';
+    }
+    if (!f.name) {
+      return 'Please give this guardian\u2019s full name.';
+    }
+    if (!f.mobile && !f.email) {
+      return 'Please give at least one way to contact ' + who +
+             ' \u2014 a mobile number or an email address.';
+    }
+    return null;
   }
 
   function syncInputs() {
@@ -1000,7 +1026,6 @@
   }
 
   function refresh() {
-    carrySignerName();
     applyConditionals();
     updateProgress();
     renderReview();
@@ -1425,9 +1450,6 @@
       input.addEventListener('input', function () {
         var key = input.getAttribute('data-answer');
         answers[key] = input.value;
-
-        /* Once they have typed their own signature name, stop overwriting it. */
-        if (key === 'signerName') { ui.signerEdited = true; }
 
         refresh();
       });

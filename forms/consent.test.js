@@ -188,7 +188,7 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
     ok(!visible(w, '[data-when="guardian-multi"]'), 'other-guardian block hidden');
 
     set(w, '#g1-name', 'Solo Parent');
-    set(w, '#g1-mobile', '021 999');
+    set(w, '#g1-mobile', '021 999 4567');
     set(w, '#g1-email', 'solo@example.com');
     pick(w, 'scribeConsent', 0);
     tick(w, 'read-1'); tick(w, 'read-3'); tick(w, 'read-4');
@@ -552,8 +552,10 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
     tick(w, 'read-1'); tick(w, 'read-3'); tick(w, 'read-4');
     pick(w, 'scribeConsent', 0);
     tickAll(w, 'declaration');
+    set(w, '#signer-name', 'Aroha Example');
 
-    ok(note(w, 'g1').hidden, 'no nagging before an entry is started');
+    ok(!note(w, 'g1').hidden, 'a required guardian says so while still empty');
+    ok(note(w, 'g3').hidden, 'an optional one stays quiet until started');
     ok(!w.document.getElementById('review-blocker').hidden, 'incomplete while g1 is empty');
 
     set(w, '#g1-name', 'Aroha Example');
@@ -579,7 +581,8 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
     tick(w3, 'read-1'); tick(w3, 'read-3'); tick(w3, 'read-4');
     pick(w3, 'scribeConsent', 0); pick(w3, 'contactOthers', 0);
     tickAll(w3, 'declaration');
-    set(w3, '#g1-name', 'Aroha'); set(w3, '#g1-mobile', '021 1');
+    set(w3, '#signer-name', 'Aroha Example');
+    set(w3, '#g1-name', 'Aroha'); set(w3, '#g1-mobile', '021 234 5678');
     ok(!w3.document.getElementById('review-blocker').hidden, 'a second guardian is required');
     set(w3, '#g2-name', 'Sam');
     ok(!note(w3, 'g2').hidden, 'and must also be contactable');
@@ -592,42 +595,46 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
     ok(!note(w3, 'g3').hidden, 'a half-filled third guardian is flagged');
     ok(!w3.document.getElementById('review-blocker').hidden, 'and blocks completion');
     ok(left(w3) !== before, 'and joins the count only once started', before + ' -> ' + left(w3));
-    set(w3, '#g3-mobile', '021 3');
+    set(w3, '#g3-mobile', '021 555 6789');
     ok(w3.document.getElementById('review-blocker').hidden, 'complete once contactable');
   }
 
   // ======================================================================
-  console.log('\n16. The signature name carries across');
+  // Loose on purpose: catch a slip, do not adjudicate what a valid address or
+  // number is. Anything stricter starts rejecting real people.
+  console.log('\n16. Contact details are checked for shape');
   {
-    const signer = w => w.document.getElementById('signer-name').value;
-
     const w = await boot();
-    set(w, '#client-name', 'Tama Example');
-    pick(w, 'completedBy', 1);
-    set(w, '#g1-name', 'Aroha Example');
-    ok(signer(w) === 'Aroha Example', 'guardian 1 fills the signature name', signer(w));
+    const note = p => w.document.querySelector(`[data-person-note="${p}"]`);
+    const bad = id => w.document.getElementById(id).classList.contains('invalid');
 
-    set(w, '#g1-name', 'Aroha Renamed');
-    ok(signer(w) === 'Aroha Renamed', 'and follows a correction');
+    set(w, '#client-name', 'Tama'); pick(w, 'completedBy', 1); pick(w, 'soleGuardian', 0);
+    set(w, '#g1-name', 'Aroha');
 
-    // The payload has to agree with what the reader can see in the field.
-    ok(fieldOf(payload(w), 16, 2).text === 'Aroha Renamed',
-       'the payload matches the visible field');
+    [['aroha', true], ['aroha@', true], ['aroha@example', true],
+     ['a b@example.nz', true], ['aroha@example.co.nz', false]].forEach(([value, rejected]) => {
+      set(w, '#g1-email', value);
+      ok(bad('g1-email') === rejected,
+         `email ${JSON.stringify(value)} ${rejected ? 'rejected' : 'accepted'}`);
+    });
 
-    set(w, '#signer-name', 'I Sign Differently');
-    set(w, '#g1-name', 'Changed Again');
-    ok(signer(w) === 'I Sign Differently', 'editing it by hand stops the carry for good');
+    set(w, '#g1-email', '');
+    [['021 234 5678', false], ['+64 21 234 5678', false], ['(09) 123 4567', false],
+     ['021-234-5678', false], ['021', true], ['oh two one', true]].forEach(([value, rejected]) => {
+      set(w, '#g1-mobile', value);
+      ok(bad('g1-mobile') === rejected,
+         `mobile ${JSON.stringify(value)} ${rejected ? 'rejected' : 'accepted'}`);
+    });
 
-    const w2 = await boot();
-    set(w2, '#client-name', 'Self Example');
-    pick(w2, 'completedBy', 0);
-    ok(signer(w2) === 'Self Example', 'a self-consenting client carries their own name');
+    set(w, '#g1-mobile', 'oh two one');
+    ok(/does not look right/.test(note('g1').textContent), 'the card says what is wrong');
 
-    // Carried, not invented — the review says where it came from.
-    const row = [...w2.document.querySelectorAll('#review-body tr')]
-      .find(tr => tr.querySelector('th').textContent.includes('person signing'));
-    ok(/Set for you/.test(row.textContent), 'shown as carried on the review');
-    ok(/section 2\.1/.test(row.textContent), 'and says where from', row.textContent.slice(0, 120));
+    // A malformed contact is not a contact, so it cannot complete the entry.
+    set(w, '#g1-mobile', '021'); set(w, '#g1-email', '');
+    ok(!w.document.getElementById('review-blocker').hidden,
+       'a malformed number does not count as reachable');
+    set(w, '#g1-mobile', '021 234 5678');
+    ok(note('g1').hidden, 'and a good one clears it');
   }
 
   // ======================================================================

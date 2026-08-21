@@ -575,3 +575,12 @@ a.xref:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px
 
 /* A numbered heading standing in for a question label. */
 .q > h4.clause { margin-top: 0; margin-bottom: 0.15rem; }
+
+/* A field whose contents cannot be right — flagged where the mistake is, not
+   only on the card. */
+.text-input.invalid {
+  border-color: #C4704F;
+  background-color: #FDF7F5;
+}
+
+.text-input.invalid:focus { outline-color: #C4704F; }
