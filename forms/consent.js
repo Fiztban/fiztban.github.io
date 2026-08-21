@@ -208,6 +208,49 @@
     '10.3': '4.3'
   };
 
+  /* ---------- citations corrected for display ----------
+     Same root cause: the Terms were renumbered 5.x -> 4.x and the references
+     were not followed through. Each entry below was checked against what the
+     citing sentence is actually talking about — they are corrections, not
+     guesses:
+
+       9.9, 9.12   "Section 4" where the sentence means the scribe consent,
+                   which is Section 5. (9.15's "Section 4" is correct and is
+                   left alone — it means the Terms, and is stripped anyway as
+                   navigation.)
+       10.3, 10.5, 10.18, 10.22
+                   "Section 5.6.3" — does not exist. All four sentences are
+                   about cancellation; that is 4.6.3, Cancellation Policy.
+       10.7        "Section 5.7.3" — does not exist. The sentence is about
+                   separate parent-only consultations; that is 4.7.3,
+                   Appointment Attendance.
+       10.9        "Section 5.3" — the reminders clause, now 4.3.
+
+     Keyed by the citing block so one number can be corrected in one place and
+     left alone in another. Display only: the payload keeps Zanda's text to the
+     character, and there is a test asserting that. Delete entries as they are
+     fixed at source. */
+  var CITATION_FIXES = {
+    '9.9':   { '4': '5' },
+    '9.12':  { '4': '5' },
+    '10.3':  { '5.6.3': '4.6.3' },
+    '10.5':  { '5.6.3': '4.6.3' },
+    '10.7':  { '5.7.3': '4.7.3' },
+    '10.9':  { '5.3': '4.3' },
+    '10.18': { '5.6.3': '4.6.3' },
+    '10.22': { '5.6.3': '4.6.3' }
+  };
+
+  /* ---------- wording that does not survive the change of format ----------
+     Sentences written for Zanda's single scroll that are wrong, not merely
+     redundant, once the pathway replaces it. Removed from the display only. */
+  var OMIT_SENTENCES = {
+    /* Sits inside the waiver, which a reader only ever sees after opting IN.
+       Telling them what happens if they select "No" describes a choice this
+       format does not present. */
+    '15.1': ['By selecting "No" - no further action is required.']
+  };
+
   /* Numbers this page has re-pointed. Citations to them are left as plain text
      rather than linked: "see Section 5.3" is cited once, from 10.9, and means
      the booking clause — but with the heading corrected, 5.3 now unambiguously
@@ -236,6 +279,47 @@
   /* "Continue onto Section 5." is navigation for Zanda's single scroll, which
      this pathway has replaced with its own Continue buttons. Same reasoning as
      stripRouting: only the displayed text changes, never the record. */
+  /* Rewrites a mis-numbered citation in the text of one block, and drops any
+     sentence that no longer applies. Operates on text nodes, so nothing inside
+     an attribute or a URL is touched. */
+  function adaptText(html, address) {
+    var fixes = CITATION_FIXES[address];
+    var omit = OMIT_SENTENCES[address];
+    if (!fixes && !omit) { return html; }
+
+    var box = document.createElement('div');
+    box.innerHTML = html;
+
+    var walker = document.createTreeWalker(box, NodeFilter.SHOW_TEXT, null);
+    var nodes = [];
+    while (walker.nextNode()) { nodes.push(walker.currentNode); }
+
+    nodes.forEach(function (node) {
+      var value = node.nodeValue;
+
+      if (fixes) {
+        value = value.replace(/Section\s+(\d+(?:\.\d+)*)/g, function (whole, number) {
+          return fixes[number] ? whole.replace(number, fixes[number]) : whole;
+        });
+      }
+
+      if (omit) {
+        omit.forEach(function (sentence) { value = value.split(sentence).join(''); });
+      }
+
+      if (value !== node.nodeValue) { node.nodeValue = value; }
+    });
+
+    /* A sentence removed on its own line leaves an empty element behind. */
+    if (omit) {
+      box.querySelectorAll('p, div, li').forEach(function (node) {
+        if (!node.textContent.trim() && !node.querySelector('img, br')) { node.remove(); }
+      });
+    }
+
+    return box.innerHTML;
+  }
+
   function stripNavigation(html) {
     var box = document.createElement('div');
     box.innerHTML = html;
@@ -263,6 +347,15 @@
     /* Group titles come from the form's own headings, never invented here — a
        reader's summary IS clause 4.6's heading, so the clause does not repeat
        it inside. */
+    /* Step titles come from the form's own section labels, so the pathway
+       never renames a section of the document it is rendering. The number is
+       carried by the badge in the gutter, so the title drops it. */
+    document.querySelectorAll('[data-section-title]').forEach(function (host) {
+      var section = composition[+host.getAttribute('data-section-title')];
+      var head = splitHeading(section && section.label);
+      if (head) { host.textContent = head.title; }
+    });
+
     document.querySelectorAll('[data-legal-title]').forEach(function (host) {
       var a = host.getAttribute('data-legal-title').split('.');
       var f = fieldAt(+a[0], +a[1]);
@@ -283,8 +376,9 @@
         var f = fieldAt(a[0], a[1]);
         if (!f || f.type !== 6) { return ''; }
 
-        var body = stripNavigation(sanitise(f.text));
-        var head = splitHeading(f.label, a[0] + '.' + a[1]);
+        var address = a[0] + '.' + a[1];
+        var body = adaptText(stripNavigation(sanitise(f.text)), address);
+        var head = splitHeading(f.label, address);
         if (!head || (skipFirst && i === 0)) { return body; }
 
         var id = anchorFor(head.number);
@@ -374,9 +468,10 @@
     if (AMBIGUOUS_NUMBERS[number]) { return null; }
     if (headingIds[number]) { return headingIds[number]; }
 
-    /* A whole-section citation ("as outlined in Section 2") targets the step
-       that section became. */
-    if (number.indexOf('.') === -1) { return stepIds[number] || null; }
+    /* A citation to a section rather than a clause targets the step that
+       section became. */
+    if (stepIds[number]) { return stepIds[number]; }
+    if (number.indexOf('.') === -1) { return null; }
 
     /* A sub-number resolves upwards, but only ever to a clause that genuinely
        exists. It must NOT fall back to the containing step: "Section 5.6.3" is
@@ -403,7 +498,24 @@
     '4': 'step-terms',
     '5': 'step-scribe',
     '6': 'step-dog',
-    '7': 'step-sign'
+    '7': 'step-sign',
+
+    /* Section 2's sub-sections became the questions in step 2 rather than
+       numbered clauses, so they have no heading of their own to point at.
+       Listed explicitly — a citation resolves to a named step or to nothing,
+       never to a guess. */
+    '2.1':   'step-who',
+    '2.2':   'step-who',
+    '2.3':   'step-who',
+    '2.3.1': 'step-who',
+    '2.3.2': 'step-who',
+    '2.3.3': 'step-who',
+    '2.4':   'step-who',
+
+    /* Likewise 5.5 and 6.4/6.5 are the choices themselves. */
+    '5.5': 'step-scribe',
+    '6.4': 'step-dog',
+    '6.5': 'step-dog'
   };
 
   /* ---------- drawings ----------

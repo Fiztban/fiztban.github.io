@@ -79,22 +79,29 @@
             </div>
 
             <!-- ============ ABOUT THIS FORM ============ -->
-            <section class="intro-panel" id="about-form">
-                <button type="button" class="stage-head panel-head" aria-expanded="false" aria-controls="about-body">
-                    <span class="stage-head-text">
-                        <span class="panel-title">What this form covers, and who can sign it</span>
-                        <span class="stage-peek">Background reading &mdash; open it if you want the detail before starting</span>
-                    </span>
-                    <span class="stage-check" aria-hidden="true"></span>
-                    <span class="stage-chev" aria-hidden="true"></span>
-                </button>
-
-                <div class="stage-body" id="about-body" hidden>
-                    <div data-legal="0.0,1.0"></div>
-                </div>
-            </section>
-
             <ol class="task-steps">
+
+                <!-- ================================================================
+                     STEP 1 — the document's own introduction (Zanda section 1).
+                     Numbered as section 1 so the badge in the gutter and the
+                     clause numbering inside always agree.
+                     ================================================================ -->
+                <li id="about-form">
+                    <span class="stage-num" data-num="1" aria-hidden="true"></span>
+                    <button type="button" class="stage-head" aria-expanded="false" aria-controls="about-body">
+                        <span class="stage-head-text">
+                            <span class="stage-tag us">Read</span>
+                            <span class="stage-title" data-section-title="0"></span>
+                            <span class="stage-peek">What this form covers, and who can sign it</span>
+                        </span>
+                        <span class="stage-check" aria-hidden="true"></span>
+                        <span class="stage-chev" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="stage-body" id="about-body" hidden>
+                        <div class="legal" data-legal="0.0,1.0"></div>
+                    </div>
+                </li>
 
                 <!-- ================================================================
                      STEP 1 — identity and authority
@@ -103,11 +110,11 @@
                      entirely on the answer to "who is completing this".
                      ================================================================ -->
                 <li id="step-who">
-                    <span class="stage-num" aria-hidden="true"></span>
+                    <span class="stage-num" data-num="2" aria-hidden="true"></span>
                     <button type="button" class="stage-head" aria-expanded="true" aria-controls="body-who">
                         <span class="stage-head-text">
                             <span class="stage-tag you">You</span>
-                            <span class="stage-title">Who this form is for</span>
+                            <span class="stage-title" data-section-title="1"></span>
                             <span class="stage-peek">The Client&rsquo;s name, and who is giving consent</span>
                         </span>
                         <span class="stage-check" aria-hidden="true"></span>
@@ -285,11 +292,11 @@
                      local, and the actual record is the declaration in step 6.
                      ================================================================ -->
                 <li id="step-info">
-                    <span class="stage-num" aria-hidden="true"></span>
+                    <span class="stage-num" data-num="3" aria-hidden="true"></span>
                     <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-info">
                         <span class="stage-head-text">
                             <span class="stage-tag us">Read</span>
-                            <span class="stage-title">Your rights, and what we do with your information</span>
+                            <span class="stage-title" data-section-title="9"></span>
                             <span class="stage-peek">Services, your legal rights, privacy, and who we share with</span>
                         </span>
                         <span class="stage-check" aria-hidden="true"></span>
@@ -332,11 +339,11 @@
                      actually go looking for rather than by clause number.
                      ================================================================ -->
                 <li id="step-terms">
-                    <span class="stage-num" aria-hidden="true"></span>
+                    <span class="stage-num" data-num="4" aria-hidden="true"></span>
                     <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-terms">
                         <span class="stage-head-text">
                             <span class="stage-tag us">Read</span>
-                            <span class="stage-title">Our terms of service</span>
+                            <span class="stage-title" data-section-title="10"></span>
                             <span class="stage-peek">Fees, cancellations, prescriptions, and guardian responsibilities</span>
                         </span>
                         <span class="stage-check" aria-hidden="true"></span>
@@ -408,11 +415,11 @@
                      "no", and this one records an audio-recording consent.
                      ================================================================ -->
                 <li id="step-scribe">
-                    <span class="stage-num" aria-hidden="true"></span>
+                    <span class="stage-num" data-num="5" aria-hidden="true"></span>
                     <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-scribe">
                         <span class="stage-head-text">
                             <span class="stage-tag you">Your choice</span>
-                            <span class="stage-title">Recording appointments for note-taking</span>
+                            <span class="stage-title" data-section-title="11"></span>
                             <span class="stage-peek">Optional. Either answer is fine, and it will not affect your care</span>
                         </span>
                         <span class="stage-check" aria-hidden="true"></span>
@@ -473,11 +480,11 @@
                      gate where every reader sees it before deciding.
                      ================================================================ -->
                 <li id="step-dog">
-                    <span class="stage-num" aria-hidden="true"></span>
+                    <span class="stage-num" data-num="6" aria-hidden="true"></span>
                     <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-dog">
                         <span class="stage-head-text">
                             <span class="stage-tag you">Optional</span>
-                            <span class="stage-title">Meeting Neve, our therapy dog</span>
+                            <span class="stage-title" data-section-title="13"></span>
                             <span class="stage-peek">Entirely optional &mdash; skip it in one tick if you would rather not</span>
                         </span>
                         <span class="stage-check" aria-hidden="true"></span>
@@ -539,11 +546,11 @@
                      STEP 6 — declaration and signature (Zanda section 7)
                      ================================================================ -->
                 <li id="step-sign">
-                    <span class="stage-num" aria-hidden="true"></span>
+                    <span class="stage-num" data-num="7" aria-hidden="true"></span>
                     <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-sign">
                         <span class="stage-head-text">
                             <span class="stage-tag you">You</span>
-                            <span class="stage-title">Declaration and signature</span>
+                            <span class="stage-title" data-section-title="16"></span>
                             <span class="stage-peek">Four confirmations, your name, and your signature</span>
                         </span>
                         <span class="stage-check" aria-hidden="true"></span>
@@ -603,7 +610,7 @@
                      including the ones the pathway answered on the reader's
                      behalf. Nothing is recorded that is not shown here.
                      ================================================================ -->
-                <li id="step-review">
+                <li id="step-review" class="unnumbered">
                     <span class="stage-num" aria-hidden="true"></span>
                     <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-review">
                         <span class="stage-head-text">

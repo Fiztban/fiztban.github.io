@@ -492,6 +492,18 @@
   .opt { break-inside: avoid; }
 }
 
+/* ============ STEP NUMBERING ========= */
+/* The inherited badge uses a CSS counter, which numbers by position. That put
+   the gutter a step out from the document as soon as the introduction was not
+   itself a step, so a reader saw "3" beside content headed 4.2. The number is
+   now stated explicitly and matches the form's own section number. */
+
+.stage-num::before { content: attr(data-num); }
+
+/* The review step is this pathway's, not a section of the form, so it is
+   deliberately outside the numbering. */
+.task-steps > li.unnumbered .stage-num { display: none; }
+
 /* ============ NUMBERED CLAUSES ========= */
 /* Each Information block carries its own numbered heading, and the legal text
    cites those numbers. Keeping them is not decoration: strip the numbering and

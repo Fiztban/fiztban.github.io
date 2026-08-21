@@ -420,6 +420,89 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
        '4.7 is the guardian-only group');
   }
 
+  // ======================================================================
+  // The gutter badge must agree with the clause numbering inside the step,
+  // or a reader is holding two numbering systems at once.
+  console.log('\n12. Step numbers match the form section numbers');
+  {
+    const w = await boot();
+    const d = w.document;
+
+    const steps = [...d.querySelectorAll('.task-steps > li')];
+    const numbered = steps.filter(li => li.querySelector('.stage-num[data-num]'));
+    ok(numbered.length === 7, `seven numbered steps (${numbered.length})`);
+
+    const seq = numbered.map(li => li.querySelector('.stage-num').getAttribute('data-num'));
+    ok(seq.join(',') === '1,2,3,4,5,6,7', 'badges run 1-7', seq.join(','));
+
+    // Each step's first clause must start with that step's own number.
+    numbered.forEach(li => {
+      const n = li.querySelector('.stage-num').getAttribute('data-num');
+      const first = li.querySelector('h4.clause, summary[data-legal-title]');
+      if (!first) { return; }                       // steps 1 and 7 hold no clauses
+      ok(first.textContent.trim().startsWith(n + '.'),
+         `step ${n} opens at clause ${n}.x`, first.textContent.trim().slice(0, 40));
+    });
+
+    ok(!!d.querySelector('#step-review.unnumbered'),
+       'review carries no section number (it is not part of the form)');
+
+    const titles = [...d.querySelectorAll('.stage-title')].map(x => x.textContent.trim());
+    ok(titles.every(Boolean), 'every step title resolved');
+    ok(titles.includes('Kinder Minds Terms of Service'),
+       'step titles come from the form, not from this page');
+  }
+
+  // ======================================================================
+  console.log('\n13. Corrected citations, and the payload left alone');
+  {
+    const w = await boot();
+    const d = w.document;
+
+    const links = [...d.querySelectorAll('a.xref')];
+    ok(links.every(a => !!d.getElementById(a.getAttribute('href').slice(1))),
+       'every citation link resolves');
+
+    // Nothing should be left dangling now that the mis-numbering is corrected.
+    const plain = [];
+    d.querySelectorAll('.legal').forEach(host => {
+      const wk = d.createTreeWalker(host, w.NodeFilter.SHOW_TEXT, null);
+      while (wk.nextNode()) {
+        if (wk.currentNode.parentNode.closest('a')) { continue; }
+        for (const m of wk.currentNode.nodeValue.matchAll(/Section\s+(\d+(?:\.\d+)*)/g)) {
+          plain.push(m[1]);
+        }
+      }
+    });
+    ok(plain.length === 0, 'no citation left unlinked', plain.join(', '));
+
+    const shown = [...d.querySelectorAll('.legal')].map(n => n.textContent).join(' ');
+    ok(/Section 4\.6\.3/.test(shown), 'the cancellation citation reads 4.6.3');
+    ok(!/Section 5\.6\.3/.test(shown), 'and no longer reads 5.6.3');
+    ok(!/By selecting "No" - no further action/.test(shown),
+       'the "if you select No" line is gone from inside the waiver');
+
+    // THE LOAD-BEARING ASSERTION. Every correction above is presentation. What
+    // reaches Zanda must still be Zanda's own text, to the character.
+    // Asserted against the parsed composition, field by field, rather than the
+    // rendered JSON string — that is what would actually reach Zanda.
+    const sent = JSON.parse(d.getElementById('payload').textContent).composition.sections;
+    const at = (s, f) => sent[s].fields[f];
+
+    ok(at(10, 3).label.includes('5.3.'),
+       'payload keeps the original "5.3." heading label', at(10, 3).label);
+    ok(at(10, 9).text.includes('Section 5.3'),
+       'payload keeps the original "Section 5.3" citation');
+    ok(at(10, 5).text.includes('Section 5.6.3'),
+       'payload keeps the original "Section 5.6.3" citation');
+    ok(at(9, 12).text.includes('Section 4'),
+       'payload keeps the original "Section 4" citation');
+    ok(at(15, 1).text.includes('By selecting "No" - no further action is required.'),
+       'payload keeps the sentence omitted from the display');
+    ok(at(10, 27).text.includes('Continue onto Section 5.'),
+       'payload keeps the navigation lines');
+  }
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })();
