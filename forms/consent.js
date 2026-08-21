@@ -191,12 +191,46 @@
 
   var headingIds = {};        /* "4.6.3" -> element id, for rendered blocks only */
 
+  /* ---------- known numbering faults in the source form ----------
+     The Terms of Service was numbered 5.x and renumbered to 4.x, and the pass
+     was left unfinished. Block 10.3 still reads "5.3. Appointment Booking and
+     Communication" while sitting between 4.2.1 and 4.4 — which leaves 4.3
+     missing and puts two different clauses on the page both numbered 5.3 (the
+     other being the scribe consent's genuine 5.3, Privacy and Security).
+
+     Corrected here for DISPLAY only. The heading number is navigation, not
+     consent wording, and two identically numbered clauses in one document is a
+     defect a reader trips over. The payload is untouched, as always.
+
+     Delete this entry once Zanda is corrected — the skeleton hash will change
+     and force a re-capture anyway, which is the moment to check it. */
+  var HEADING_FIXES = {
+    '10.3': '4.3'
+  };
+
+  /* Numbers this page has re-pointed. Citations to them are left as plain text
+     rather than linked: "see Section 5.3" is cited once, from 10.9, and means
+     the booking clause — but with the heading corrected, 5.3 now unambiguously
+     means the scribe consent's Privacy and Security. Linking it would send a
+     reader somewhere confidently wrong. */
+  var AMBIGUOUS_NUMBERS = {};
+
   function anchorFor(number) { return 's-' + number.replace(/\./g, '-'); }
 
-  /* Splits "4.6.3.  Cancellation Policy" into its number and its title. */
-  function splitHeading(label) {
+  /* Splits "4.6.3.  Cancellation Policy" into its number and its title,
+     applying any documented correction to the number as it goes. */
+  function splitHeading(label, address) {
     var m = /^\s*(\d+(?:\.\d+)*)\.?\s+(.*)$/.exec(label || '');
-    return m ? { number: m[1], title: m[2].trim() } : null;
+    if (!m) { return null; }
+
+    var number = m[1];
+    var fixed = address && HEADING_FIXES[address];
+    if (fixed) {
+      AMBIGUOUS_NUMBERS[number] = true;
+      number = fixed;
+    }
+
+    return { number: number, title: m[2].trim() };
   }
 
   /* "Continue onto Section 5." is navigation for Zanda's single scroll, which
@@ -226,14 +260,32 @@
   }
 
   function fillLegal() {
+    /* Group titles come from the form's own headings, never invented here — a
+       reader's summary IS clause 4.6's heading, so the clause does not repeat
+       it inside. */
+    document.querySelectorAll('[data-legal-title]').forEach(function (host) {
+      var a = host.getAttribute('data-legal-title').split('.');
+      var f = fieldAt(+a[0], +a[1]);
+      var head = splitHeading(f && f.label, a[0] + '.' + a[1]);
+      if (!head) { return; }
+
+      var id = anchorFor(head.number);
+      headingIds[head.number] = id;
+      host.id = id;
+      host.innerHTML = '<span class="clause-num">' + head.number + '</span> ' +
+                       escapeText(head.title);
+    });
+
     document.querySelectorAll('[data-legal]').forEach(function (host) {
-      var html = expandAddresses(host.getAttribute('data-legal')).map(function (a) {
+      var skipFirst = host.hasAttribute('data-skip-first-heading');
+
+      var html = expandAddresses(host.getAttribute('data-legal')).map(function (a, i) {
         var f = fieldAt(a[0], a[1]);
         if (!f || f.type !== 6) { return ''; }
 
         var body = stripNavigation(sanitise(f.text));
-        var head = splitHeading(f.label);
-        if (!head) { return body; }
+        var head = splitHeading(f.label, a[0] + '.' + a[1]);
+        if (!head || (skipFirst && i === 0)) { return body; }
 
         var id = anchorFor(head.number);
         headingIds[head.number] = id;
@@ -319,6 +371,7 @@
      do not exist anywhere in the form, and a link that silently goes to the
      nearest plausible clause would hide a real fault in the source document. */
   function resolveCitation(number) {
+    if (AMBIGUOUS_NUMBERS[number]) { return null; }
     if (headingIds[number]) { return headingIds[number]; }
 
     /* A whole-section citation ("as outlined in Section 2") targets the step

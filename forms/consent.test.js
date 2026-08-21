@@ -351,8 +351,10 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
     const w = await boot();
     const d = w.document;
 
-    const heads = [...d.querySelectorAll('h4.clause')];
-    ok(heads.length > 50, `clause headings rendered (${heads.length})`);
+    // A numbered heading renders either as a clause heading or, where it is the
+    // title of a reader group, as that group's summary. Both count.
+    const heads = [...d.querySelectorAll('h4.clause, [data-legal-title]')];
+    ok(heads.length > 50, `numbered headings rendered (${heads.length})`);
     ok(heads.some(h => /^4\.6\.3\b/.test(h.textContent.trim())),
        'ToS clause 4.6.3 present with its number');
     ok(!!d.getElementById('s-4-6-3'), 'and carries an anchor');
@@ -377,6 +379,45 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
        'navigation instructions removed from the displayed text');
     ok(/Continue onto Section/.test(d.getElementById('payload').textContent),
        'but preserved byte-exact in the payload');
+  }
+
+  // ======================================================================
+  // Group titles must come from the form, never be invented here.
+  console.log('\n11. Reader groups follow the document');
+  {
+    const w = await boot();
+    const d = w.document;
+
+    const titled = [...d.querySelectorAll('summary[data-legal-title]')];
+    ok(titled.length >= 15, `reader groups titled from the form (${titled.length})`);
+    ok(titled.every(x => x.textContent.trim()), 'none left empty');
+
+    const tos = [...d.querySelectorAll('#body-terms > details.reader > summary')]
+      .map(x => x.textContent.trim());
+    ok(tos[0].startsWith('4.2 Scope of Services'), 'ToS opens at 4.2', tos[0]);
+    ok(tos.some(t => t.startsWith('4.6 Terms of Trade')), 'includes 4.6 Terms of Trade');
+    ok(tos[tos.length - 1].startsWith('4.9 Governing Law'), 'ends at 4.9', tos[tos.length - 1]);
+
+    // Zanda labels block 10.3 "5.3", which collides with the scribe consent's
+    // real 5.3. Corrected for display so one number means one clause.
+    ok(tos.some(t => t.startsWith('4.3 Appointment Booking')),
+       'the mislabelled 5.3 renders as 4.3');
+    ok(!tos.some(t => t.startsWith('5.')), 'no 5.x heading remains inside the ToS');
+
+    const fives = [...d.querySelectorAll('h4.clause, summary[data-legal-title]')]
+      .map(x => x.textContent.trim()).filter(t => /^5\.3\b/.test(t));
+    ok(fives.length === 1, 'exactly one clause numbered 5.3 on the page', fives.join(' | '));
+    ok(/Privacy and Security/.test(fives[0] || ''), 'and it is the scribe consent one');
+
+    // A citation to a re-pointed number must not be linked anywhere.
+    const linked = new Set([...d.querySelectorAll('a.xref')]
+      .map(a => /Section\s+([\d.]+)/.exec(a.textContent)[1]));
+    ok(!linked.has('5.3'), 'the "Section 5.3" citation is left plain, not mis-linked');
+
+    // 4.7 is guardian-only; a self-consenting client never sees it.
+    const g = d.querySelector('#body-terms [data-when="guardian"]');
+    ok(!!g && /^4\.7 /.test(g.querySelector('summary').textContent.trim()),
+       '4.7 is the guardian-only group');
   }
 
   console.log(`\n${pass} passed, ${fail} failed`);

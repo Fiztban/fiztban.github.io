@@ -301,28 +301,18 @@
                         <div class="legal" data-legal="9.0"></div>
 
                         <details class="reader">
-                            <summary>What we offer, and what it costs</summary>
-                            <div class="legal" data-legal="9.1"></div>
+                            <summary data-legal-title="9.1"></summary>
+                            <div class="legal" data-legal="9.1" data-skip-first-heading></div>
                         </details>
 
                         <details class="reader">
-                            <summary>Your rights under New Zealand law</summary>
-                            <div class="legal" data-legal="9.2,9.3,9.4"></div>
+                            <summary data-legal-title="9.2"></summary>
+                            <div class="legal" data-legal="9.2-9.7" data-skip-first-heading></div>
                         </details>
 
                         <details class="reader">
-                            <summary>When we share information &mdash; and the rare times we must without consent</summary>
-                            <div class="legal" data-legal="9.5,9.6"></div>
-                        </details>
-
-                        <details class="reader">
-                            <summary>How we collect, use and store your information</summary>
-                            <div class="legal" data-legal="9.7-9.13"></div>
-                        </details>
-
-                        <details class="reader">
-                            <summary>Accessing or correcting your information, and how to complain</summary>
-                            <div class="legal" data-legal="9.14,9.15"></div>
+                            <summary data-legal-title="9.8"></summary>
+                            <div class="legal" data-legal="9.8-9.15" data-skip-first-heading></div>
                         </details>
 
                         <label class="tick">
@@ -358,38 +348,46 @@
                         <div class="legal" data-legal="10.0"></div>
 
                         <details class="reader">
-                            <summary>What we provide, and how appointments are booked</summary>
-                            <div class="legal" data-legal="10.1,10.2,10.3"></div>
+                            <summary data-legal-title="10.1"></summary>
+                            <div class="legal" data-legal="10.1,10.2" data-skip-first-heading></div>
+                        </details>
+
+                        <!-- Zanda labels this one 5.3, but it sits between 4.2.1 and
+                             4.4 and should read 4.3. Rendered exactly as the form has
+                             it - correcting it here would only mask the fault. -->
+                        <details class="reader">
+                            <summary data-legal-title="10.3"></summary>
+                            <div class="legal" data-legal="10.3" data-skip-first-heading></div>
                         </details>
 
                         <details class="reader">
-                            <summary>Privacy, safety and the limits of our service</summary>
-                            <div class="legal" data-legal="10.4,10.5"></div>
+                            <summary data-legal-title="10.4"></summary>
+                            <div class="legal" data-legal="10.4" data-skip-first-heading></div>
                         </details>
 
                         <details class="reader">
-                            <summary>Fees, payment, and what happens if you cancel</summary>
-                            <div class="legal" data-legal="10.6-10.10"></div>
+                            <summary data-legal-title="10.5"></summary>
+                            <div class="legal" data-legal="10.5" data-skip-first-heading></div>
                         </details>
 
                         <details class="reader">
-                            <summary>Prescriptions, ACC, insurance and record keeping</summary>
-                            <div class="legal" data-legal="10.11-10.14"></div>
-                        </details>
-
-                        <details class="reader">
-                            <summary>Our liability, and unpaid accounts</summary>
-                            <div class="legal" data-legal="10.15,10.16"></div>
+                            <summary data-legal-title="10.6"></summary>
+                            <div class="legal" data-legal="10.6-10.16" data-skip-first-heading></div>
                         </details>
 
                         <details class="reader" data-when="guardian" hidden>
-                            <summary>Responsibilities where a Client is under 18</summary>
-                            <div class="legal" data-legal="10.17-10.25"></div>
+                            <summary data-legal-title="10.17"></summary>
+                            <div class="legal" data-legal="10.17-10.25" data-skip-first-heading></div>
                         </details>
 
                         <details class="reader">
-                            <summary>Changes to these terms, and governing law</summary>
-                            <div class="legal" data-legal="10.26,10.27"></div>
+                            <summary data-legal-title="10.26"></summary>
+                            <div class="legal" data-legal="10.26" data-skip-first-heading></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary data-legal-title="10.27"></summary>
+                            <div class="legal" data-legal="10.27" data-skip-first-heading></div>
                         </details>
 
                         <label class="tick">
@@ -423,16 +421,26 @@
 
                     <div class="stage-body" id="body-scribe" hidden>
 
-                        <div class="legal" data-legal="11.0,11.1"></div>
+                        <div class="legal" data-legal="11.0"></div>
 
                         <details class="reader">
-                            <summary>What happens to the recordings, and how long we keep them</summary>
-                            <div class="legal" data-legal="11.2,11.3"></div>
+                            <summary data-legal-title="11.1"></summary>
+                            <div class="legal" data-legal="11.1" data-skip-first-heading></div>
                         </details>
 
                         <details class="reader">
-                            <summary>Your right to decline or withdraw</summary>
-                            <div class="legal" data-legal="11.4"></div>
+                            <summary data-legal-title="11.2"></summary>
+                            <div class="legal" data-legal="11.2" data-skip-first-heading></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary data-legal-title="11.3"></summary>
+                            <div class="legal" data-legal="11.3" data-skip-first-heading></div>
+                        </details>
+
+                        <details class="reader">
+                            <summary data-legal-title="11.4"></summary>
+                            <div class="legal" data-legal="11.4" data-skip-first-heading></div>
                         </details>
 
                         <div class="q">
@@ -506,7 +514,7 @@
                         </div>
 
                         <div class="gated" data-when="dog-in" hidden>
-                            <h3>Therapy Dog Interaction Waiver</h3>
+                            <h3 class="clause" data-legal-title="13.3"></h3>
                             <p class="q-help">Because Neve will be in the room, we need you to read and agree to the following.</p>
 
                             <div class="legal" data-legal="13.5,13.6,13.7"></div>
