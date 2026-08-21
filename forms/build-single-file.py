@@ -78,8 +78,6 @@ def main():
     body = re.search(r"<body>(.*)</body>", html, re.S).group(1)
     body = body.replace('src="../assets/Logos/km-logo-name-below.svg"',
                         f'src="{data_uri("assets/Logos/km-logo-name-below.svg", "image/svg+xml")}"')
-    body = body.replace('src="../assets/Used/Neve_cropped.jpg"',
-                        f'src="{photo_uri("assets/Used/Neve_cropped.jpg")}"')
     body = body.replace('href="../index.html"',
                         'href="https://kinderminds.nz" target="_blank" rel="noopener"')
     # The favicon links point at paths that will not resolve from a lone file.
@@ -87,6 +85,31 @@ def main():
 
     js = read("forms/consent.js")
     snapshot = json.load(io.open(os.path.join(HERE, "zanda-combined-consent.json"), encoding="utf-8"))
+
+    # --- embed the drawings the page actually references --------------------
+    # consent.js maps each Zanda drawing name to a local file; here those paths
+    # become data URIs. Read from the map rather than named here, so adding a
+    # drawing to the form is a one-line change in consent.js and this follows.
+    dmap = re.search(r"var DRAWINGS = \{(.*?)\n  \};", js, re.S)
+    assert dmap, "DRAWINGS map not found — consent.js changed shape"
+
+    embedded = []
+    for name, rel in re.findall(r"'([^']+)':\s*'([^']+)'", dmap.group(1)):
+        path = os.path.normpath(os.path.join(HERE, rel))
+        if not os.path.exists(path):
+            sys.exit(f"REFUSING TO BUILD: DRAWINGS points at {rel}, which does not exist.")
+        embedded.append(f"    '{name}': '{photo_uri(os.path.relpath(path, SITE).replace(os.sep, '/'))}'")
+
+    js = js.replace(dmap.group(0), "var DRAWINGS = {\n" + ",\n".join(embedded) + "\n  };", 1)
+
+    # Every drawing the form selects must have a local copy, or the page would
+    # silently render without its illustration.
+    for si, sec in enumerate(snapshot["sections"]):
+        for fi, fld in enumerate(sec["fields"]):
+            picked = fld.get("selectedDrawing")
+            if picked and picked not in dict(re.findall(r"'([^']+)':\s*'([^']+)'", dmap.group(1))):
+                sys.exit(f"REFUSING TO BUILD: field {si}.{fi} selects drawing {picked!r}, "
+                         f"which is not in the DRAWINGS map in consent.js.")
 
     # --- verify the snapshot here, at build time ---------------------------
     # The served page recomputes this in the browser because the snapshot it

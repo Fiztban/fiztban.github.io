@@ -320,6 +320,29 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
        'Continue opens the next step');
   }
 
+  // ======================================================================
+  // Zanda's `drawings` array is the clinic's whole shared image library, so a
+  // name appearing in it says nothing about whether THIS form uses it. The
+  // page must follow the field's own selectedDrawing.
+  console.log('\n9. The therapy dog image follows the form');
+  {
+    const w = await boot();
+    const img = w.document.querySelector('[data-drawing="13.1"]');
+    const src = String(img.getAttribute('src'));
+
+    ok(!img.hidden, 'image resolved and shown');
+    ok(/20240904_084912_C\.jpg$/.test(src), 'uses the drawing the field selects', src);
+    ok(!/Neve_cropped/.test(src), 'not the other image in the shared library');
+
+    // An unknown drawing must show nothing rather than the wrong picture.
+    const snap = JSON.parse(SNAP);
+    snap.sections[13].fields[1].selectedDrawing = 'something-we-do-not-have.jpg';
+    const w2 = await boot({ snapshot: JSON.stringify(snap) });
+    const img2 = w2.document.querySelector('[data-drawing="13.1"]');
+    ok(img2.hidden, 'unknown drawing hides the image');
+    ok(!img2.getAttribute('src'), 'and sets no src at all');
+  }
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })();

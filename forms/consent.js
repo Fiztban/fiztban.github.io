@@ -202,6 +202,44 @@
     });
   }
 
+  /* ---------- drawings ----------
+     Zanda's `drawings` array is the clinic's whole image library, shared across
+     every custom form — so a name appearing in it says nothing about whether
+     THIS form uses it. The field's own `selectedDrawing` is what the form
+     displays, and that is what this reads.
+
+     The images themselves sit behind Zanda's FileUrl endpoint, so the repo
+     keeps local copies under the same filenames. Adding a drawing to a form in
+     Zanda therefore means adding its file here too. */
+
+  var DRAWINGS = {
+    '20240904_084912_C.jpg': '../assets/Used/20240904_084912_C.jpg'
+  };
+
+  function fillDrawings() {
+    document.querySelectorAll('[data-drawing]').forEach(function (img) {
+      var a = img.getAttribute('data-drawing').split('.');
+      var f = fieldAt(+a[0], +a[1]);
+      var name = f && f.selectedDrawing;
+      var src = name && DRAWINGS[name];
+
+      if (src) {
+        img.src = src;
+        img.hidden = false;
+        return;
+      }
+
+      /* The form points at a drawing we hold no copy of. Showing nothing is the
+         right answer — showing whatever else is to hand is how a therapy-dog
+         waiver ends up illustrated with the wrong dog. */
+      img.hidden = true;
+      if (window.console) {
+        window.console.warn('consent.js: no local asset for drawing ' +
+          JSON.stringify(name) + ' — add it to DRAWINGS.');
+      }
+    });
+  }
+
   /* Several of Zanda's option labels end in a parenthetical telling the reader
      which section to jump to next — "(Proceed to Section 2.3)", "(please tick
      Not applicable in Sections 2.3.1 & 2.3.3...)". Those instructions describe
@@ -1022,6 +1060,7 @@
 
       load();
       fillLegal();
+      fillDrawings();
       applyContext();
       initAccordion();
       initInputs();
