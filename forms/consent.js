@@ -709,6 +709,12 @@
     }
 
     need('scribeConsent', has(r.scribeConsent.value));
+
+    /* A read-tick stands where a step asks nothing else. Steps 1, 3 and 4 are
+       pure reading; every other step ends in an answer that speaks for itself.
+       These are local only — the record of having read the form is the
+       declaration in step 7, which says so in as many words. */
+    need('read1', !!ui.read1);
     need('read3', !!ui.read3);
     need('read4', !!ui.read4);
     need('declaration', r.declaration.value.length === 4);
@@ -838,9 +844,9 @@
   }
 
   /* Must stay in step with outstanding(): client name, who is completing,
-     scribe consent, the two read ticks, declaration, signer name, signature. */
+     scribe consent, the three read ticks, declaration, signer name, signature. */
   function requiredCount() {
-    var n = 8;
+    var n = 9;
     if (answers.completedBy === OPT.completedBy.guardian) {
       n += 2;                                      /* sole? + guardian 1   */
       if (answers.soleGuardian === OPT.soleGuardian.notSole) {
@@ -851,24 +857,43 @@
   }
 
   /* A step is done when nothing it owns is outstanding. */
+  /* The therapy dog step is answered the moment the page loads — leaving the
+     gate shut IS the answer — so it would otherwise sit green before the reader
+     had ever opened it. A finished-looking step invites skipping, and this is
+     the one section offering something a family might want. It counts as done
+     once seen, which is honest either way: the answer was always valid, but the
+     reader had not yet had the chance to change it.
+
+     Deliberately not part of the progress count. Opening a section is not an
+     answer, and padding the denominator with it would misreport how much is
+     actually left to do. */
+  var NEEDS_SEEING = { 'step-dog': true };
+
+  function markSeen(id) {
+    if (!NEEDS_SEEING[id] || ui['seen-' + id]) { return; }
+    ui['seen-' + id] = true;
+    save();
+    updateProgress();
+  }
+
   var STEP_OWNS = {
-    'step-who':   ['clientName', 'completedBy', 'soleGuardian', 'guardian1', 'guardian2', 'contactOthers'],
-    'step-info':  ['read3'],
-    'step-terms': ['read4'],
-    'step-dog':   [],
-    'step-sign':  ['declaration', 'signerName', 'signature']
+    'about-form':  ['read1'],
+    'step-who':    ['clientName', 'completedBy', 'soleGuardian', 'guardian1', 'guardian2', 'contactOthers'],
+    'step-info':   ['read3'],
+    'step-terms':  ['read4'],
+    'step-scribe': ['scribeConsent'],
+    'step-dog':    [],            /* always has a valid answer — see the gate */
+    'step-sign':   ['declaration', 'signerName', 'signature']
   };
 
   function markSteps(missing) {
     Object.keys(STEP_OWNS).forEach(function (id) {
       var li = el(id);
       if (!li) { return; }
-      var owed = STEP_OWNS[id].some(function (k) { return missing.indexOf(k) !== -1; });
+      var owed = STEP_OWNS[id].some(function (k) { return missing.indexOf(k) !== -1; }) ||
+                 (NEEDS_SEEING[id] && !ui['seen-' + id]);
       li.classList.toggle('done', !owed);
     });
-
-    var scribe = el('step-scribe');
-    if (scribe) { scribe.classList.toggle('done', missing.indexOf('scribeConsent') === -1); }
   }
 
   function refresh() {
@@ -1143,6 +1168,7 @@
         var open = head.getAttribute('aria-expanded') !== 'true';
         head.setAttribute('aria-expanded', open ? 'true' : 'false');
         body.hidden = !open;
+        if (open) { markSeen(li.id); }
         syncExpandAll();
       });
     });
@@ -1154,6 +1180,7 @@
         if (!head || !body) { return; }
         head.setAttribute('aria-expanded', open ? 'true' : 'false');
         body.hidden = !open;
+        if (open) { markSeen(li.id); }
       });
       syncExpandAll();
     }
@@ -1189,7 +1216,11 @@
 
         var th = target.querySelector('.stage-head');
         var tb = target.querySelector('.stage-body');
-        if (th && tb) { th.setAttribute('aria-expanded', 'true'); tb.hidden = false; }
+        if (th && tb) {
+          th.setAttribute('aria-expanded', 'true');
+          tb.hidden = false;
+          markSeen(target.id);
+        }
 
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         syncExpandAll();

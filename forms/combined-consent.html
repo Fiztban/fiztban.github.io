@@ -99,7 +99,16 @@
                     </button>
 
                     <div class="stage-body" id="about-body" hidden>
-                        <div class="legal" data-legal="0.0,1.0"></div>
+                        <div class="legal" data-legal="0.0"></div>
+
+                        <label class="tick">
+                            <input type="checkbox" id="read-1" data-ui="read1">
+                            <span>I have read this introduction.</span>
+                        </label>
+
+                        <div class="step-foot">
+                            <button type="button" class="button" data-next="step-who">Continue</button>
+                        </div>
                     </div>
                 </li>
 
@@ -122,6 +131,11 @@
                     </button>
 
                     <div class="stage-body" id="body-who">
+
+                        <!-- Section 2's own opening paragraph. It sat in step 1 while the
+                             introduction was an unnumbered panel; now that steps map to
+                             sections, it belongs to the section it introduces. -->
+                        <div class="legal" data-legal="1.0"></div>
 
                         <div class="q">
                             <label class="q-label" for="client-name">Who is this form about?</label>

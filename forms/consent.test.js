@@ -123,7 +123,7 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
     set(w, '#g2-email', 'sam@example.com');
     pick(w, 'contactOthers', 0);
     pick(w, 'scribeConsent', 0);
-    tick(w, 'read-3'); tick(w, 'read-4');
+    tick(w, 'read-1'); tick(w, 'read-3'); tick(w, 'read-4');
     tickAll(w, 'declaration');
     set(w, '#signer-name', 'Aroha Example');
 
@@ -160,7 +160,7 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
     ok(visible(w, '.when[data-when="self"]'), 'self branch revealed');
 
     pick(w, 'scribeConsent', 1);
-    tick(w, 'read-3'); tick(w, 'read-4');
+    tick(w, 'read-1'); tick(w, 'read-3'); tick(w, 'read-4');
     tickAll(w, 'declaration');
     set(w, '#signer-name', 'Self Example');
 
@@ -170,7 +170,7 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
     ok(fieldOf(p, 6, 1).text === null && fieldOf(p, 6, 2).text === null && fieldOf(p, 6, 3).text === null,
        'no guardian details collected');
     ok(chosen(fieldOf(p, 12, 0)).join() === '1', 'scribe consent = no');
-    ok(w.document.getElementById('review-blocker').hidden, 'complete with 8 answers');
+    ok(w.document.getElementById('review-blocker').hidden, 'complete with 9 answers');
 
     const label = w.document.getElementById('progress-label').textContent;
     ok(/All answered/.test(label), 'progress complete for self branch', label);
@@ -191,7 +191,7 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
     set(w, '#g1-mobile', '021 999');
     set(w, '#g1-email', 'solo@example.com');
     pick(w, 'scribeConsent', 0);
-    tick(w, 'read-3'); tick(w, 'read-4');
+    tick(w, 'read-1'); tick(w, 'read-3'); tick(w, 'read-4');
     tickAll(w, 'declaration');
     set(w, '#signer-name', 'Solo Parent');
 
@@ -501,6 +501,40 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
        'payload keeps the sentence omitted from the display');
     ok(at(10, 27).text.includes('Continue onto Section 5.'),
        'payload keeps the navigation lines');
+  }
+
+  // ======================================================================
+  console.log('\n14. Read-ticks and step completion');
+  {
+    const w = await boot();
+    const d = w.document;
+
+    // A read-tick belongs where a step asks nothing else.
+    ['read-1', 'read-3', 'read-4'].forEach(id =>
+      ok(!!d.getElementById(id), `${id} present`));
+    ok(!d.querySelector('#body-scribe .tick') && !d.querySelector('#body-sign .tick'),
+       'steps that end in a real answer carry no read-tick');
+
+    ok(/0 of 9 answered/.test(d.getElementById('progress-label').textContent),
+       'the introduction tick is counted in progress',
+       d.getElementById('progress-label').textContent);
+
+    const step1 = d.getElementById('about-form');
+    ok(!step1.classList.contains('done'), 'the introduction starts incomplete');
+    const t = d.getElementById('read-1');
+    t.checked = true; t.dispatchEvent(new w.Event('change', { bubbles: true }));
+    ok(step1.classList.contains('done'), 'and completes on the tick');
+
+    // The therapy dog answers itself, so it must not look finished unseen.
+    const dog = d.getElementById('step-dog');
+    ok(!dog.classList.contains('done'), 'the therapy dog step is not done before it is opened');
+    d.querySelector('#step-dog .stage-head').click();
+    ok(dog.classList.contains('done'), 'opening it is enough — the answer was always valid');
+
+    // Opening a section is not an answer, so it must not pad the denominator.
+    ok(/of 9 answered/.test(d.getElementById('progress-label').textContent),
+       'seeing a step does not change the total',
+       d.getElementById('progress-label').textContent);
   }
 
   console.log(`\n${pass} passed, ${fail} failed`);
