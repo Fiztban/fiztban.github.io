@@ -343,6 +343,42 @@ const SIGNED = { answers: { signature: 'data:image/png;base64,SIG' }, ui: {} };
     ok(!img2.getAttribute('src'), 'and sets no src at all');
   }
 
+  // ======================================================================
+  // The legal text cites its own clause numbers ("see Section 4.6.3"), so the
+  // numbering is load-bearing, not decoration.
+  console.log('\n10. Clause numbering and cross-references');
+  {
+    const w = await boot();
+    const d = w.document;
+
+    const heads = [...d.querySelectorAll('h4.clause')];
+    ok(heads.length > 50, `clause headings rendered (${heads.length})`);
+    ok(heads.some(h => /^4\.6\.3\b/.test(h.textContent.trim())),
+       'ToS clause 4.6.3 present with its number');
+    ok(!!d.getElementById('s-4-6-3'), 'and carries an anchor');
+
+    const links = [...d.querySelectorAll('a.xref')];
+    ok(links.length > 0, `citations linked (${links.length})`);
+    ok(links.every(a => !!d.getElementById(a.getAttribute('href').slice(1))),
+       'every link points at something that exists on the page');
+
+    // The load-bearing one: citations that resolve nowhere must stay plain.
+    // 5.6.3 and 5.7.3 are cited five times between them and exist nowhere in
+    // the form. Linking them to the nearest plausible clause would look
+    // deliberate while being wrong, and would hide a fault in the source.
+    const linked = new Set(links.map(a => /Section\s+([\d.]+)/.exec(a.textContent)[1]));
+    ok(!linked.has('5.6.3'), 'Section 5.6.3 is not linked (it does not exist)');
+    ok(!linked.has('5.7.3'), 'Section 5.7.3 is not linked (it does not exist)');
+
+    // Zanda's own "Continue onto Section N" is navigation for its single
+    // scroll; this pathway has Continue buttons. Stripped on screen only.
+    const prose = [...d.querySelectorAll('.legal')].map(n => n.textContent).join(' ');
+    ok(!/Continue\s+(?:onto|to)\s+Section/i.test(prose),
+       'navigation instructions removed from the displayed text');
+    ok(/Continue onto Section/.test(d.getElementById('payload').textContent),
+       'but preserved byte-exact in the payload');
+  }
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })();

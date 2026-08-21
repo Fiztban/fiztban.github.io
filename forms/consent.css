@@ -491,3 +491,55 @@
   .payload, .step-foot, .sig-bar { display: none; }
   .opt { break-inside: avoid; }
 }
+
+/* ============ NUMBERED CLAUSES ========= */
+/* Each Information block carries its own numbered heading, and the legal text
+   cites those numbers. Keeping them is not decoration: strip the numbering and
+   the document stops being able to refer to itself. */
+
+.legal h4.clause {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-size: 1rem;
+  color: var(--brand-deep);
+  margin: 1.35rem 0 0.4rem;
+  scroll-margin-top: 5rem;          /* clear the sticky progress bar */
+}
+
+.legal h4.clause:first-child { margin-top: 0; }
+
+.clause-num {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--subtitle);
+  margin-right: 0.4rem;
+}
+
+/* ============ CROSS-REFERENCES ========= */
+
+a.xref {
+  color: var(--banner-top);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+}
+
+a.xref:hover { text-decoration-thickness: 2px; }
+a.xref:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+/* Briefly mark whatever a citation jumped to. */
+.just-linked { animation: xref-flash 1.6s ease-out; }
+
+@keyframes xref-flash {
+  0%, 30% { background-color: #FBF4E3; box-shadow: 0 0 0 6px #FBF4E3; }
+  100%    { background-color: transparent; box-shadow: 0 0 0 6px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .just-linked { animation: none; }
+}
+
+@media print {
+  a.xref { text-decoration: none; font-weight: 600; }
+}

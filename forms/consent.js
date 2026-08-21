@@ -182,15 +182,72 @@
     return out;
   }
 
+  /* ---------- numbered headings ----------
+     Every Information block carries its own numbered heading ("4.6.3.
+     Cancellation Policy"), and the legal text cites those numbers — "see
+     Section 4.6.3". Drop the numbering and sixteen cross-references in the
+     text point at nothing the reader can find, so the headings are rendered
+     verbatim and the citations are turned into links to them. */
+
+  var headingIds = {};        /* "4.6.3" -> element id, for rendered blocks only */
+
+  function anchorFor(number) { return 's-' + number.replace(/\./g, '-'); }
+
+  /* Splits "4.6.3.  Cancellation Policy" into its number and its title. */
+  function splitHeading(label) {
+    var m = /^\s*(\d+(?:\.\d+)*)\.?\s+(.*)$/.exec(label || '');
+    return m ? { number: m[1], title: m[2].trim() } : null;
+  }
+
+  /* "Continue onto Section 5." is navigation for Zanda's single scroll, which
+     this pathway has replaced with its own Continue buttons. Same reasoning as
+     stripRouting: only the displayed text changes, never the record. */
+  function stripNavigation(html) {
+    var box = document.createElement('div');
+    box.innerHTML = html;
+
+    /* Each of these sits in its own element ("<div>Continue onto Section 3.</div>"),
+       so matching on an element's entire text is exact — a parent holding real
+       content alongside it can never match. */
+    box.querySelectorAll('p, div, li').forEach(function (node) {
+      if (/^\s*Continue\s+(?:onto|to)\s+Section\s+\d+(?:\.\d+)*\s*\.?\s*$/i.test(node.textContent)) {
+        node.remove();
+      }
+    });
+
+    /* Zanda's editor pads with <div><br></div>; once the line above it goes,
+       the spacer is left dangling at the end. */
+    while (box.lastElementChild && !box.lastElementChild.textContent.trim() &&
+           box.lastElementChild.querySelector('br')) {
+      box.lastElementChild.remove();
+    }
+
+    return box.innerHTML;
+  }
+
   function fillLegal() {
     document.querySelectorAll('[data-legal]').forEach(function (host) {
       var html = expandAddresses(host.getAttribute('data-legal')).map(function (a) {
         var f = fieldAt(a[0], a[1]);
-        return (f && f.type === 6) ? sanitise(f.text) : '';
+        if (!f || f.type !== 6) { return ''; }
+
+        var body = stripNavigation(sanitise(f.text));
+        var head = splitHeading(f.label);
+        if (!head) { return body; }
+
+        var id = anchorFor(head.number);
+        headingIds[head.number] = id;
+
+        return '<h4 class="clause" id="' + id + '">' +
+               '<span class="clause-num">' + head.number + '</span> ' +
+               escapeText(head.title) + '</h4>' + body;
       }).join('');
+
       host.innerHTML = html;
       host.classList.add('legal');
     });
+
+    linkCrossReferences();
 
     /* Option text is legal wording too — always taken from Zanda, never
        retyped into the markup. */
@@ -201,6 +258,100 @@
       if (o) { host.textContent = stripRouting(o.value); }
     });
   }
+
+  function escapeText(s) {
+    var box = document.createElement('span');
+    box.textContent = s || '';
+    return box.innerHTML;
+  }
+
+  /* Turns "see Section 4.6.3" into a link to that clause, but only where the
+     clause is actually on this page. An unresolvable citation is left as plain
+     text — a link that goes nowhere is worse than none, and these are the
+     symptom of a numbering fault in the source form that we must not paper
+     over. Walks text nodes only, so nothing inside an attribute is touched. */
+  function linkCrossReferences() {
+    document.querySelectorAll('.legal').forEach(function (host) {
+      var walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT, null);
+      var nodes = [];
+      while (walker.nextNode()) { nodes.push(walker.currentNode); }
+
+      nodes.forEach(function (node) {
+        if (node.parentNode.closest('a, h4')) { return; }
+        if (!/Section\s+\d/.test(node.nodeValue)) { return; }
+
+        var frag = document.createDocumentFragment();
+        var rest = node.nodeValue;
+        var re = /Section\s+(\d+(?:\.\d+)*)/g;
+        var last = 0;
+        var m;
+
+        while ((m = re.exec(node.nodeValue)) !== null) {
+          var id = resolveCitation(m[1]);
+          if (!id) { continue; }
+
+          frag.appendChild(document.createTextNode(node.nodeValue.slice(last, m.index)));
+          var a = document.createElement('a');
+          a.className = 'xref';
+          a.href = '#' + id;
+          a.textContent = m[0];
+          frag.appendChild(a);
+          last = m.index + m[0].length;
+        }
+
+        if (!last) { return; }
+        frag.appendChild(document.createTextNode(node.nodeValue.slice(last)));
+        node.parentNode.replaceChild(frag, node);
+        rest = null;
+      });
+    });
+  }
+
+  /* Resolve a cited number to something on this page.
+
+     Exact clause first. Failing that, walk up the numbering — "Section 2.3.2"
+     has no clause of its own here because this pathway restructured all of
+     section 2 into one step, so it resolves to that step. Landing a reader on
+     the right step is useful; landing them nowhere is not.
+
+     Returns null when nothing matches, and the citation then stays plain text.
+     That is deliberate: 5.6.3 and 5.7.3 are cited five times between them and
+     do not exist anywhere in the form, and a link that silently goes to the
+     nearest plausible clause would hide a real fault in the source document. */
+  function resolveCitation(number) {
+    if (headingIds[number]) { return headingIds[number]; }
+
+    /* A whole-section citation ("as outlined in Section 2") targets the step
+       that section became. */
+    if (number.indexOf('.') === -1) { return stepIds[number] || null; }
+
+    /* A sub-number resolves upwards, but only ever to a clause that genuinely
+       exists. It must NOT fall back to the containing step: "Section 5.6.3" is
+       cited four times and exists nowhere, and sending the reader to section 5
+       — the scribe consent — would look deliberate while being flatly wrong.
+       Left as plain text it reads as the fault it is, which is the honest
+       outcome and the one that gets it fixed at source. */
+    var parts = number.split('.');
+    while (parts.length > 1) {
+      parts.pop();
+      var parent = parts.join('.');
+      if (headingIds[parent]) { return headingIds[parent]; }
+    }
+
+    return null;
+  }
+
+  /* Whole-section citations ("as outlined in Section 2") point at a step of
+     this pathway rather than a clause. */
+  var stepIds = {
+    '1': 'about-form',
+    '2': 'step-who',
+    '3': 'step-info',
+    '4': 'step-terms',
+    '5': 'step-scribe',
+    '6': 'step-dog',
+    '7': 'step-sign'
+  };
 
   /* ---------- drawings ----------
      Zanda's `drawings` array is the clinic's whole image library, shared across
@@ -884,6 +1035,48 @@
   }
 
   /* ====================================================================== */
+  /* Cross-reference navigation                                             */
+  /* ====================================================================== */
+
+  /* A citation must land the reader on the clause, not on a collapsed header
+     they then have to hunt through. Opens every fold between the target and
+     the page — the accordion stage, and any nested reader. */
+  function revealTarget(id) {
+    var target = el(id);
+    if (!target) { return false; }
+
+    function openStage(body) {
+      if (!body) { return; }
+      body.hidden = false;
+      var head = body.parentNode && body.parentNode.querySelector('.stage-head');
+      if (head) { head.setAttribute('aria-expanded', 'true'); }
+    }
+
+    /* A whole-section citation targets the step itself. */
+    openStage(target.querySelector && target.querySelector('.stage-body'));
+
+    for (var node = target; node && node !== document.body; node = node.parentNode) {
+      if (node.tagName === 'DETAILS') { node.open = true; }
+      if (node.classList && node.classList.contains('stage-body')) { openStage(node); }
+    }
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.classList.remove('just-linked');
+    void target.offsetWidth;                     /* restart the flash */
+    target.classList.add('just-linked');
+    return true;
+  }
+
+  function initCrossRefLinks() {
+    /* Delegated, because the links are created after the page is built. */
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a.xref');
+      if (!a) { return; }
+      if (revealTarget(a.getAttribute('href').slice(1))) { e.preventDefault(); }
+    });
+  }
+
+  /* ====================================================================== */
   /* Wiring                                                                 */
   /* ====================================================================== */
 
@@ -1063,6 +1256,7 @@
       fillDrawings();
       applyContext();
       initAccordion();
+      initCrossRefLinks();
       initInputs();
       initSignature();
       syncInputs();
