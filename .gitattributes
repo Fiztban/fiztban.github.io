@@ -1,0 +1,30 @@
+# One line ending everywhere: LF, in the repository and in the working tree.
+#
+# Why this file exists. core.autocrlf=true was handing Windows a CRLF working
+# tree while the repository stored LF, and nothing kept the two halves of the
+# build in step: _build/partials/ was CRLF, _build/pages/ was mostly LF, and
+# build.js concatenates them verbatim — so every page in guide/ came out with
+# both endings in the same file.
+#
+# That is not cosmetic. A multi-line search-and-replace written with "\n" finds
+# nothing in a CRLF file and reports zero matches instead of an error, so an
+# edit silently does nothing. It has already cost us a run.
+#
+# eol=lf overrides core.autocrlf for anyone who clones this repo, so the setting
+# travels with the code instead of living in one machine's git config.
+
+* text=auto eol=lf
+
+# Formats git should never inspect or rewrite.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.docx  binary

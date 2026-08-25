@@ -3,3 +3,13 @@ node_modules/
 # Single-file builds from forms/build-single-file.py. Generated, and they
 # hard-code a client hash — they must never reach a public repo or web server.
 *.local.html
+
+# Source photography, alternates and full-resolution originals. Kept locally and
+# in OneDrive, but never deployed - GitHub Pages serves this repo verbatim, so
+# anything committed here is public and counts against the page weight. Nothing
+# the site renders may live in this folder; assets/Used/ is the deployed set.
+assets/Unused/
+
+# Markup staged for a future release and deliberately not deployed, such as a
+# team member whose agreement is not signed yet. Local only.
+_pending/

@@ -37,12 +37,19 @@ font-family: 'Source Serif 4', serif;
   --header-height: 100px;
   --nav-height: 80px;
   --nav-mobile-height: 60px;
+  /* How far the first article of a section must drop to clear the fixed nav.
+     Redefined in the <=1080px block rather than fought over with selectors. */
+  --nav-offset: 80px;
   --top-bot-padding: 100px;
   --top-bot-padding-mobile: 30px;
 }
 
+/* The page is capped and centred at every width. Anything beyond the cap is
+   gutter, and shows this background. The <=1080px block narrows the cap to
+   750px; between the two the body simply fills the viewport. */
 html {
   scroll-behavior: smooth;
+  background-color: var(--heading-dark);
 }
 
 body {
@@ -50,6 +57,8 @@ body {
   font-family: 'Source Serif 4', serif;
   color: var(--text-colour);
   min-width: 350px;
+  max-width: 1600px;
+  margin-inline: auto;
 }
 
 .responsive-body {
@@ -64,7 +73,11 @@ header {
   background-color: var(--nav-background);    /*  70% opaque white */
   /* box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);  /* horizontal offset, vertical offset, blur, color */
   width: 100%;
+  max-width: 1600px;
   position: fixed;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
   z-index: 100;
   display: grid;
   grid-template-columns: 2fr 3fr;
@@ -201,6 +214,19 @@ h1.title {
 h2.subtitle {
   font-size: 24px;
   margin-bottom: 1rem;
+}
+
+/* The role a team member holds, sitting between their name and the rule. The
+   negative top margin collapses against the h2's own margin to close the gap,
+   so the name and role read as one unit. Needs to out-specify `main p`. */
+main p.role {
+  font-family: 'Fira Sans', sans-serif;
+  font-size: 19px;
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--km-blue);
+  margin-top: -0.75rem;
+  margin-bottom: 0.9rem;
 }
 
 main div {
@@ -518,6 +544,121 @@ body.maintenance section article.text-content {
   padding-top: 2em;
 }
 
+/* Sarah's credentials, as a panel rather than a continuation of her bio. The
+   lists need more width than her text column gives them, so instead of forcing
+   them to line up they are framed - same card language as the services table,
+   which stops the block reading as bolted on. */
+/* The band only has to hold the card clear of the photo above and the next
+   article below - the card carries its own internal spacing, so the section's
+   usual 100px would double up. */
+#sarah-skills {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.credentials {
+  width: min(1100px, 88%);
+  margin-inline: auto;
+  padding: 2.5rem 3rem;
+  border-radius: 20px;
+  background-color: var(--light-background);
+}
+
+/* Explicit width: main div { justify-items: center } would otherwise shrink
+   this grid to fit-content and centre it inside the card. */
+.credentials-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 3rem;
+  width: 100%;
+  /* Fill the tracks. main div { justify-items: center } would otherwise shrink
+     each column to fit-content and centre it, so the two would start at
+     different places. */
+  justify-items: stretch;
+}
+
+/* Inside the card the columns must not carry the section's own 100px padding -
+   the card provides the spacing, so this would otherwise double up top and
+   bottom and leave a dead band under the shorter list. */
+.credentials .linked-content {
+  padding-top: 0;
+  padding-bottom: 0;
+  width: auto;
+  max-width: none;
+}
+
+/* One rule under the card title is enough; the two sub-headings are labels
+   within it, not headings in their own right. */
+.credentials h3 {
+  margin-bottom: 1rem;
+}
+
+.credentials h4 {
+  font-size: 20px;
+  margin-bottom: 1.1rem;
+}
+
+/* Training history: institution over qualification, no bullets. Explicit width
+   because main div { justify-items: center } would otherwise shrink these to
+   fit-content - which for a wrapping flex row means one very long line. */
+.training {
+  width: 100%;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.training dt {
+  margin-top: 1rem;
+  color: var(--heading-dark);
+}
+
+.training dt:first-of-type {
+  margin-top: 0;
+}
+
+.training dd {
+  color: var(--text-colour);
+  font-size: 14px;
+}
+
+/* Acronym in the pill, expansion beside it. A two-column grid rather than
+   inline pills, so every expansion starts on the same line - and so the pills
+   stay small enough not to compete with the heading above. */
+.modalities {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.6rem 0.85rem;
+  align-items: baseline;
+  width: 100%;
+  margin: 0 0 2rem 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Flush right, so the gap from pill to expansion is the same on every row. */
+.modalities dt {
+  justify-self: end;
+}
+
+.modalities dd {
+  color: var(--text-colour);
+}
+
+/* No acronym for this one, so it sits in the expansion column on its own. */
+.modalities dd.solo {
+  grid-column: 2;
+}
+
+.pill {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background-color: var(--mid-background);
+  color: var(--text-blue);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 .no-pad-top,
 .no-pad {
   padding-top: 0px;
@@ -551,8 +692,23 @@ body.maintenance section article.text-content {
 }
 
 
+/* The nav is fixed at every width. The hero is built to sit under it - the bar
+   is translucent over the hero image on purpose - but every other section needs
+   to clear it, or its first heading or picture ends up behind the bar. */
+main > section > article:first-of-type:not(.hero-section) {
+  padding-top: var(--nav-offset);
+}
+
 .hidden {
   display: none;
+}
+
+/* The browser's own [hidden] rule is a user-agent rule, so any author rule that
+   sets display - .service-badge is inline-block, for one - silently beats it and
+   the element stays on screen. This puts the attribute back in charge, which the
+   dated copy in script.js depends on. */
+[hidden] {
+  display: none !important;
 }
 
 /* Service Sales Table Unique Styling */
@@ -568,7 +724,7 @@ body.maintenance section article.text-content {
 
 .content.service-table {
   margin: auto;
-  padding: calc(var(--nav-height) + 30px) 30px 20px 30px;
+  padding: 30px 30px 20px 30px;   /* the nav offset now comes from the article */
 }
 
 .content-right.service-table {
@@ -605,6 +761,23 @@ div.content-right.service-table > div.image-container {
 
 div.content-right.service-table div.rule-decoration {
   margin-bottom: 1rem;
+}
+
+/* Flag on a service heading, for a service that is new or has changed shape. */
+.service-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.6em;
+  padding: 0.25em 0.75em;
+  border-radius: 999px;
+  background-color: var(--km-blue);
+  color: white;
+  font-family: 'Fira Sans Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 /* END Service Sales Table Unique Styling */
@@ -650,20 +823,249 @@ body.maintenance section article p {
 
 /* ============ SECTIONS DEFINITIONS STYLING END ========= */
 
-/* Team Photo Image Sizing and Positionings */
+/* The logo is decorative, and past a point it simply gets loud. A fixed height
+   rather than a maximum, because the mark is width-limited by its own column for
+   most of the desktop range - a max-height would only bite on very wide screens
+   and it would carry on scaling everywhere else. object-fit: contain is required:
+   the width is already definite, so height alone would squash the mark rather
+   than scale it. Below the breakpoint the framed circle takes over. */
+#team .decoration img {
+  height: 500px;
+  object-fit: contain;
+}
+
+/* Team Photo Image Sizing and Positionings
+   The content cap fixes the photo column at 640px, so an uncapped portrait runs
+   to its own natural height. Sarah and Kezia have enough text to sit alongside
+   that; Edo and Neve do not, so their photos are capped to close the gap - which
+   makes object-position live again for those two. */
 .profile_edo {
   max-height: 800px;
   object-position: 50% 20%;
 }
 
-.profile_neve {
-  max-height: 800px;
-  object-position: 50% 60%;
+.profile_kezia {
+  object-position: 50% 25%;
 }
 
-.profile_kezia {
-  height: 896.3px;
-  object-position: 60% 70%;
+
+/* ---- Framed portrait ------------------------------------------------------
+   Below 1080px the photo changes role: instead of a full-height column it
+   becomes a circle floated beside the name, with the whole picture one tap
+   away. One file serves both views - object-view-box crops the view, not the
+   image, so there is no thumbnail to fetch. */
+
+button.portrait-trigger {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  pointer-events: none;   /* inert on desktop, where the photo is already large */
+}
+
+button.portrait-trigger:hover,
+button.portrait-trigger:focus {
+  background: none;
+}
+
+/* The enlarged picture is itself the dismiss control, so a second tap closes
+   it. Click-outside and Esc already work via the popover's light dismiss. */
+button.portrait-dismiss {
+  display: block;
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  cursor: zoom-out;
+}
+
+button.portrait-dismiss:hover,
+button.portrait-dismiss:focus {
+  background: none;
+}
+
+.portrait-full {
+  /* reset.css zeroes every margin, which wipes the margin:auto the browser
+     uses to centre a popover. Put it back explicitly. */
+  margin: auto;
+  max-width: 92vw;
+  max-height: 90vh;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+}
+
+.portrait-full img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 92vw;
+  max-height: 90vh;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.portrait-full::backdrop {
+  background-color: rgba(44, 56, 79, 0.78);
+}
+
+
+/* ---- Carousel -------------------------------------------------------------
+   A scroll-snap strip. Swipe, trackpad and keyboard scrolling all work with no
+   script; script.js only wires the arrows, so nothing breaks if it never runs.
+   The frame is a fixed 4:5 so slides of differing ratios cannot make the row
+   jump height as you move between them. */
+.carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+}
+
+.carousel__track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel__track img {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  scroll-snap-align: center;
+}
+
+button.carousel__arrow {
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  margin-top: -20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.82);
+  color: var(--heading-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.carousel__arrow:hover,
+button.carousel__arrow:focus {
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.carousel__arrow--prev {
+  left: 10px;
+}
+
+.carousel__arrow--next {
+  right: 10px;
+}
+
+/* Chevron drawn from two borders - no icon font, no extra request. */
+.carousel__arrow::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+}
+
+.carousel__arrow--prev::before {
+  transform: translateX(2px) rotate(-135deg);
+}
+
+.carousel__arrow--next::before {
+  transform: translateX(-2px) rotate(45deg);
+}
+
+/* Where Neve sits in each shot, against the 4:5 frame. The last is landscape,
+   so it loses the most width and needs aiming hardest. */
+.carousel__track .neve-1 { object-position: 50% 45%; }
+.carousel__track .neve-2 { object-position: 50% 55%; }
+.carousel__track .neve-3 { object-position: 55% 40%; }
+.carousel__track .neve-4 { object-position: 55% 60%; }
+
+/* The focal square for each framed portrait, as insets from the source's own
+   edges. The default is the whole image, which is what an already-square source
+   like the logo wants. */
+.framed-portrait {
+  --vb-top: 0%;
+  --vb-right: 0%;
+  --vb-bottom: 0%;
+  --vb-left: 0%;
+}
+
+/* Kezia: x 89-869, y 228-1008 of 1000x1470 */
+#kezia {
+  --vb-top: 15.5%;
+  --vb-right: 13.1%;
+  --vb-bottom: 31.4%;
+  --vb-left: 8.9%;
+}
+
+/* Chris: x 252-1022, y 114-884 of 1295x1727 */
+#chris {
+  --vb-top: 6.6%;
+  --vb-right: 21.08%;
+  --vb-bottom: 48.81%;
+  --vb-left: 19.46%;
+}
+
+/* Neve: x 90-550, y 112-572 of 800x939 (neve-lake.jpg) */
+#neve {
+  --vb-top: 11.93%;
+  --vb-right: 31.25%;
+  --vb-bottom: 39.08%;
+  --vb-left: 11.25%;
+}
+
+/* Above the framed-portrait width Neve shows the carousel inline; the framed
+   trigger only appears once the column stacks. */
+#neve .portrait-trigger {
+  display: none;
+}
+
+/* The enlarged view is a carousel rather than one picture, so it needs a size
+   of its own - the 4:5 frame fitted to whichever of height or width binds. */
+.portrait-full--carousel .carousel {
+  width: min(92vw, 72vh);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* The rounding and shadow belong to the frame, not to each slide inside it. */
+.portrait-full--carousel .carousel__track img {
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Edoardo: x 89-364, y 133-408 of 544x977 */
+#edoardo {
+  --vb-top: 13.61%;
+  --vb-right: 33.09%;
+  --vb-bottom: 58.24%;
+  --vb-left: 16.36%;
 }
 
 
@@ -674,13 +1076,12 @@ body.maintenance section article p {
 /* Smaller than below media the website becomes a stacked feed (rather than 2 columns)
 and the navigation bar becomes fixed rather than transparent and overlayed */
 @media (max-width: 1080px) {
-  /*======= MAIN BODY ========== */
-  html {
-    display: grid;
-    justify-content: center;
-    background-color: var(--heading-dark);
+  :root {
+    --nav-offset: 60px;
   }
 
+  /*======= MAIN BODY ========== */
+  /* Gutter colour and centring are set at base; only the cap changes here. */
   body,
   header {
     max-width: 750px;
@@ -810,8 +1211,10 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
     width: 100%;
   }
 
-  article#home {
-    padding-top: var(--nav-mobile-height);
+  /* Once the bar turns opaque the hero has to clear it too. Every other
+     section is already handled by the base rule via --nav-offset. */
+  main > section > article.hero-section:first-of-type {
+    padding-top: var(--nav-offset);
   }
 
   /* Specific section styling has to come after base styling*/
@@ -850,8 +1253,95 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
     object-position: 50% 20%;
   }
 
-  .profile_neve {
-    object-position: 50% 43%;
+  /* Framed portraits: the picture lifts out of the text flow into a circle at
+     the top right, overhanging the text by up to half its height. Opt in per
+     article with .framed-portrait - Sarah keeps her full-height photo. */
+  .framed-portrait.grid-row {
+    /* flow-root, not block: it establishes a block formatting context, so the
+       band's top margin cannot collapse out through the article. */
+    display: flow-root;
+    --portrait-size: clamp(110px, 22vw, 170px);
+    /* The overhang fades with the column: half the circle on a tablet, nothing
+       at 450px and below, where the centred heading needs the whole line. */
+    --portrait-overhang: clamp(0px, (100vw - 450px) * 0.25, var(--portrait-size) / 2);
+  }
+
+  /* .decoration and .image-container are the same <div>, so this has to be one
+     rule - split across the two class names they just overrode each other. */
+  .framed-portrait .decoration.image-container {
+    width: var(--portrait-size);
+    height: var(--portrait-size);
+    max-height: none;   /* override the blanket 400px cap on .image-container */
+    margin: 16px 5% calc(-1 * var(--portrait-overhang)) auto;
+    border-radius: 50%;
+    box-shadow: 0 4px 16px rgba(44, 56, 79, 0.22);
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Block flow drops the grid's justify-items, so the text needs re-centring or
+     it sits flush left. The trimmed top padding closes the gap under the
+     circle - the article's own 30px is too much once the photo is small. */
+  /* Beats .width-image img { height: auto }, which the logo's container carries. */
+  .framed-portrait .decoration img {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* The nav bar carries the logo at this width, so the mark in the team intro
+     is just a second copy of it - drop it rather than shrink it into a circle.
+     The grid row collapses to nothing, leaving the text on its own. */
+  #team .decoration {
+    display: none;
+  }
+
+  /* Block flow drops the grid's justify-items, so the text needs re-centring or
+     it sits flush left. The trimmed top padding closes the gap under the
+     circle - the article's own 30px is too much once the photo is small. */
+  .framed-portrait .content.text-content {
+    margin-inline: auto;
+    padding-top: 12px;
+  }
+
+  .framed-portrait button.portrait-trigger {
+    pointer-events: auto;
+    cursor: zoom-in;
+  }
+
+  /* Framing where object-view-box is unsupported - the face sits smaller in the
+     circle but is never clipped. */
+  #kezia .profile_kezia {
+    object-position: 50% 22%;
+  }
+
+  #edoardo .profile_edo {
+    object-position: 50% 16%;
+  }
+
+  #chris .profile_chris {
+    object-position: 48% 12%;
+  }
+
+  /* Stacked, Neve swaps the inline carousel for the same framed circle as the
+     others; tapping it opens the whole set. */
+  #neve .portrait-trigger {
+    display: block;
+  }
+
+  #neve .carousel {
+    display: none;
+  }
+
+  /* Framing where object-view-box is unsupported. */
+  #neve .profile_neve {
+    object-position: 26% 23%;
+  }
+
+  @supports (object-view-box: inset(0 0 0 0)) {
+    .framed-portrait .decoration img {
+      object-view-box: inset(var(--vb-top) var(--vb-right) var(--vb-bottom) var(--vb-left));
+      object-position: center;
+    }
   }
 
 
@@ -913,11 +1403,29 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   }
 
   .content.service-table {
-    padding: calc(var(--nav-mobile-height) + 20px) 20px 20px 20px;
+    padding: 20px;
     max-width: unset;
   }
 
   /* */
+  .credentials {
+    width: 90%;
+    padding: 1.75rem 1.5rem;
+  }
+
+  /* Stacked, the title, its rule and both sections share one left edge -
+     main div { justify-items: center } otherwise centres each block at its own
+     fit-content width, so every element starts somewhere different. */
+  .credentials,
+  .credentials .linked-content {
+    justify-items: start;
+  }
+
+  .credentials-cols {
+    grid-template-columns: 1fr;
+    gap: 2.25rem 0;
+  }
+
   #sarah .grid-row .linked-content {
     padding-top: 0;
     padding-bottom: 0;
@@ -960,7 +1468,7 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
 /* Small Adjustment to make the service table size better as screens become smaller */
 @media (max-width:550px) {
   .content.service-table {
-    padding: calc(var(--nav-mobile-height) + 20px) 15px 20px 15px;
+    padding: 20px 15px;
   }
 
 }
