@@ -1,8 +1,11 @@
 # Client guides — handover
 
 > Interactive service guides for Kinder Minds. Five pages, built from shared
-> partials, driven by URL parameters. Everything here is **local only** —
-> nothing committed, nothing published.
+> partials, driven by URL parameters.
+>
+> **Live on kinderminds.nz since 2026-08-25.** Unlisted: nothing on the marketing
+> site links to them, and they are reached only through the personalised link a
+> staff member builds.
 >
 > Last worked on: 2026-08-25
 
@@ -153,27 +156,36 @@ reset.css` so nothing outside `guide/` is needed. Section banners mark where
 each came from; order matches the old cascade, so specificity is unchanged.
 Verified pixel-identical on all four pages after flattening.
 
-`guide-core.js` is a copy of `intake/intake.js`. **The two are now independent** —
-editing one does not affect the other.
+`guide-core.js` began as a copy of `intake/intake.js`, which no longer exists:
+`intake/` and `leaflets/` were deleted on 2026-08-25, once this self-containment
+made them unreferenced. Nothing under `guide/` now reaches outside itself.
 
 Still outside `guide/`, deliberately:
 - `staff/link-builder.html` — staff tool, not client-facing
 - `_build/` — build tooling and sources
-- `leaflets/` and `intake/` — the older live pages (see below)
 
 ---
 
 ## What is live vs local
 
-**Live on kinderminds.nz** (pushed 2026-08-20, commit `55759f5`):
-- `leaflets/adhd-child-assessment.html`
-- `intake/adhd-child-assessment.html`
+**Live on kinderminds.nz** since 2026-08-25:
+- all five pages in `guide/`, plus `guide.css`, `guide.js`, `guide-core.js` and
+  `masthead-v2.js`
+- `staff/link-builder.html`
 
-These are the **older, superseded** split-page design, sent to Sarah and Kezia
-for feedback. They are unlisted (`noindex`) and not linked from the main site.
+Unlisted rather than secret. Nothing links to them, so they are reached only
+through the personalised link a staff member builds, but they are public URLs
+and should be written as though a stranger might open one.
 
-**Local only, never published:** everything in `guide/`, `_build/`, and
-`staff/link-builder.html`.
+**In the repository but not served:** `_build/`, via `exclude:` in `_config.yml`
+at the site root. Jekyll also skips anything starting with an underscore.
+
+**Gone as of 2026-08-25:** `leaflets/` and `intake/`, the older superseded
+split-page design. Deleted rather than left unlisted. They survive in git
+history. Their removal was only possible once `guide.css` was flattened and
+`guide-core.js` replaced the shared `intake.js`, because until then every guide
+page loaded `../intake/intake.js` and the staff tool loaded
+`../leaflets/leaflet.css`.
 
 ---
 
@@ -189,10 +201,11 @@ for feedback. They are unlisted (`noindex`) and not linked from the main site.
    is my reading, not legal advice. The under-16 all-guardians rule is stated as
    *clinic policy*, which is defensible; it was previously stated as law, which
    overstated it.
-3. **The live `leaflets/` page carries an incorrect claim** — that all referrals
-   are discussed at MDT during triage. Triage is the directors; MDT at triage is
-   occasional. Corrected in the guides, still wrong on the live page and in the
-   source PDF.
+3. ~~**The live `leaflets/` page carries an incorrect claim.**~~ **Closed
+   2026-08-25**, since that page is deleted. The claim was that all referrals are
+   discussed at MDT during triage; triage is the directors, and MDT at triage is
+   occasional. Correct in the guides. **Still wrong in the source PDF**, which is
+   what families are sent today, so this is not fully resolved.
 4. **Terminology split.** The parental interview is "ADHD Child Evaluation or
    Young DIVA" in the leaflets and "structured interview" in the Missive email.
    Pick one before families see both.
