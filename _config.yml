@@ -1,0 +1,24 @@
+# GitHub Pages build settings.
+#
+# The site is plain hand-written HTML. Jekyll runs here whether or not this file
+# exists, and passes those files through untouched, so this config exists only to
+# say what should NOT be published.
+#
+# The distinction that matters: excluded here means "in the repository but not on
+# the web server". That is different from .gitignore, which means "not in the
+# repository at all". Working code belongs in git so it is versioned and backed
+# up; it does not follow that it belongs on kinderminds.nz.
+
+exclude:
+  # Consent and intake form prototypes. Work in progress, nothing on the site
+  # links to them, and at 17 MB they are the largest thing in the repository
+  # after the images. Kept in git; no reason to serve them.
+  - forms
+
+  # Developer notes, not site content.
+  - CLAUDE.md
+  - README.md
+  - Reference.url
+
+# Anything beginning with an underscore is excluded by Jekyll already, which is
+# why _build (the guide page sources and the assembler) is not published either.
