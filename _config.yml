@@ -33,7 +33,9 @@ exclude:
   - forms/package.json
   - forms/package-lock.json
 
-  # Developer notes, not site content.
+  # Developer notes, not site content. The guide handover was being served
+  # at kinderminds.nz/guide/HANDOVER.md, example URLs and all.
+  - guide/HANDOVER.md
   - CLAUDE.md
   - README.md
   - Reference.url

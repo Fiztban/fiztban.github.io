@@ -95,7 +95,7 @@ once.
 ### Example
 
 ```
-guide/adhd-child-assessment.html?name=Éilis&client=0WtS5PDCOQI&reg=2831&c1=2832&c2=2833
+guide/adhd-child-assessment.html?name=Iris&client=DEMO123456&reg=2831&c1=2832&c2=2833
 ```
 
 Form links can be passed as **numbers** (short, resolved against `client`) or as
@@ -282,7 +282,7 @@ Then open each page in both modes:
 
 ```
 guide/adhd-child-assessment.html                                   # leaflet
-guide/adhd-child-assessment.html?name=Éilis&client=DEMO123456&reg=2831&c1=2832&c2=2833
+guide/adhd-child-assessment.html?name=Iris&client=DEMO123456&reg=2831&c1=2832&c2=2833
 ```
 
 Use `client=DEMO123456` for testing — **never** a real client hash in a shared

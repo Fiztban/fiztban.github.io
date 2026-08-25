@@ -16,7 +16,7 @@
 
    URL PARAMETERS
      name    first name used to personalise the page
-     client  the client's Zanda profile hash        e.g. client=0WtS5PDCOQI
+     client  the client's Zanda profile hash        e.g. client=DEMO123456
      reg     registration form number, or full URL  e.g. reg=2831
      c1      consent form — guardian 1 / patient    e.g. c1=2832
      c2      consent form — guardian 2 (under 16)   e.g. c2=2833
@@ -114,7 +114,7 @@
   var fallbackName = REFERENTS[(params.get('ref') || '').trim().toLowerCase()] || REFERENTS.child;
 
   /* English possessive: a name already ending in s takes a bare apostrophe
-     (Éilis' report), anything else takes apostrophe-s (Tāne's report). The
+     (Iris' report), anything else takes apostrophe-s (Tāne's report). The
      generic fallbacks — "your child", "your son" — never end in s, so they
      always take the full form. */
   function possessive(name) {
@@ -132,10 +132,10 @@
 
     document.querySelectorAll('[data-name-slot]').forEach(function (el) {
       /* Slot kinds:
-           (empty)         Éilis            plain mention
-           cap             Éilis            sentence-initial (matters only for
+           (empty)         Iris            plain mention
+           cap             Iris            sentence-initial (matters only for
                                             the lower-case generic fallbacks)
-           possessive      Éilis’ / Tāne’s  possessive, apostrophe chosen by name
+           possessive      Iris’ / Tāne’s  possessive, apostrophe chosen by name
            cap-possessive  as above, sentence-initial */
       var kind = el.getAttribute('data-name-slot') || '';
       var out;
