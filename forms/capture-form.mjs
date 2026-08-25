@@ -9,8 +9,12 @@
    This script is the safety net. It fetches the live form and compares its
    shape against the committed snapshot.
 
-       node forms/capture-form.mjs --check <clientHash> <formNumber>
-       node forms/capture-form.mjs --write <clientHash> <formNumber>
+       node forms/capture-form.mjs --check <clientHash> <formNumber> [snapshot]
+       node forms/capture-form.mjs --write <clientHash> <formNumber> [snapshot]
+
+   snapshot defaults to zanda-combined-consent.json. Pass a filename to work
+   against another form — each custom form has its own snapshot, its own field
+   map and its own EXPECTED_SKELETON.
 
    --check  compare only; exit 1 on drift. Run this before every intake batch,
             and after anyone edits the form in Zanda.
@@ -24,12 +28,12 @@
    ========================================================================== */
 
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const SNAPSHOT = join(HERE, 'zanda-combined-consent.json');
+const DEFAULT_SNAPSHOT = 'zanda-combined-consent.json';
 const API = 'https://clientportal.zandahealth.com/api/v1/kinderminds/CustomForm/GetForm';
 
 const TYPE = {
@@ -136,12 +140,14 @@ function diff(oldSecs, newSecs) {
   return out;
 }
 
-const [mode, client, form] = process.argv.slice(2);
+const [mode, client, form, snapshotArg] = process.argv.slice(2);
 
 if (!['--check', '--write'].includes(mode) || !client || !form) {
-  console.error('usage: node forms/capture-form.mjs --check|--write <clientHash> <formNumber>');
+  console.error('usage: node forms/capture-form.mjs --check|--write <clientHash> <formNumber> [snapshot]');
   process.exit(2);
 }
+
+const SNAPSHOT = join(HERE, snapshotArg || DEFAULT_SNAPSHOT);
 
 try {
   const live = await fetchLive(client, form);
@@ -150,18 +156,30 @@ try {
   }));
   const hash = skeletonHash(sections);
 
-  const saved = JSON.parse(readFileSync(SNAPSHOT, 'utf8'));
+  /* A first capture of a form we hold no snapshot for. Only --write can do
+     anything useful here; --check has nothing to compare against and says so
+     rather than inventing a baseline from the very thing it exists to police. */
+  const fresh = !existsSync(SNAPSHOT);
+
+  if (fresh && mode === '--check') {
+    console.error(`no snapshot at ${SNAPSHOT} — capture one first with --write.`);
+    process.exit(2);
+  }
+
+  const saved = fresh ? null : JSON.parse(readFileSync(SNAPSHOT, 'utf8'));
 
   /* Recomputed from the stored sections, not read from the file's own
      skeletonHash field — otherwise a hand-edit to the snapshot that left the
      hash untouched would sail through this check and through the page. */
-  const savedHash = skeletonHash(saved.sections);
+  const savedHash = saved ? skeletonHash(saved.sections) : null;
 
   console.log(`form    : ${live.name}`);
   console.log(`live    : ${hash}`);
-  console.log(`snapshot: ${savedHash} (captured ${saved.capturedOn})`);
+  console.log(saved
+    ? `snapshot: ${savedHash} (captured ${saved.capturedOn})`
+    : 'snapshot: none yet — first capture');
 
-  if (savedHash !== saved.skeletonHash) {
+  if (saved && savedHash !== saved.skeletonHash) {
     console.error(`\nSNAPSHOT CORRUPT — ${SNAPSHOT} declares ${saved.skeletonHash} but its`);
     console.error('sections hash to ' + savedHash + '. The file has been edited by hand.');
     console.error('Re-capture it with --write rather than patching the hash.');
@@ -188,8 +206,9 @@ try {
     sections,
   }, null, 1), 'utf8');
 
-  console.log(`\nSnapshot rewritten. Now set in consent.js:\n\n  var EXPECTED_SKELETON = '${hash}';\n`);
-  console.log('Re-check every address in the FIELDS map before trusting the page again.');
+  console.log(`\nSnapshot ${fresh ? 'created' : 'rewritten'} at ${SNAPSHOT}.`);
+  console.log(`Now set in the page that renders it:\n\n  var EXPECTED_SKELETON = '${hash}';\n`);
+  console.log('Re-check every address in its FIELDS map before trusting the page again.');
 
 } catch (err) {
   console.error('failed:', err.message);

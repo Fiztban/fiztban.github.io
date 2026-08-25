@@ -3,15 +3,19 @@
 
 <head>
     
-    <!-- Google tag (gtag.js) -->
+    <!-- Google Analytics is deliberately MUTED on this comparison build, so
+         looking at it does not pollute the live property. Un-comment before
+         this ever becomes the deployed page.
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MH4X6DELRQ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
+
       gtag('config', 'G-MH4X6DELRQ');
     </script>
+    -->
     
     
         <!-- Required meta tags -->
@@ -54,8 +58,12 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-        <!-- Google Fonts: Zen Maru Gothic (logo), Fira Sans (headings), Fira Sans Condensed (nav), Source Serif 4 (body) -->
-        <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700;900&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Fira+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200;0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;0,8..60,800;0,8..60,900;1,8..60,200;1,8..60,300;1,8..60,400;1,8..60,500;1,8..60,600;1,8..60,700;1,8..60,800;1,8..60,900&display=swap" rel="stylesheet">
+        <!-- Google Fonts, matching guide/ exactly:
+             Fira Sans Condensed (headings, nav), Fira Sans (sub-subtitles,
+             medium italic), Source Sans 3 (body). Source Serif 4 and Zen Maru
+             Gothic are not used by this build and are not fetched. -->
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Fira+Sans+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+
     
     </head>
 
@@ -70,18 +78,31 @@
         </symbol>
     </svg>
 
-    <header>
+    <header class="site-header" id="site-header">
     <!-- Navigation -->
-        <div class="nav-left">
-            <a href="#home" data-target="sec-home" class="nav-logo">
-                <img src="assets/Logos/KM%20Logo%20-%20Name%20Side%20Long.svg" alt="Kinder Minds">
+
+        <!-- Band one: the gradient. The logo is pinned by the top edge of
+             its own KINDER MINDS plate, which sits on the gradient's lower
+             edge at every size - see .banner-logo in the stylesheet.
+             The -open-2 variant keeps a white disc behind the tree but
+             insets it inside the ring (dia 1197 vs the original 1355), so the
+             tree stays opaque while the ring itself still blends into the
+             gradient instead of sitting on a white halo. -->
+        <div class="site-banner">
+            <a href="#home" data-target="sec-home" class="banner-logo" aria-label="Kinder Minds home">
+                <img src="assets/Logos/km-logo-name-below-open-2.svg" alt="Kinder Minds">
             </a>
-    
-            <label for="check" class="check-button">
-                <i class="fa-solid fa-bars"></i>
-            </label>
-            
         </div>
+
+        <!-- Band two: the nav strip, occupying the logo's overhang. The burger
+             is a circle answering the logo's own circle across the strip; it
+             only appears once the links stop fitting. -->
+        <label for="check" class="check-button" aria-label="Menu">
+            <i class="fa-solid fa-bars"></i>
+        </label>
+
+        <!-- Must stay a preceding sibling of .nav-list - the drawer opens on
+             `#check:checked ~ .nav-list`. -->
         <input type="checkbox" id="check">
 
         <nav class="nav-list">
@@ -175,7 +196,22 @@
         <!-- ACC Blurb -->
 
         <!-- Clinic Image -->
-        <img src="assets/Used/2024-Office-Room-01-crop.jpg" alt="The Kinder Minds clinic consulting room">
+        <!-- Same structure as the Neve carousel, so script.js picks up the
+             arrows without any new wiring. The frame keeps the consulting
+             room's own aspect ratio (see .carousel--band), which is why the
+             band opens at exactly the height the single image used to fill. -->
+        <div class="carousel carousel--band">
+            <div class="carousel__track">
+                <img src="assets/Used/2024-Office-Room-01-crop.jpg" class="clinic-1"
+                     alt="The Kinder Minds clinic consulting room">
+                <img src="assets/Used/2024-Office-Room-02-crop.jpg" class="clinic-2" loading="lazy"
+                     alt="The Kinder Minds playroom, with Neve carrying a toy across the rug">
+                <img src="assets/Used/KM%20Office.jpg" class="clinic-3" loading="lazy"
+                     alt="The entrance to the Kinder Minds clinic, seen from the street">
+            </div>
+            <button type="button" class="carousel__arrow carousel__arrow--prev" aria-label="Previous photo of the clinic"></button>
+            <button type="button" class="carousel__arrow carousel__arrow--next" aria-label="Next photo of the clinic"></button>
+        </div>
         <!-- Clinic Image -->
 
         <!-- Service Explanation -->
@@ -658,7 +694,7 @@
                 <!-- Chris Jackson: held back until his agreement is signed.
                      The markup lives in _pending/chris-jackson.html, which is
                      gitignored. Paste the three fragments back at these markers
-                     and copy Chris_Jackson.jpg into assets/Used to restore. -->
+                     and copy his photo into assets/Used to restore. -->
 
         <div id="neve-photos" popover class="portrait-full portrait-full--carousel">
             <div class="carousel">
@@ -682,7 +718,7 @@
                 <!-- Chris Jackson: held back until his agreement is signed.
                      The markup lives in _pending/chris-jackson.html, which is
                      gitignored. Paste the three fragments back at these markers
-                     and copy Chris_Jackson.jpg into assets/Used to restore. -->
+                     and copy his photo into assets/Used to restore. -->
 
         <div id="kezia-photo" popover class="portrait-full">
             <button class="portrait-dismiss" popovertarget="kezia-photo" popovertargetaction="hide" aria-label="Close photo">
@@ -722,7 +758,8 @@
   </main> <!-- Responsive Body -->
 
   <!-- External JavaScript file -->
-  <script src="script.js" defer></script> 
+  <script src="script.js" defer></script>
+  <script src="header-v2.js" defer></script> 
 
 </body>
 

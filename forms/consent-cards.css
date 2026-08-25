@@ -1,0 +1,413 @@
+/* ==========================================================================
+   Kinder Minds — conditional consent form, CARD VIEW
+
+   A parallel presentation of combined-consent.html: the same pathway, the
+   same field map, the same payload, shown one card at a time instead of as
+   one scrolling accordion. Built so the two can be walked side by side and
+   compared.
+
+   The chain is: reset -> leaflet -> intake -> guide -> consent -> here.
+   Everything a form needs — option cards, gates, person grids, the signature
+   pad, the review table, the legal typography — is inherited unchanged from
+   consent.css. Only the shell differs, which is the point: if the card view
+   wins, it wins on flow rather than on a different coat of paint.
+   ========================================================================== */
+
+@import 'consent.css';
+
+:root {
+  --rail-done:    #1F5B3E;
+  --rail-current: var(--banner-top);
+  --rail-idle:    #9BB0BC;
+}
+
+/* ============ THE BAR ========= */
+/* Takes .progress-wrap's shape exactly — same tint, same rule, same sticky
+   behaviour — because it does the same two jobs on this page that the progress
+   bar does on the single-page view: it divides the title block from the
+   content, and it says how far through you are.
+
+   Always present, including before the reader starts. It is the only thing
+   separating the heading from the cards, so hiding it on the way in leaves the
+   page looking like it lost a band — and the rail doubles as a preview of what
+   the form contains before anyone commits to it. */
+
+.deck-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: var(--light-background);
+  border-bottom: 1px solid var(--mid-background);
+  padding: 0.75rem 0;
+  margin-bottom: 2rem;
+}
+
+.deck-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+/* ============ THE RAIL ========= */
+/* Seven sections, drawn as a track of pills. Deliberately not a progress bar:
+   a bar says how far through you are, the rail says what the parts ARE — and
+   for a reader deciding whether they have the energy to start, the second
+   question is the one that matters. */
+
+.rail {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar { display: none; }
+
+.rail li { flex: none; }
+
+.rail button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.rail button:hover { background-color: white; color: var(--brand-deep); }
+
+.rail button:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* The number disc. Mirrors .stage-num from the guide pages so the two views
+   read as the same product. */
+.rail .n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: white;
+  background-color: var(--rail-idle);
+  flex: none;
+}
+
+.rail li.done button { color: var(--rail-done); }
+.rail li.done .n { background-color: var(--ok-green); }
+.rail li.done .n::before { content: '\2713'; }
+.rail li.done .n span { display: none; }
+
+.rail li.current button {
+  color: var(--brand-deep);
+  background-color: white;
+  border-color: var(--line);
+  font-weight: 600;
+}
+
+.rail li.current .n { background-color: var(--rail-current); }
+
+/* A section with no visible cards on this pathway — the guardian-only ones
+   for a client consenting for themselves. Shown struck through rather than
+   removed: "this does not apply to you" is information, and a rail that
+   silently changes length under the reader is disorienting. */
+.rail li.na button { opacity: 0.4; }
+.rail li.na .n { background-color: var(--rail-idle); }
+
+/* ============ THE COUNTER ========= */
+
+.deck-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  flex: none;
+}
+
+.deck-count {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--brand-deep);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.deck-answered {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ============ THE WAY IN ========= */
+/* Deliberately NOT a card: no border, no shadow, no number. It frames the
+   form rather than being part of it, and dressing it as a card would make the
+   reader count it as one — putting the deck's numbering permanently one ahead
+   of the form's own sections. */
+
+/* The title block above already carries the space that clears the logo, so
+   this sits straight underneath it rather than opening a second gap. */
+.start-panel {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+.start-panel[hidden] { display: none; }
+
+.start-foot {
+  margin-top: 1.6rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+}
+
+.start-foot .button {
+  margin-top: 0;
+  font-size: 1.05rem;
+  padding: 0.75rem 2.2rem;
+}
+
+/* ============ THE SECTION HEADER ========= */
+/* Sits above the deck, at the card's own width so it reads as that card's
+   header rather than as a second page title. It does not animate: the card
+   slides in under it and this stays put, which is what tells a reader moving
+   from 2.1 to 2.2 that they have not left section 2. */
+
+.section-head {
+  max-width: 46rem;
+  margin: 0 auto 0.9rem;
+}
+
+.section-head[hidden] { display: none; }
+
+.section-title {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-size: 1.55rem;
+  line-height: 1.2;
+  color: var(--brand-deep);
+  margin: 0;
+}
+
+.section-title .clause-num {
+  color: var(--subtitle);
+  margin-right: 0.4rem;
+}
+
+/* The card's own title is the clause inside the section, so it steps down a
+   size from the header above it. Two headings of equal weight, one on top of
+   the other, read as a mistake. */
+.section-head + .deck .card-title {
+  font-size: 1.2rem;
+  color: var(--banner-top);
+}
+
+/* ============ THE DECK ========= */
+
+.deck {
+  position: relative;
+  margin: 0;
+}
+
+/* The pager alone goes while the start panel is up: a Back/Continue pair with
+   nowhere to go is worse than absent. The bar stays — see above. */
+.pager[hidden] { display: none; }
+
+.card {
+  background-color: white;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 1.7rem 1.6rem 1.9rem;
+  max-width: 46rem;
+  margin: 0 auto;
+  animation: card-in 0.22s ease-out;
+}
+
+.card[hidden] { display: none; }
+
+/* The review card carries a table and a payload dump, so it gets the full
+   measure. Everything else stays at reading width — the single strongest
+   thing this view does for a tired reader is refuse to run prose the width
+   of a desktop monitor. */
+.card-wide { max-width: 64rem; }
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card { animation: none; }
+}
+
+.card-eyebrow {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--banner-top);
+  margin: 0 0 0.35rem;
+}
+
+.card-title {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  color: var(--brand-deep);
+  margin: 0 0 1rem;
+}
+
+/* A card title carrying a clause number keeps the number in the same style
+   the body text uses for cross-references, so "4.6" on the card and "see
+   Section 4.6" in the prose are visibly the same thing. */
+.card-title.clause { margin-top: 0; }
+.card-title .clause-num { margin-right: 0.4rem; }
+
+/* The section's own opening paragraph, where a card leads with one. Set
+   quieter than the clauses under it — it frames, it does not instruct. */
+.card-intro-legal {
+  color: var(--text-muted);
+  border-left: 3px solid var(--line);
+  padding-left: 0.9rem;
+  margin-bottom: 1.2rem;
+}
+
+.card > .legal:last-child,
+.card > .q:last-child { margin-bottom: 0; }
+
+.card .tick { margin-top: 1.4rem; }
+
+/* ============ THE PAGER ========= */
+/* Sticky at the bottom on every viewport. On a phone this is the only control
+   a thumb can reach without a stretch; on a desktop it keeps Continue in the
+   same place on every card, which is what makes a long deck feel short. */
+
+.pager {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  margin-top: 1.6rem;
+  background-color: var(--page-bg);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -1px 6px rgba(0, 69, 97, 0.05);
+}
+
+.pager-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 0;
+}
+
+.pager .button { margin-top: 0; flex: none; }
+
+#go-next { margin-left: auto; }
+
+.pager-msg {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #8A3324;
+  text-align: center;
+}
+
+.pager-msg:empty { display: none; }
+
+/* Back on the first card, Continue on the review card. Kept in the layout
+   rather than removed so the other button does not jump sideways. */
+.pager .button[hidden] {
+  display: inline-block;
+  visibility: hidden;
+}
+
+/* ============ THE GATE, OPENED ========= */
+/* The counterpart to .gate-closed in consent.css: on the ask card, saying
+   what happens next once the box is ticked. */
+
+.gate-opened {
+  margin-top: 0.9rem;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius);
+  background-color: var(--gate-bg);
+  border: 1px solid var(--gate-line);
+  font-size: 0.95rem;
+}
+
+.gate-opened[hidden] { display: none; }
+
+/* ============ CROSS-REFERENCE ARRIVAL ========= */
+/* A citation can land on a clause that lives on another card. The card is
+   switched first, so the flash is all that is needed to say "here". */
+
+.card .just-linked { scroll-margin-top: 5rem; }
+
+/* ============ NARROW ========= */
+
+@media (max-width: 700px) {
+  .deck-bar { padding: 0.5rem 0; margin-bottom: 1.4rem; }
+  .deck-bar-inner { gap: 0.5rem; }
+
+  /* The rail takes the full width and scrolls; the counter drops beneath it.
+     Both stay visible — dropping the rail on a phone would remove the one
+     affordance that keeps a card deck from feeling bottomless. */
+  .rail { order: 2; width: 100%; flex-basis: 100%; }
+  .deck-meta { order: 1; width: 100%; justify-content: space-between; }
+
+  .rail button { padding: 0.35rem 0.5rem; }
+  .rail button .label { display: none; }
+
+  .card {
+    padding: 1.2rem 1.1rem 1.5rem;
+    border-radius: var(--radius);
+  }
+
+  .card-title { font-size: 1.3rem; }
+
+  .pager-inner { padding: 0.6rem 0; gap: 0.6rem; }
+
+  /* The message needs its own line once the buttons take the width. */
+  .pager-inner { flex-wrap: wrap; }
+  .pager-msg { order: 3; flex-basis: 100%; text-align: left; }
+}
+
+/* ============ PRINT ========= */
+/* Printing a deck means printing the whole form, not the card you happen to
+   be on. Everything is unhidden and the chrome goes. */
+
+@media print {
+  .deck-bar,
+  .pager,
+  .after-stages { display: none !important; }
+
+  .card {
+    display: block !important;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    max-width: none;
+    margin: 0 0 1.5rem;
+    page-break-inside: avoid;
+    animation: none;
+  }
+
+  .card-eyebrow { color: #000; }
+}

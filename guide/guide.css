@@ -1,4 +1,775 @@
 /* ==========================================================================
+   Kinder Minds — guide stylesheet (self-contained)
+
+   Flattened from the old import chain
+       guide.css -> intake.css -> leaflet.css -> reset.css
+   so that everything the guides need lives under guide/. Section order below
+   is the order those files cascaded in, so specificity and overrides behave
+   exactly as before.
+
+   leaflets/ and intake/ were the older split-page design — a leaflet page and
+   an intake page per service, which the guides replaced with one page each.
+   Both folders were retired on 2026-08-25; their stylesheets survive only as
+   the flattened sections below, which is why the section banners still name
+   them.
+   ========================================================================== */
+
+/* ==========================================================================
+   FROM reset.css
+   ========================================================================== */
+
+/* A more-intuitive box-sizing model. */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+  }
+
+/* Remove default margin */
+* {
+    margin: 0;
+    padding: 0;
+  }
+
+/* Typographic tweaks!
+  3. Add accessible line-height
+  4. Improve text rendering */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  text-rendering: optimizeSpeed;
+}
+
+/* Set core root defaults */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* 5. Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 6. Remove built-in form typography styles */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* 7. Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* 8. Create a root stacking context */
+#root,
+#__next {
+  isolation: isolate;
+}
+
+/* ==========================================================================
+   FROM leaflet.css
+   ========================================================================== */
+
+/* ==========================================================================
+   Kinder Minds — Service Leaflet pages
+   Was the standalone stylesheet for /leaflets/*.html, retired 2026-08-25.
+   Kept as a section here because the guides inherit its rules.
+
+   These pages are deliberately independent of style.css: they are single
+   documents, not sections of the SPA, and they must print cleanly. Only the
+   reset is shared.
+
+   NOTE: the :root palette below mirrors style.css. If the brand palette
+   changes, update both — or extract a shared tokens.css (see CLAUDE.md).
+   ========================================================================== */
+
+:root {
+  --heading-dark: #2C384F;
+  --km-blue: #234A84;
+  --text-blue: #032F69;
+  --text-colour: #70827F;
+  --text-highlight: #A0B8B4;
+  /* --text-colour on white is only 4.07:1. --text-muted is the same hue
+     darkened to clear WCAG AA for the small secondary text on these pages. */
+  --text-muted: #566764;
+  --mid-background: #D3E1DF;
+  --light-background: #F4F2F1;
+
+  --measure: 46rem;          /* readable line length for body copy */
+  --gap: 1.25rem;
+  --radius: 12px;
+}
+
+/* ============ BASE ========= */
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  color: var(--heading-dark);
+  background-color: var(--light-background);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+h1, h2, h3, .eyebrow, .price, .step-number {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+}
+
+h1 {
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  line-height: 1.15;
+  color: var(--km-blue);
+  font-weight: 600;
+}
+
+h2 {
+  font-size: clamp(1.35rem, 3.2vw, 1.7rem);
+  color: var(--km-blue);
+  font-weight: 600;
+  margin-top: 2.75rem;
+  margin-bottom: 0.85rem;
+}
+
+h3 {
+  font-size: 1.05rem;
+  color: var(--heading-dark);
+  font-weight: 600;
+}
+
+p { margin-bottom: 1rem; }
+
+a { color: var(--km-blue); }
+
+strong { font-weight: 600; }
+
+/* ============ LAYOUT ========= */
+
+.wrap {
+  width: min(100% - 2.5rem, var(--measure));
+  margin-inline: auto;
+}
+
+main { padding-bottom: 3.5rem; }
+
+/* ============ MASTHEAD ========= */
+
+.leaflet-header {
+  background-color: white;
+  border-bottom: 1px solid var(--mid-background);
+  padding: 0.9rem 0;
+}
+
+.leaflet-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  flex-wrap: wrap;
+}
+
+.leaflet-header img { width: 190px; }
+
+.header-contact {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.header-contact a { text-decoration: none; }
+.header-contact a:hover { text-decoration: underline; }
+
+/* ============ TITLE BLOCK ========= */
+
+.title-block {
+  background-color: var(--mid-background);
+  padding: 2.75rem 0 2.25rem;
+  margin-bottom: 2.25rem;
+}
+
+.eyebrow {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--heading-dark);
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* --text-colour on --mid-background is 3.01:1 (WCAG fail), so text sitting
+   on the tinted title block is darkened to --heading-dark (8.74:1). */
+.title-block .eyebrow { color: var(--heading-dark); }
+
+.lede { font-size: 1.1rem; }
+
+/* ============ PRICE CARDS ========= */
+
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--gap);
+  margin-bottom: 1.5rem;
+}
+
+.price-card {
+  background-color: white;
+  border: 1px solid var(--mid-background);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+}
+
+.price-card .eyebrow { margin-bottom: 0.6rem; }
+
+.price {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--km-blue);
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.price-card p:last-child { margin-bottom: 0; }
+
+/* ============ CALLOUT ========= */
+
+.callout {
+  background-color: white;
+  border-left: 4px solid var(--text-highlight);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.callout p:last-child { margin-bottom: 0; }
+
+/* The affirming variant, for a callout that reassures rather than warns.
+   Greens are the ones .pill-done already uses, so this introduces a new
+   pairing rather than a new colour. #1F5B3E body text on #E4F0E9 is 7.4:1. */
+.callout-ok {
+  background-color: #E4F0E9;
+  border-left-color: var(--ok-green);
+}
+
+/* ============ INCLUDED LIST ========= */
+
+.included-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1.5rem;
+}
+
+.included-groups h3 {
+  margin-bottom: 0.5rem;
+  color: var(--km-blue);
+}
+
+.included {
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.included li {
+  padding-left: 1.6rem;
+  position: relative;
+}
+
+/* The second half of a bullet is a definition, not a continuation. On one line
+   it needs an em dash to hold the two apart; given its own line the break does
+   that work, so the dash goes. */
+.included li .li-detail {
+  display: block;
+  /* Inside .include-card-wide the li is a flex row above 800px, where a block
+     child is still just another item on the same line. A full-width basis is
+     what actually breaks it, and flex-wrap is already on. Inert elsewhere. */
+  flex: 0 0 100%;
+  margin-top: 0.15rem;
+}
+
+.included li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background-color: var(--text-highlight);
+}
+
+/* ============ JOURNEY STEPS ========= */
+
+.steps {
+  list-style: none;
+  counter-reset: step;
+  margin-top: 1.25rem;
+}
+
+.steps > li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 3.25rem;
+  padding-bottom: 1.5rem;
+}
+
+.steps > li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background-color: var(--text-highlight);
+  color: white;
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* vertical connector between steps */
+.steps > li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 1.115rem;
+  top: 2.5rem;
+  bottom: 0.25rem;
+  width: 2px;
+  background-color: var(--mid-background);
+}
+
+.steps h3 { margin-bottom: 0.15rem; }
+.steps p { margin-bottom: 0; }
+
+/* ============ CONTACT / CTA ========= */
+
+.contact-cta {
+  background-color: var(--mid-background);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  text-align: center;
+  margin-top: 2.75rem;
+}
+
+.contact-cta h2 { margin-top: 0; }
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 195px;
+  min-height: 43px;
+  padding: 0 1.25rem;
+  /* --text-highlight on white is only 2.10:1 (WCAG AA needs 4.5:1),
+     so leaflet buttons use --km-blue instead: 8.81:1. */
+  background-color: var(--km-blue);
+  color: white;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius);
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  margin-top: 0.5rem;
+}
+
+.button:hover { background-color: var(--heading-dark); cursor: pointer; }
+.button:focus-visible { outline: 3px solid var(--heading-dark); outline-offset: 2px; }
+
+/* ============ SIGNATURE ========= */
+
+.signature {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--mid-background);
+}
+
+.signature .name {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-weight: 600;
+  color: var(--km-blue);
+}
+
+.signature .role {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* ============ FOOTER ========= */
+
+.leaflet-footer {
+  background-color: white;
+  border-top: 1px solid var(--mid-background);
+  padding: 1.5rem 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.leaflet-footer a { color: var(--text-muted); }
+
+/* ============ PRINT ========= */
+/* These pages replace printed PDFs, so printing must produce a clean handout. */
+
+@media print {
+  /* A4 is the NZ standard; without this Chrome falls back to US Letter. */
+  @page {
+    size: A4;
+    margin: 14mm 15mm;
+  }
+
+  :root { --measure: 100%; }
+
+  body {
+    background: white;
+    font-size: 10.5pt;
+  }
+
+  .leaflet-header { border-bottom: 1pt solid #ccc; }
+  .title-block { background: white; padding: 1rem 0 0.5rem; margin-bottom: 1rem; }
+  .no-print { display: none; }
+
+  .price-card,
+  .callout,
+  .contact-cta {
+    background: white;
+    border: 1pt solid #ccc;
+    break-inside: avoid;
+  }
+
+  .steps > li,
+  h2 { break-inside: avoid; }
+
+  h2 { break-after: avoid; }
+
+  a { text-decoration: none; color: inherit; }
+
+  /* Print the destination of real links so the handout stays useful on paper */
+  .header-contact a::after { content: ''; }
+}
+
+/* ==========================================================================
+   FROM intake.css
+   ========================================================================== */
+
+/* ==========================================================================
+   Kinder Minds — Interactive intake guide
+   Extends the leaflet styling with the interactive checklist vocabulary.
+   ========================================================================== */
+
+:root {
+  --ok-green: #2F6F4F;
+  --focus-ring: #234A84;
+}
+
+/* ============ PERSONALISATION ========= */
+
+.for-whom {
+  font-size: 1.1rem;
+  color: var(--heading-dark);
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* ============ PROGRESS ========= */
+
+.progress-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--light-background);
+  border-bottom: 1px solid var(--mid-background);
+  padding: 0.75rem 0;
+  margin-bottom: 2rem;
+}
+
+.progress-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.progress-track {
+  flex: 1 1 12rem;
+  height: 10px;
+  background-color: var(--mid-background);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background-color: var(--ok-green);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.progress-label {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: var(--heading-dark);
+  white-space: nowrap;
+}
+
+.reset-button {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-size: 0.85rem;
+  background: none;
+  border: 1px solid var(--text-colour);
+  color: var(--heading-dark);
+  border-radius: 999px;
+  padding: 0.15rem 0.75rem;
+  cursor: pointer;
+}
+
+.reset-button:hover { background-color: var(--mid-background); }
+
+/* ============ CHECKABLE STEPS ========= */
+
+.task-steps {
+  list-style: none;
+  counter-reset: task;
+}
+
+.task-steps > li {
+  counter-increment: task;
+  background-color: white;
+  border: 1px solid var(--mid-background);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.25rem 1.25rem 3.9rem;
+  position: relative;
+  margin-bottom: 0.9rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.task-steps > li::before {
+  content: counter(task);
+  position: absolute;
+  left: 1.1rem;
+  top: 1.3rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--km-blue);
+  color: white;
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A step whose own checkbox is ticked */
+.task-steps > li.done {
+  background-color: #F3F8F5;
+  border-color: #BFD8CB;
+}
+
+.task-steps > li.done::before {
+  background-color: var(--ok-green);
+  content: '\2713';           /* check mark replaces the number once done */
+}
+
+.task-steps h3 {
+  font-size: 1.1rem;
+  color: var(--km-blue);
+  margin-bottom: 0.35rem;
+}
+
+.task-steps p:last-child { margin-bottom: 0; }
+
+.task-note {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* The per-device caveat is the one thing on the page a reader must not skim:
+   tick on a phone, open on a laptop, and the ticks are not there. Given its
+   own quiet panel rather than left as another grey line of prose.
+
+   A modifier, not a change to .task-note, so the other four guide pages keep
+   the treatment they were reviewed with. Rolling it out is adding the class. */
+.task-note-boxed {
+  background-color: var(--inset-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.7rem 1rem;
+}
+
+/* ============ TICK CONTROL ========= */
+
+.tick {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  cursor: pointer;
+  margin-top: 0.85rem;
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-size: 0.95rem;
+  color: var(--heading-dark);
+}
+
+.tick input[type="checkbox"] {
+  flex: none;
+  width: 1.35rem;
+  height: 1.35rem;
+  accent-color: var(--ok-green);
+  margin-top: 0.1rem;
+  cursor: pointer;
+}
+
+.tick input:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ============ AGE QUESTION ========= */
+
+.age-question {
+  border: 1px solid var(--mid-background);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  margin: 1rem 0;
+  background-color: var(--light-background);
+}
+
+.age-question legend {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-weight: 600;
+  color: var(--km-blue);
+  padding: 0 0.35rem;
+}
+
+.age-options {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+
+.age-options label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-family: 'Fira Sans', system-ui, sans-serif;
+}
+
+.age-options input[type="radio"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--km-blue);
+  cursor: pointer;
+}
+
+.age-options input:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ============ CONDITIONAL PANELS ========= */
+
+.branch[hidden] { display: none; }
+
+.branch-intro {
+  background-color: var(--light-background);
+  border-left: 4px solid var(--km-blue);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.branch-intro p:last-child { margin-bottom: 0; }
+
+/* ============ FORM LINK CARDS ========= */
+
+.form-list { list-style: none; display: grid; gap: 0.7rem; }
+
+.form-card {
+  border: 1px solid var(--mid-background);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  background-color: var(--light-background);
+}
+
+.form-card.done { background-color: #F3F8F5; border-color: #BFD8CB; }
+
+.form-card .form-name {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-weight: 600;
+  color: var(--heading-dark);
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.form-card .form-who {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 0.6rem;
+}
+
+.form-card .button {
+  min-width: 0;
+  min-height: 38px;
+  font-size: 0.95rem;
+  margin-top: 0;
+}
+
+.form-card .tick { margin-top: 0.7rem; }
+
+/* ============ MISSING-LINK NOTICE ========= */
+
+.notice {
+  background-color: #FDF6E3;
+  border: 1px solid #E8D9A8;
+  border-radius: var(--radius);
+  padding: 0.85rem 1.1rem;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.notice p:last-child { margin-bottom: 0; }
+
+/* ============ PRINT ========= */
+
+@media print {
+  .progress-wrap, .reset-button { display: none; }
+  .task-steps > li { break-inside: avoid; border: 1pt solid #ccc; background: white; }
+  .task-steps > li.done { background: white; }
+  .branch[hidden] { display: none; }
+  .form-card { background: white; border: 1pt solid #ccc; }
+}
+
+/* ==========================================================================
+   FROM guide.css
+   ========================================================================== */
+
+/* ==========================================================================
    Kinder Minds — Combined service guide
    One page: what the assessment is, and what the family needs to do.
 
@@ -18,8 +789,6 @@
    pass are #00829B and #687F00; see --subtitle-accessible below.
    ========================================================================== */
 
-@import '../intake/intake.css';
-
 :root {
   /* Report palette, as specified */
   --brand-deep:     #004561;   /* titles */
@@ -27,10 +796,6 @@
   --brand-green:    #A9CE00;   /* sub-subtitles */
   --banner-top:     #2F4891;
   --banner-bottom:  #38C4D8;
-
-  /* Stacked logo: circle with the name below, white background baked into the
-     SVG. Aspect is 1609:1431, so width follows from height. Adjust here. */
-  --logo-height: 130px;
 
   /* The specified #00ACCD and #A9CE00 measure 2.70:1 and 1.82:1 on white —
      below even the 3:1 large-text floor. These are the same hues darkened
@@ -106,47 +871,163 @@ h3, h4 {
 p, li, label, .price-what { font-family: 'Source Sans 3', system-ui, sans-serif; }
 
 /* ============ BANNER ========= */
+/* Two bands drawn on one element: a gradient carrying the logo, and a shallow
+   strip below it holding the part of the logo that hangs past the gradient.
+   Both derive from the logo height, so no size can push the mark off the top
+   or onto whatever follows the bar. Ported from style-v2.css minus the nav —
+   these pages have no links up here.
 
-.site-banner {
-  background: linear-gradient(180deg, var(--banner-top) 0%, var(--banner-bottom) 100%);
-  height: 118px;
-  position: relative;
+   Note on the strip's colour: guide.css sets the body background TWICE —
+   --light-background at line 119, then --page-bg further down in the palette
+   block, which lands later in this flattened cascade and wins. These pages are
+   therefore on pure WHITE, not the off-white the first declaration suggests.
+   The strip is --page-bg so it disappears into the page, which is its job: it
+   exists to hold the wordmark plate clear, not to be seen. The progress bar
+   keeps its own tint and hairline and still reads as a deliberate band. */
+
+:root {
+  /* THE PIN. The logo is held by a feature INSIDE the artwork, not by its own
+     box: km-logo-name-below-open-2.svg carries an invisible <g id="Threshold">
+     whose TOP edge must sit on the gradient's lower edge at every size and in
+     every state. Derived from the asset:
+
+         rect y=1116.567, scaled 0.870883, translated +164.838
+         → 1137.24 in user units, over a 1431 viewBox = 0.79471
+
+     That is also exactly where the ring (<g id="Circle">) ends, so the whole
+     mark rides above the gradient and only the wordmark drops below it.
+     Re-derive if the artwork changes — it is the single number the geometry
+     hangs off, and ONLY the -open-2 asset carries the box. */
+  --logo-above-threshold: 0.7947;
+  --logo-clear:           12px;    /* gradient left showing above the logo */
+
+  /* Only the logo sizes are chosen. The band sizes itself to suit. */
+  --logo-full: 130px;
+  --logo-mini:  76px;              /* once scrolled */
+
+  --chrome-ease: 200ms ease;
+
+  /* Roughly the sticky progress bar: 1.5rem of padding plus a row of controls.
+     Only used to offset anchor jumps, so being a few px out is harmless. */
+  --progress-height: 3.4rem;
+
+  --strip-pad: 4px;             /* clearance under the wordmark plate */
+
+  /* What the page reserves under the fixed bar. Always the FULL height — that
+     is the height the bar has whenever the top of the page is on screen — so
+     nothing shifts when it condenses. */
+  --header-reserve: calc(var(--logo-full) * var(--logo-above-threshold)
+                         + var(--logo-clear)
+                         + var(--logo-full) * (1 - var(--logo-above-threshold))
+                         + var(--strip-pad));
+
+  /* The condensed bar in full — gradient plus strip — for anything that has to
+     sit under it once the page has scrolled. By the time the sticky progress
+     bar reaches the top the header has already condensed, so this is the
+     height it actually meets. */
+  --banner-condensed: calc(var(--logo-mini) * var(--logo-above-threshold)
+                           + var(--logo-clear)
+                           + var(--logo-mini) * (1 - var(--logo-above-threshold))
+                           + var(--strip-pad));
 }
 
+/* The fixed bar is out of flow, so the first in-flow element needs the room
+   back. On body rather than main: the title block is above main. */
+body { padding-top: var(--header-reserve); }
+
+header.site-banner {
+  /* Declared HERE, not on :root. A custom property is substituted where it is
+     declared — on :root these would resolve against the root's --logo-height
+     once and inherit down already fixed, and .is-condensed swapping the height
+     could then never move them. This is the whole trick. */
+  --logo-height:    var(--logo-full);
+  --banner-height:  calc(var(--logo-height) * var(--logo-above-threshold)
+                         + var(--logo-clear));
+  /* Exactly the overhang, plus a little clearance. Derived, so no logo size
+     can push the wordmark onto whatever sits below the bar. */
+  --strip-height:   calc(var(--logo-height) * (1 - var(--logo-above-threshold))
+                         + var(--strip-pad));
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+
+  height: calc(var(--banner-height) + var(--strip-height));
+  min-height: 0;                   /* guide.css set one against the old geometry */
+
+  /* One element, two bands: the gradient is a background IMAGE clipped to the
+     banner height, over an off-white background COLOUR that shows through as
+     the strip. Avoids adding a second element and a grid purely to draw a 30px
+     band. background-size animates, so the gradient's edge glides with the
+     height instead of jumping when the bar condenses. */
+  background-color: var(--page-bg);
+  background-image: linear-gradient(180deg, var(--banner-top) 0%, var(--banner-bottom) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% var(--banner-height);
+  transition: height var(--chrome-ease), background-size var(--chrome-ease);
+}
+
+/* Condensing changes only the logo size; the band re-derives itself. */
+header.site-banner.is-condensed { --logo-height: var(--logo-mini); }
+
+/* The positioning context for .banner-logo. Full height so bottom: is measured
+   from the foot of the whole bar, and on .wrap rather than the header so the
+   logo aligns with the content column instead of the viewport edge - on a wide
+   screen those are a long way apart. */
 .site-banner .wrap { height: 100%; position: relative; }
 
-/* The logo straddles the banner's lower edge — its own horizontal midline sits
-   exactly on the boundary, half over the gradient and half over the page. The
-   SVG carries its own white background, so no card is drawn behind it. */
+/* THE PIN. `bottom: --strip-height` puts the artwork's own foot on the
+   gradient's lower edge; the translate then pushes it back down by the part
+   BELOW the threshold (20.53%), which leaves the threshold's top edge exactly
+   on that line. Because both offsets are fractions of --logo-height, the pin
+   survives any resize for free. */
 .banner-logo {
   position: absolute;
   right: 0;
-  bottom: 0;
-  transform: translateY(50%);
+  /* Measured from the gradient's edge, not the bar's foot, now that the strip
+     sits below it. The translate is the overhang, so the plate ends up exactly
+     --strip-pad clear of whatever follows the bar. */
+  bottom: var(--strip-height);
+  transform: translateY(calc(var(--logo-height) * (1 - var(--logo-above-threshold))));
   display: block;
   line-height: 0;
+  z-index: 2;
 }
 
 .banner-logo img {
   height: var(--logo-height);
   width: auto;
   display: block;
+  transition: height var(--chrome-ease);
 }
 
-/* Clears the half of the logo that hangs below the banner. The title sits to
-   its left, so this only needs to cover the descent, not sit clear of it. */
+/* The bar now contains its own overhang, so the title block has nothing left
+   to clear and takes ordinary spacing. */
 .title-block {
   background-color: transparent;
-  padding-top: calc(var(--logo-height) / 2 + 0.75rem);
+  padding-top: 2rem;
   padding-bottom: 1.5rem;
   margin-bottom: 1rem;
 }
 
-/* Banner must be at least as tall as the logo's upper half. */
-.site-banner { min-height: calc(var(--logo-height) / 2 + 40px); }
+/* The progress bar sticks BELOW the bar rather than under it. */
+.progress-wrap { top: var(--banner-condensed); }
+
+/* An anchor jump has to clear BOTH the fixed bar and the sticky progress bar
+   parked under it, or "step 4" lands behind them. The progress bar is content-
+   sized, so this is a measured estimate rather than a derived figure — it wraps
+   to two rows on a narrow screen, where it is generous rather than short. */
+[id] {
+  scroll-margin-top: calc(var(--banner-condensed) + var(--progress-height) + 0.75rem);
+}
 
 @media (max-width: 560px) {
-  :root { --logo-height: 96px; }
+  :root {
+    --logo-full: 96px;
+    --logo-mini: 60px;
+  }
 }
 
 .title-block .eyebrow { color: var(--banner-top); }
@@ -209,6 +1090,13 @@ p, li, label, .price-what { font-family: 'Source Sans 3', system-ui, sans-serif;
 .pill-who  { background-color: #ECF1E1; color: #4A5C00; }   /* clinician     */
 .pill-note { background-color: #F2EFE4; color: #62511C; }   /* as needed     */
 .pill-done { background-color: #E4F0E9; color: #1F5B3E; }   /* completed     */
+.pill-must { background-color: #FAEBDD; color: #8A4212; }   /* must travel   */
+.pill-soon { background-color: #EDE7F3; color: #4A3A63; }   /* not yet open  */
+
+/* pill-must is the only warm pill in a cool set, and that is the whole point:
+   every other pill describes an appointment, this one is a constraint on it.
+   The ADOS-2 cannot be swapped for a video call, so a family reading the page
+   has to notice it while they are still planning. 6.3:1 on its own tint. */
 
 /* Pills run inline with the item they annotate and wrap with the text. */
 .pill-line { display: inline; }
@@ -228,13 +1116,89 @@ p.pill-line .pill { margin-left: 0; margin-right: 0.32rem; }
    caveats do not apply. Written as two mutually exclusive hides so nothing has
    to re-assert a display value — that is what broke the consent branches. */
 
-html.dx-km .external-dx { display: none; }
-html:not(.dx-km) .km-dx-only { display: none; }
+/* Three states, and each piece of content declares which it belongs to:
+     (no dx)  the general page — both fees, triage decides
+     dx=km    we diagnosed it       — $250 only, nothing to send or review
+     dx=ext   diagnosed elsewhere   — $350 only, reports needed and reviewed
+
+   Class naming: dx-km-only / dx-ext-only / dx-unknown-only show in exactly one
+   state. dx-not-km shows in two — ext and unknown — which is what keeps the
+   send-reports and review stages on both without duplicating them. */
+html.dx-km        .dx-not-km      { display: none; }   /* ext + unknown */
+html.dx-ext       .dx-not-ext     { display: none; }   /* km  + unknown */
+html:not(.dx-km)  .dx-km-only     { display: none; }
+html:not(.dx-ext) .dx-ext-only    { display: none; }
+html.dx-km        .dx-unknown-only { display: none; }
+html.dx-ext       .dx-unknown-only { display: none; }
+
+/* ============ PATHWAY ========= */
+/* Standard or complex, decided at triage and carried in the link. With no
+   pathway the page shows both prices and says triage decides — a page that is
+   less specific, never one that is wrong. Three hides, no display re-assertion. */
+
+html:not(.pathway-standard) .pw-standard { display: none; }
+html:not(.pathway-complex)  .pw-complex  { display: none; }
+html.pathway-standard .pw-neutral,
+html.pathway-complex  .pw-neutral { display: none; }
+
+/* Shows in two states — standard and unset — the way dx-not-km does for the
+   titration page. The standard assessment is what both of those describe. */
+html.pathway-complex .pw-not-complex { display: none; }
+
+/* The pathway not taken. While triage has not ruled it out it reads as a
+   normal option; once the family is confirmed standard it greys back to a
+   reference, present but plainly not theirs. */
+html.pathway-standard .price-panel-alt {
+  background-color: #F3F4F4;
+  border-left-color: var(--text-colour);
+}
+
+html.pathway-standard .price-panel-alt .price,
+html.pathway-standard .price-panel-alt .price-gst,
+html.pathway-standard .price-panel-alt .price-panel-title h3,
+html.pathway-standard .price-panel-alt .price-panel-title p { color: var(--text-muted); }
+
+/* Nothing follows the head once the triage sentence is hidden. */
+html.pathway-standard .price-panel-alt .price-panel-head { margin-bottom: 0; }
+
+/* The note is the live statement about this family, so it keeps its colour
+   while the panel behind it loses its own. */
+.pathway-note {
+  color: var(--banner-top);
+  font-size: 0.95rem;
+}
+
+/* ============ POST-DIAGNOSTIC ROUTE ========= */
+/* How this family reached post-diagnostic support:
+     via=assessment  handed over from one of our assessments — the hour is
+                     included, and they are already registered with us
+     via=referral    arranged on its own — no assessment for an hour to be
+                     included with, so the free call is the way in
+     (unset)         the general page — the included hour is stated as a fact
+                     about our assessments rather than as this family's
+
+   pd-included covers assessment + unknown; only a standalone referral loses it. */
+
+html.via-referral      .pd-included        { display: none; }
+html:not(.via-referral) .pd-standalone     { display: none; }
+
+html:not(.via-assessment) .via-assessment-only { display: none; }
+html:not(.via-referral)   .via-referral-only   { display: none; }
+html.via-assessment .via-unknown-only { display: none; }
+html.via-referral   .via-unknown-only { display: none; }
 
 /* ============ REGISTRATION ALREADY COMPLETE ========= */
 /* reg-complete is set only by a page that knows the client is already
    registered — currently the Titration Clinic, when dx=km. The shared
    registration stage then shows as settled rather than asking again. */
+
+/* Occupational therapy is fully written into post-diagnostic-support.html but
+   is not a service we offer yet. One rule takes out every trace of it — price
+   panel, clinician line, programme card, the sentence in Appointment options —
+   and ?ot=1 sets .ot-on to preview the page with it in place. Partitioned this
+   way, switching the service on means deleting one rule, not rewriting a page
+   from a leaflet six months out of date. */
+html:not(.ot-on) .svc-ot { display: none; }
 
 html:not(.reg-complete) .reg-done { display: none; }
 html.reg-complete .reg-needed { display: none; }
@@ -623,7 +1587,8 @@ html.reg-complete #step-registration .stage-check { display: flex; }
   margin-bottom: 1rem;
 }
 
-.price-single .price {
+.price-single .price,
+.price-panel-head .price {
   font-size: 2.1rem;
   font-weight: 600;
   color: var(--report-teal);
@@ -636,6 +1601,26 @@ html.reg-complete #step-registration .stage-check { display: flex; }
   margin: 0;
   font-size: 0.98rem;
 }
+
+/* The figure and its GST note are one unit; the description sits alongside.
+   Zero flex so the block never stretches and the two columns stay put. */
+.price-block { flex: 0 0 auto; }
+
+/* At 2.1rem the figure cannot carry "(inc GST)" on the same line without
+   either shouting it or gluing it to the digits. It drops underneath and
+   hangs off the same right edge, in the same face and colour, just quieter. */
+.price-gst {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--report-teal);
+  text-align: right;
+  line-height: 1.2;
+  margin: 0.2rem 0 0;
+}
+
+.price-gst-inline { font-size: 0.55em; font-weight: 600; }
+
 .included-groups h3 { color: var(--report-teal); }
 .form-card .button { background-color: var(--report-blue); }
 
@@ -647,6 +1632,257 @@ html.reg-complete #step-registration .stage-check { display: flex; }
   color: var(--report-teal);
   margin-bottom: 0.6rem;
 }
+
+/* ============ PRICE PANEL ========= */
+/* One panel carries the whole offer: what it costs, what it is called, and
+   everything it contains. Splitting those across a price box and a separate
+   "everything included" section made the reader assemble the answer from
+   three places. The cards keep their white ground so they still read as
+   discrete lists sitting on the panel rather than dissolving into it. */
+
+.price-panel {
+  background-color: var(--inset-bg);
+  border-left: 4px solid var(--report-teal);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1.25rem 1.35rem 1.35rem;
+  margin-top: 1.75rem;
+}
+
+.price-panel-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+  margin-bottom: 1.15rem;
+}
+
+.price-panel-title { flex: 1 1 16rem; }
+
+.price-panel-title h3 {
+  font-size: 1.15rem;
+  color: var(--brand-deep);
+  margin-bottom: 0.1rem;
+}
+
+.price-panel-title p {
+  margin-bottom: 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* ============ STACKED PRICE HEADS ========= */
+/* Two fees that are alternatives to each other, not a price and a sub-price.
+   Nesting each in its own white card inside the panel read as a bubble within
+   a bubble; as plain heads they use the same figure-left, label-right layout
+   as every other price on the site, and a hairline says "or" between them.
+
+   Stacked rather than side by side because the layout is horizontal already:
+   two of these in one row would put a 2.1rem figure and a paragraph into half
+   the width each. Source order therefore decides precedence — $250 and the
+   stimulant fee come first — and when a dx- class hides one, the other simply
+   sits alone with no divider to draw. */
+.price-panel-head + .price-panel-head {
+  border-top: 1px solid var(--line);
+  padding-top: 1.15rem;
+}
+
+/* ============ INCLUDED CARDS ========= */
+/* "Everything included in the price" is the densest block on the page: two
+   lists of a dozen items between them, most carrying pills. Run as plain
+   lists the pills trail off the end of each line and the two groups read as
+   one long column, so nothing tells you where one ends and the next starts.
+
+   Boxing each group and dropping its pills onto their own line gives the eye
+   a grid to scan: every item starts at the same left edge, and the pills form
+   a second column under it. .included-groups already supplies the two-column
+   grid (auto-fit, so it stacks on a narrow screen) — these rules add only the
+   box and the pill placement. */
+
+.include-card {
+  background-color: var(--page-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 1.15rem 1.3rem 1.25rem;
+}
+
+.include-card h4 {
+  font-size: 0.95rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--brand-deep);
+}
+
+/* Groups a run of items inside a card without competing with its title —
+   same quiet uppercase as .eyebrow, which does the same job elsewhere. The
+   highlight box borrows it to separate the adult pathway from the general
+   answer, rather than defining a second sub-heading style. */
+.include-card h5,
+.highlight h5 {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+  margin-bottom: 0.45rem;
+}
+
+/* The wide card sits above the pair; the grid supplies its own gaps. */
+
+/* A paragraph closing off a run of cards needs the same air the grid gives
+   between them, or it reads as if it belongs inside the last card. */
+.included-groups + p,
+.included-groups + .highlight { margin-top: var(--gap); }
+
+.sub-block > ul.included + p { margin-top: 1rem; }
+
+.price-panel .include-card + .include-card { margin-top: var(--gap); }
+
+/* A panel that carries a note instead of cards still closes flush. */
+.price-panel > p:last-child { margin-bottom: 0; }
+
+/* Across the full width there is room for an item and its pills on one
+   line, so the pills move to the right-hand edge and line up as their own
+   column — the description reads down the left, the facts down the right.
+
+   Gated on width, not on the card: below this the card is no wider than
+   the paired ones, and a right-aligned pill row that had wrapped onto its
+   own line would sit stranded away from the item it belongs to. */
+@media (min-width: 800px) {
+  .include-card-wide .included li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 1rem;
+  }
+
+  .include-card-wide .included li .pill-line {
+    margin-top: 0;
+    margin-left: auto;
+  }
+}
+
+/* Items sit tighter and a shade smaller than body copy. The columns are
+   narrow, and at full size most items wrapped to two lines before their
+   pills even started — which is what made the boxes read as cluttered. */
+.include-card .included { gap: 0.7rem; }
+
+/* The support hour is included in the price but is not a step of the
+   assessment, so its bullet is green: an addition within the list rather
+   than another appointment in the sequence. */
+.include-card .included li.also-included::before { background-color: var(--ok-green); }
+
+/* A component card is an explanation that also carries a price, so it takes
+   the tint and teal edge of a price panel rather than the white ground the
+   list cards use. Same chrome as .price-single, same meaning. */
+.include-card-component {
+  background-color: var(--inset-bg);
+  border-left: 4px solid var(--report-teal);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The cards stretch to match each other, so without this the two prices sit
+   at whatever height their own text ended at. Pushed to the bottom they line
+   up across the pair and read as a footer rather than a trailing sentence. */
+.include-card-component .component-price { margin-top: auto; }
+
+/* The price sits at the foot of the card, ruled off from the explanation:
+   it is a condition, not part of what the component is. The label and the
+   pointer below carry that, so the figure itself needs no hedging. */
+.component-price {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+}
+
+.component-price-tag {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  flex: 1 0 100%;
+  margin: 0;
+}
+
+.component-price-figure {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.35rem;
+  line-height: 1.1;
+  color: var(--report-teal);
+  margin: 0;
+}
+
+/* Pushed to the far edge so it reads as a pointer, not part of the figure. */
+.component-price .read-more { margin-left: auto; }
+
+/* A heading below h3 inside a section, for the pathway note. Given its own
+   class so the h4 that titles a callout is left alone. */
+.sub-block > h4.sub-heading {
+  font-size: 1rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.read-more {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--banner-top);
+}
+
+/* Prose in a card sits in the same narrow column as the lists do, so it
+   takes the same size. The feature card keeps body size: it is one short
+   passage with the whole width to itself. */
+.include-card p { font-size: 0.97rem; }
+
+/* A pill row directly under a card heading labels the whole card. */
+.include-card > p.pill-line { margin-bottom: 0.8rem; }
+
+.include-card .included li {
+  font-size: 0.97rem;
+  line-height: 1.45;
+}
+
+/* The inherited dot offset is tuned to the 1.65 body line-height. Recentre
+   it on the tighter line used inside these cards. */
+.include-card .included li::before { top: calc(0.725em - 0.35rem); }
+
+.include-card .included .pill-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.3rem;
+}
+
+/* Smaller and flatter than a standalone pill row: in here they annotate a
+   line in a narrow column, so they have to give way to it. */
+.include-card .included .pill-line .pill {
+  margin-left: 0;
+  font-size: 0.68rem;
+  padding: 0.02rem 0.44rem;
+}
+
+/* The included post-diagnostic hour is neither part of the assessment nor a
+   document you receive, so it belongs under the pair rather than inside
+   either. Tinted and accented to read as an addition, not a third column. */
+
+.include-card p:last-child { margin-bottom: 0; }
 
 /* ============ PRINT ========= */
 /* Everything opens for print — a folded stage must never print empty. */

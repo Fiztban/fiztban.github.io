@@ -1,5 +1,11 @@
 /* ==========================================================================
-   Kinder Minds — Interactive intake guide
+   Kinder Minds — guide core
+
+   Names, form links, tick state and progress. Pairs with guide.js, which adds
+   the accordion on top. Originally copied out of intake/intake.js, which was
+   the actionable half of an older split-page design. That folder was retired
+   on 2026-08-25 once the guides absorbed both halves, so this file is now the
+   only copy — the two had already diverged before it went.
 
    Three jobs:
      1. Read the client's form links out of the URL query string.
@@ -84,8 +90,9 @@
      the case whenever this page is linked from one of our own assessments —
      the fees and caveats that only apply to an outside diagnosis are noise,
      and quoting a price the family will never pay invites confusion. */
-  if ((params.get('dx') || '').trim().toLowerCase() === 'km') {
-    document.documentElement.classList.add('dx-km');
+  var dx = (params.get('dx') || '').trim().toLowerCase();
+  if (dx === 'km' || dx === 'ext') {
+    document.documentElement.classList.add('dx-' + dx);
   }
 
   /* ---------- personalisation ---------- */

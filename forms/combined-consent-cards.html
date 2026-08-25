@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Consent and information form | Kinder Minds</title>
+    <meta name="description" content="Kinder Minds combined consent and information form.">
+
+    <!-- Unlisted, and the URL carries a client identifier. Never indexed, and
+         the query string must never leak through a Referer header. -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
+
+    <link rel="icon" type="image/png" sizes="96x96" href="../assets/Logos/km-favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/Logos/km-favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/Logos/km-favicon-16x16.png">
+
+    <link rel="stylesheet" href="consent-cards.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Fira+Sans+Condensed:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <script src="consent-cards.js" defer></script>
+</head>
+
+<body class="deck-mode">
+
+    <header class="site-banner">
+        <div class="wrap">
+            <a class="banner-logo" href="../index.html" aria-label="Kinder Minds home">
+                <img src="../assets/Logos/km-logo-name-below.svg" alt="Kinder Minds">
+            </a>
+        </div>
+    </header>
+
+    <!-- The logo straddles the banner's lower edge, and .title-block's top
+         padding is what clears the half hanging below it. The two are one
+         unit: drop the title block and the logo is cut through the middle. -->
+    <div class="title-block">
+        <div class="wrap">
+            <p class="eyebrow">Consent &amp; Information</p>
+            <h1>Before we can see you</h1>
+            <p class="subtitle">One form, answered in the order that applies to you</p>
+            <p class="for-whom" id="for-whom" hidden></p>
+        </div>
+    </div>
+
+    <!-- ============ THE BAR ============
+         Takes the place, and the styling, of .progress-wrap on the single-page
+         view: it divides the title block from the content and reports where
+         the reader is.
+
+         A card deck without a rail is a corridor with no windows — the reader
+         can see the step they are on but never how deep the form goes, which
+         is the one question a long scrolling page at least answers by being
+         scrollable. It is up from the first paint, so before anyone starts it
+         doubles as a preview of the seven sections. -->
+    <div class="deck-bar">
+        <div class="wrap deck-bar-inner">
+            <ol class="rail" id="rail" aria-label="Sections of this form"></ol>
+            <div class="deck-meta">
+                <p class="deck-count" id="deck-count" role="status" aria-live="polite">Loading&hellip;</p>
+                <p class="deck-answered" id="deck-answered"></p>
+                <button type="button" class="reset-button" id="reset-progress">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="wrap">
+
+        <!-- Boot failures: skeleton drift, or the snapshot not loading. -->
+        <div class="blocker" id="boot-error" hidden>
+            <h3></h3>
+            <p></p>
+        </div>
+
+        <div id="form-body">
+
+            <!-- ============ THE WAY IN ============
+                 Everything that frames the form rather than being part of it:
+                 the notices, and what the reader is about to do. It is not a
+                 card, because it asks nothing and belongs to no section — a
+                 numbered card carrying page furniture would put the deck's
+                 count and the form's own section 1 out of step from the first
+                 screen.
+
+                 Shown once. A reader with saved progress lands back on the
+                 card they left, not here. -->
+            <div class="start-panel" id="start-panel" hidden>
+
+                <div class="notice" id="no-link-notice" hidden>
+                    <p><strong>This page is not linked to a client record.</strong> It is running as a demonstration, so nothing here can be submitted. Open the personalised link we emailed you to work against a real form.</p>
+                </div>
+
+                <div class="notice">
+                    <p><strong>Prototype &mdash; card view.</strong> The same pathway as the single-page version, one card at a time, built alongside it so the two can be compared. It builds the exact payload Zanda expects but does not submit. Target: <span id="target-form" class="term"></span>. <a href="combined-consent.html" id="swap-view">Open the single-page version</a>.</p>
+                </div>
+
+                <p class="lede">This form covers everything Kinder Minds needs before your first appointment &mdash; who you are, your rights, our terms, and a few choices that are entirely up to you.</p>
+                <p>You will only be shown the parts that apply to you, one at a time. Your answers are saved on this device as you go, so you can stop and come back.</p>
+
+                <div class="start-foot">
+                    <button type="button" class="button" id="go-start">Start</button>
+                </div>
+            </div>
+
+            <!-- ============ THE SECTION HEADER ============
+                 Which of the form's seven sections the reader is inside, held
+                 above the deck rather than repeated on each card. A section
+                 spanning six cards (2 — identity and authority) would
+                 otherwise give no sign that 2.1, 2.2 and 2.3.1 belong
+                 together: the card changes, this does not, and that IS the
+                 signal.
+
+                 The title is the form's own section label. Nothing here
+                 renames a section of the document it renders — the short
+                 labels on the rail are navigation, not headings. -->
+            <div class="section-head" id="section-head" hidden>
+                <p class="card-eyebrow" id="section-count"></p>
+                <h2 class="section-title" id="section-title"></h2>
+            </div>
+
+            <div class="deck" id="deck">
+
+                <!-- ============================================================
+                     CARD — the document's own introduction (Zanda section 1)
+                     Nothing but the form's own introduction. The framing that
+                     used to sit on top of it now lives on the start panel, so
+                     card 1 is section 1 and nothing else.
+                     ============================================================ -->
+                <section class="card" id="card-intro" data-card="intro" data-sec="1" hidden>
+                    <div class="legal" data-legal="0.0"></div>
+
+                    <label class="tick">
+                        <input type="checkbox" id="read-1" data-ui="read1">
+                        <span>I have read this introduction.</span>
+                    </label>
+                </section>
+
+                <!-- ============================================================
+                     CARD — 2.1 who is the client
+                     ============================================================ -->
+                <section class="card" id="card-client" data-card="client" data-sec="2" hidden>
+                    <h2 class="card-title clause" data-section-heading="2"></h2>
+
+                    <div class="legal card-intro-legal" data-legal="1.0"></div>
+
+                    <div class="q">
+                        <p class="q-help">The person who will be seen by Kinder Minds. We call them &ldquo;the Client&rdquo; throughout.</p>
+                        <input class="text-input" type="text" id="client-name" data-answer="clientName"
+                               autocomplete="off" placeholder="Full name of the Client">
+                    </div>
+                </section>
+
+                <!-- ============================================================
+                     CARD — 2.2 who is completing this form
+                     The branch point. Everything after it is conditional on
+                     this one answer, which is why it gets a card of its own
+                     rather than sitting underneath the name field.
+                     ============================================================ -->
+                <section class="card" id="card-who" data-card="who" data-sec="2" hidden>
+                    <h2 class="card-title clause" data-section-heading="3"></h2>
+
+                    <div class="q">
+                        <p class="q-help">This decides which of the remaining questions apply to you. Answer it and the rest of the form shortens to fit.</p>
+                        <ul class="opt-list" role="radiogroup">
+                            <li><label class="opt">
+                                <input type="radio" name="completedBy" value="0" data-field="completedBy">
+                                <span class="opt-text"><strong>I am the Client, consenting for myself</strong><span data-opt-text="3.0.0"></span></span>
+                            </label></li>
+                            <li><label class="opt">
+                                <input type="radio" name="completedBy" value="1" data-field="completedBy">
+                                <span class="opt-text"><strong>I am a parent or legal guardian, consenting for them</strong><span data-opt-text="3.0.1"></span></span>
+                            </label></li>
+                        </ul>
+                    </div>
+
+                    <div class="when highlight" data-when="self" hidden>
+                        <p><strong>That shortens the form.</strong> The guardian questions do not apply to you, and we will record them as &ldquo;not applicable&rdquo; on your behalf. You will see exactly what we record before you sign.</p>
+                    </div>
+                </section>
+
+                <!-- ============================================================
+                     CARD — 2.3.1 sole guardian  (guardian only)
+                     ============================================================ -->
+                <section class="card" id="card-sole" data-card="sole" data-sec="2" data-when="guardian" hidden>
+                    <h2 class="card-title clause" data-section-heading="5"></h2>
+
+                    <details class="reader">
+                        <summary>Why consent is needed from every legal guardian</summary>
+                        <div class="legal" data-legal="4.0"></div>
+                    </details>
+
+                    <div class="q">
+                        <p class="q-help">Being the main caregiver, or the only parent involved day to day, does not by itself make someone a sole guardian &mdash; open the note below if you are unsure.</p>
+
+                        <details class="reader">
+                            <summary>What counts as a sole guardian</summary>
+                            <div class="legal" data-legal="5.0"></div>
+                        </details>
+
+                        <ul class="opt-list" role="radiogroup">
+                            <li><label class="opt">
+                                <input type="radio" name="soleGuardian" value="0" data-field="soleGuardian">
+                                <span class="opt-text"><strong>Yes &mdash; I am the sole legal guardian</strong><span data-opt-text="5.1.0"></span></span>
+                            </label></li>
+                            <li><label class="opt">
+                                <input type="radio" name="soleGuardian" value="1" data-field="soleGuardian">
+                                <span class="opt-text"><strong>No &mdash; there are other legal guardians</strong><span data-opt-text="5.1.1"></span></span>
+                            </label></li>
+                        </ul>
+                    </div>
+
+                    <div class="when highlight" data-when="guardian-sole" hidden>
+                        <p><strong>No other guardians to list.</strong> We will skip the questions about contacting them, and record that question as &ldquo;not applicable&rdquo;. You will see exactly what gets recorded before you sign.</p>
+                    </div>
+                </section>
+
+                <!-- ============================================================
+                     CARD — 2.3.2 guardian details  (guardian only)
+                     Three inputs per person, composed into one Zanda textarea.
+                     ============================================================ -->
+                <section class="card" id="card-guardians" data-card="guardians" data-sec="2" data-when="guardian" hidden>
+                    <h2 class="card-title clause" data-section-heading="6"></h2>
+
+                    <p class="q-help">For each guardian we need a full name and at least one way to reach them &mdash; a mobile number or an email address. Every guardian has to be sent their own copy of this form before appointments can be booked.</p>
+
+                    <div class="person-card">
+                        <h4>Your details</h4>
+                        <div class="person-grid">
+                            <div>
+                                <label for="g1-name">Full name</label>
+                                <input class="text-input" type="text" id="g1-name" data-answer="g1Name" autocomplete="name">
+                            </div>
+                            <div>
+                                <label for="g1-mobile">Mobile number</label>
+                                <input class="text-input" type="tel" id="g1-mobile" data-answer="g1Mobile" autocomplete="tel">
+                            </div>
+                            <div>
+                                <label for="g1-email">Email address</label>
+                                <input class="text-input" type="email" id="g1-email" data-answer="g1Email" autocomplete="email">
+                            </div>
+                        </div>
+                        <p class="person-note" data-person-note="g1" hidden></p>
+                    </div>
+
+                    <div class="when" data-when="guardian-multi" hidden>
+                        <div class="person-card">
+                            <h4>Second legal guardian</h4>
+                            <div class="person-grid">
+                                <div>
+                                    <label for="g2-name">Full name</label>
+                                    <input class="text-input" type="text" id="g2-name" data-answer="g2Name">
+                                </div>
+                                <div>
+                                    <label for="g2-mobile">Mobile number</label>
+                                    <input class="text-input" type="tel" id="g2-mobile" data-answer="g2Mobile">
+                                </div>
+                                <div>
+                                    <label for="g2-email">Email address</label>
+                                    <input class="text-input" type="email" id="g2-email" data-answer="g2Email">
+                                </div>
+                            </div>
+                            <p class="person-note" data-person-note="g2" hidden></p>
+                        </div>
+
+                        <div class="person-card">
+                            <h4>Third legal guardian <span class="optional">&mdash; only if there is one</span></h4>
+                            <div class="person-grid">
+                                <div>
+                                    <label for="g3-name">Full name</label>
+                                    <input class="text-input" type="text" id="g3-name" data-answer="g3Name">
+                                </div>
+                                <div>
+                                    <label for="g3-mobile">Mobile number</label>
+                                    <input class="text-input" type="tel" id="g3-mobile" data-answer="g3Mobile">
+                                </div>
+                                <div>
+                                    <label for="g3-email">Email address</label>
+                                    <input class="text-input" type="email" id="g3-email" data-answer="g3Email">
+                                </div>
+                            </div>
+                            <p class="person-note" data-person-note="g3" hidden></p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================
+                     CARD — 2.3.3 contacting the others  (co-guardians only)
+                     ============================================================ -->
+                <section class="card" id="card-contact" data-card="contact" data-sec="2" data-when="guardian-multi" hidden>
+                    <h2 class="card-title clause" data-section-heading="7"></h2>
+
+                    <div class="q">
+                        <p class="q-help">We have to give every guardian the same information and their own copy of this form before we can start.</p>
+
+                        <details class="reader">
+                            <summary>Why we are legally required to do this</summary>
+                            <div class="legal" data-legal="7.0"></div>
+                        </details>
+
+                        <ul class="opt-list" role="radiogroup">
+                            <li><label class="opt">
+                                <input type="radio" name="contactOthers" value="0" data-field="contactOthers">
+                                <span class="opt-text"><strong>Yes &mdash; please contact them</strong></span>
+                            </label></li>
+                            <li><label class="opt">
+                                <input type="radio" name="contactOthers" value="1" data-field="contactOthers">
+                                <span class="opt-text"><strong>No &mdash; I will pass the form on myself</strong><span data-opt-text="7.1.1"></span></span>
+                            </label></li>
+                        </ul>
+
+                        <div class="highlight">
+                            <div data-legal="7.2"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================
+                     CARD — 2.4 communication during care
+                     Which half applies depends on who is completing, so both
+                     are here and one is shown. Before that answer exists, both
+                     are shown rather than neither.
+                     ============================================================ -->
+                <section class="card" id="card-comms" data-card="comms" data-sec="2" hidden>
+                    <h2 class="card-title clause" data-section-heading="8"></h2>
+
+                    <div class="legal" data-legal="8.0"></div>
+
+                    <div class="when" data-when="self" hidden>
+                        <div class="legal" data-legal="8.1"></div>
+                    </div>
+
+                    <div class="when" data-when="guardian" hidden>
+                        <div class="legal" data-legal="8.2"></div>
+                    </div>
+
+                    <div class="when" data-when="unchosen" hidden>
+                        <div class="legal" data-legal="8.1,8.2"></div>
+                    </div>
+                </section>
+
+                <!-- ============================================================
+                     CARDS — Zanda section 3, split on its own headings
+                     3.1 services | 3.2 your rights | 3.3 privacy
+
+                     One read-tick for the whole section, on the last card.
+                     Twelve ticks across twelve reading cards would train a
+                     reader to tap through, which is worse for informed consent
+                     than the long page this replaces.
+                     ============================================================ -->
+                <section class="card" id="card-rights-services" data-card="rights-services" data-sec="3" hidden>
+                    <h2 class="card-title clause" data-legal-title="9.1"></h2>
+                    <div class="legal card-intro-legal" data-legal="9.0"></div>
+                    <div class="legal" data-legal="9.1" data-skip-first-heading></div>
+                </section>
+
+                <section class="card" id="card-rights-care" data-card="rights-care" data-sec="3" hidden>
+                    <h2 class="card-title clause" data-legal-title="9.2"></h2>
+                    <div class="legal" data-legal="9.2-9.7" data-skip-first-heading></div>
+                </section>
+
+                <section class="card" id="card-rights-privacy" data-card="rights-privacy" data-sec="3" hidden>
+                    <h2 class="card-title clause" data-legal-title="9.8"></h2>
+                    <div class="legal" data-legal="9.8-9.15" data-skip-first-heading></div>
+
+                    <label class="tick">
+                        <input type="checkbox" id="read-3" data-ui="read3">
+                        <span>I have read this section.</span>
+                    </label>
+                </section>
+
+                <!-- ============================================================
+                     CARDS — Zanda section 4, split on its own headings
+                     4.1-4.5 scope | 4.6 terms of trade | 4.7 under 18s
+                     (guardian only) | 4.8-4.9 closing
+                     ============================================================ -->
+                <section class="card" id="card-terms-scope" data-card="terms-scope" data-sec="4" hidden>
+                    <h2 class="card-title">What we provide, and how appointments work</h2>
+                    <p class="q-help">Clauses 4.1 to 4.5 &mdash; scope of services, booking and communication, confidentiality, and the limits of what we do.</p>
+                    <div class="legal" data-legal="10.0-10.5"></div>
+                </section>
+
+                <section class="card" id="card-terms-trade" data-card="terms-trade" data-sec="4" hidden>
+                    <h2 class="card-title clause" data-legal-title="10.6"></h2>
+                    <div class="legal" data-legal="10.6-10.16" data-skip-first-heading></div>
+                </section>
+
+                <section class="card" id="card-terms-u18" data-card="terms-u18" data-sec="4" data-when="guardian" hidden>
+                    <h2 class="card-title clause" data-legal-title="10.17"></h2>
+                    <div class="legal" data-legal="10.17-10.25" data-skip-first-heading></div>
+                </section>
+
+                <section class="card" id="card-terms-close" data-card="terms-close" data-sec="4" hidden>
+                    <h2 class="card-title">Changes, and the law that applies</h2>
+                    <div class="legal" data-legal="10.26,10.27"></div>
+
+                    <label class="tick">
+                        <input type="checkbox" id="read-4" data-ui="read4">
+                        <span>I have read and accept these terms of service.</span>
+                    </label>
+                </section>
+
+                <!-- ============================================================
+                     CARDS — Zanda section 5, the automatic scribe
+                     Reading and choosing are separated, so the choice card
+                     carries nothing but the choice.
+                     ============================================================ -->
+                <section class="card" id="card-scribe-about" data-card="scribe-about" data-sec="5" hidden>
+                    <h2 class="card-title">What Heidi is, and what it does</h2>
+                    <div class="legal card-intro-legal" data-legal="11.0"></div>
+                    <div class="legal" data-legal="11.1-11.4"></div>
+                </section>
+
+                <section class="card" id="card-scribe-choice" data-card="scribe-choice" data-sec="5" hidden>
+                    <h2 class="card-title clause" data-section-heading="12"></h2>
+
+                    <div class="q">
+                        <span class="q-label">Do you consent to us using Heidi?</span>
+                        <p class="q-help">Either answer is fine, and it will not affect your care. This is a real choice, so we ask it rather than leaving a box unticked.</p>
+                        <ul class="opt-list" role="radiogroup">
+                            <li><label class="opt">
+                                <input type="radio" name="scribeConsent" value="0" data-field="scribeConsent">
+                                <span class="opt-text"><strong>Yes</strong><span data-opt-text="12.0.0"></span></span>
+                            </label></li>
+                            <li><label class="opt">
+                                <input type="radio" name="scribeConsent" value="1" data-field="scribeConsent">
+                                <span class="opt-text"><strong>No</strong><span data-opt-text="12.0.1"></span></span>
+                            </label></li>
+                        </ul>
+                    </div>
+
+                    <div class="legal" data-legal="12.1"></div>
+                </section>
+
+                <!-- ============================================================
+                     CARD — Neve. The gate, asked as a question.
+
+                     The two 6.4 acknowledgements are recorded for everyone, so
+                     the risk facts sit ON THIS CARD, above the choice, where
+                     every reader meets them before answering. A "no" ends the
+                     section here and the waiver card never appears.
+                     ============================================================ -->
+                <section class="card" id="card-dog-ask" data-card="dog-ask" data-sec="6" hidden>
+                    <h2 class="card-title">Would you like Neve at your appointments?</h2>
+
+                    <img class="dog-photo" data-drawing="13.1" hidden
+                         alt="Neve, a golden retriever, lying on the grass by the harbour">
+
+                    <div class="legal" data-legal="13.0,13.2"></div>
+
+                    <div class="highlight">
+                        <div class="legal" data-legal="13.4"></div>
+                        <p>You can change your mind about Neve at any time, before or after any appointment.</p>
+                        <p class="q-help" data-legal="14.2"></p>
+                    </div>
+
+                    <label class="gate">
+                        <input type="checkbox" id="dog-gate" data-ui="dogGate">
+                        <span class="gate-text">Yes &mdash; I would like to request that Neve joins our in-person appointments
+                            <span class="gate-note">Leave this unticked if you would rather she did not. Nothing else in this section will be asked, and your care is unaffected.</span>
+                        </span>
+                    </label>
+
+                    <div class="gate-closed" data-when="dog-out">
+                        <p style="margin:0;"><strong>Recorded as: no therapy dog.</strong> Nothing further is needed here. You can tick the box above at any time if you change your mind.</p>
+                    </div>
+
+                    <div class="when gate-opened" data-when="dog-in" hidden>
+                        <p style="margin:0;"><strong>One more card.</strong> Because Neve would be in the room, there is a waiver to read and agree to next. Opening it is not agreeing to it.</p>
+                    </div>
+                </section>
+
+                <!-- ============================================================
+                     CARD — the waiver  (only when the gate is open)
+                     Opting in takes two deliberate acts.
+                     ============================================================ -->
+                <section class="card" id="card-dog-waiver" data-card="dog-waiver" data-sec="6" data-when="dog-in" hidden>
+                    <h2 class="card-title clause" data-legal-title="13.3"></h2>
+
+                    <p class="q-help">Because Neve will be in the room, we need you to read and agree to the following.</p>
+
+                    <div class="legal" data-legal="13.5,13.6,13.7"></div>
+                    <div class="legal" data-legal="15.1"></div>
+
+                    <label class="gate">
+                        <input type="checkbox" id="dog-waiver" data-ui="dogWaiver">
+                        <span class="gate-text">I agree to the Therapy Dog Interaction Waiver above
+                            <span class="gate-note">This is what records your &ldquo;yes&rdquo; to therapy dog participation.</span>
+                        </span>
+                    </label>
+                </section>
+
+                <!-- ============================================================
+                     CARD — declaration and signature (Zanda section 7)
+                     ============================================================ -->
+                <section class="card" id="card-sign" data-card="sign" data-sec="7" hidden>
+                    <div class="q">
+                        <span class="q-label">Please confirm all four.</span>
+                        <p class="q-help" data-legal="16.1"></p>
+                        <ul class="opt-list">
+                            <li><label class="opt">
+                                <input type="checkbox" name="declaration" value="0" data-field="declaration">
+                                <span class="opt-text" data-opt-text="16.0.0"></span>
+                            </label></li>
+                            <li><label class="opt">
+                                <input type="checkbox" name="declaration" value="1" data-field="declaration">
+                                <span class="opt-text" data-opt-text="16.0.1"></span>
+                            </label></li>
+                            <li><label class="opt">
+                                <input type="checkbox" name="declaration" value="2" data-field="declaration">
+                                <span class="opt-text" data-opt-text="16.0.2"></span>
+                            </label></li>
+                            <li><label class="opt">
+                                <input type="checkbox" name="declaration" value="3" data-field="declaration">
+                                <span class="opt-text" data-opt-text="16.0.3"></span>
+                            </label></li>
+                        </ul>
+                    </div>
+
+                    <div class="q">
+                        <label class="q-label" for="signer-name">Full name of the person signing</label>
+                        <input class="text-input" type="text" id="signer-name" data-answer="signerName" autocomplete="name">
+                    </div>
+
+                    <div class="q">
+                        <span class="q-label">Signature</span>
+                        <div class="sig-wrap">
+                            <canvas class="sig-pad" id="sig-pad" aria-label="Signature area"></canvas>
+                            <div class="sig-bar">
+                                <span class="step-status" id="sig-status">Sign above using your mouse or finger</span>
+                                <button type="button" class="sig-clear" id="sig-clear">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================
+                     CARD — review
+                     Every Zanda field and the value that would be written to
+                     it, including the ones the pathway answered on the
+                     reader's behalf. Nothing is recorded that is not shown
+                     here.
+                     ============================================================ -->
+                <section class="card card-wide" id="card-review" data-card="review" data-sec="0" hidden>
+                    <p class="card-eyebrow">Last step</p>
+                    <h2 class="card-title">Review everything before it is recorded</h2>
+
+                    <p>This is exactly what would be written to your form. Answers marked <span class="tag tag-derived">Set for you</span> were worked out from the pathway rather than typed by you &mdash; check them as carefully as the rest.</p>
+
+                    <div class="blocker" id="review-blocker" hidden>
+                        <h3>Not finished yet</h3>
+                        <p>Still needed: <span id="review-missing"></span></p>
+                    </div>
+
+                    <div style="overflow-x:auto;">
+                        <table class="review-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Question</th>
+                                    <th scope="col">Zanda field</th>
+                                    <th scope="col">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="review-body"></tbody>
+                        </table>
+                    </div>
+
+                    <h3>The payload</h3>
+                    <p class="q-help">What a proxy would POST to <span class="term">/api/v1/kinderminds/CustomForm/Save</span>. <code>status: 2</code> is an auto-draft &mdash; the same call Zanda&rsquo;s own page makes every five seconds. Submitting for real would be <code>status: 0</code>.</p>
+
+                    <div class="payload" id="payload"></div>
+
+                    <div class="payload-bar">
+                        <button type="button" class="button secondary" id="copy-payload">Copy payload</button>
+                        <a class="button" data-zanda-link target="_blank" rel="noopener noreferrer">Open the real Zanda form</a>
+                    </div>
+
+                    <div class="highlight">
+                        <p><strong>Why there is no submit button.</strong> Zanda&rsquo;s API returns no <code>Access-Control-Allow-Origin</code> header, so this page cannot post to it from the browser. A small server-side proxy would close that gap: it would call <span class="term">GetForm</span> to fetch the live composition and its <code>id</code>, hand this page the form, then post the completed composition back to <span class="term">Save</span>.</p>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- ============ THE PAGER ============
+                 Sticky at the foot on a phone, where a thumb reaches it. The
+                 message line is where a blocked Continue says what is missing
+                 — beside the button that refused, not at the end of the form. -->
+            <div class="pager" id="pager">
+                <div class="wrap pager-inner">
+                    <button type="button" class="button secondary" id="go-back">Back</button>
+                    <p class="pager-msg" id="pager-msg" role="status" aria-live="polite"></p>
+                    <button type="button" class="button" id="go-next">Continue</button>
+                </div>
+            </div>
+
+            <div class="after-stages">
+                <h2>Need help?</h2>
+                <p>If anything here is unclear, or you are not sure which option applies to you, email <a href="mailto:info@kinderminds.nz">info@kinderminds.nz</a> and we will talk it through with you before you sign.</p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="leaflet-footer">
+        <div class="wrap">
+            <p>Kinder Minds Limited &middot; Whang&#257;rei, New Zealand &middot; <a href="mailto:info@kinderminds.nz">info@kinderminds.nz</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>

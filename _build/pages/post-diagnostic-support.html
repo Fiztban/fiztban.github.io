@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Post-diagnostic support | Kinder Minds</title>
+    <meta name="description" content="Post-diagnostic support at Kinder Minds after an ADHD or autism diagnosis: what a session covers, what it costs, and how to get started.">
+
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
+
+    <link rel="icon" type="image/png" sizes="96x96" href="../assets/Logos/km-favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/Logos/km-favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/Logos/km-favicon-16x16.png">
+
+    <link rel="stylesheet" href="guide.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Fira+Sans+Condensed:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <script>
+    (function () {
+      var q = new URLSearchParams(window.location.search);
+      var has = ['reg', 'c1', 'c2'].some(function (k) { return (q.get(k) || '').trim(); });
+      var personalised = has || (q.get('name') || '').trim();
+      document.documentElement.classList.add(personalised ? 'mode-guide' : 'mode-leaflet');
+
+      /* Where this family reached us from.
+           via=assessment  handed over from one of our own assessments — the
+                           included hour applies and they are already registered
+           via=referral    coming to post-diagnostic support on its own — no
+                           included hour, so the free call is the way in
+           (unset)         the general page: the included hour is described as a
+                           fact about our assessments, not as this family's. */
+      var via = (q.get('via') || '').trim().toLowerCase();
+      if (via === 'assessment' || via === 'referral') {
+        document.documentElement.classList.add('via-' + via);
+      }
+      if (via === 'assessment') {
+        document.documentElement.classList.add('reg-complete');
+      }
+
+      /* Occupational therapy is written into this page but not yet offered, so
+         every .svc-ot block is hidden by CSS until ?ot=1 sets this class. The
+         content is partitioned rather than deleted: turning the service on is
+         one class to remove, not a rewrite. */
+      if ((q.get('ot') || '').trim() === '1') {
+        document.documentElement.classList.add('ot-on');
+      }
+    })();
+    </script>
+
+    <script src="masthead-v2.js" defer></script>
+    <script src="guide-core.js" defer></script>
+    <script src="guide.js" defer></script>
+</head>
+
+<body>
+
+    <header class="site-banner" id="site-header">
+        <div class="wrap">
+            <a class="banner-logo" href="../index.html" aria-label="Kinder Minds home">
+                <img src="../assets/Logos/km-logo-name-below-open-2.svg" alt="Kinder Minds">
+            </a>
+        </div>
+    </header>
+
+    <div class="title-block">
+        <div class="wrap">
+            <p class="eyebrow">Autism &amp; ADHD Post-Diagnostic Support</p>
+            <h1>Post-diagnostic support</h1>
+            <p class="subtitle">Support after an ADHD or autism diagnosis, for you and your family</p>
+            <p class="for-whom" id="for-whom" hidden></p>
+        </div>
+    </div>
+
+    <div class="progress-wrap">
+        <div class="wrap progress-inner">
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p class="progress-label" id="progress-label" role="status" aria-live="polite">Loading&hellip;</p>
+            <button type="button" class="expand-all" id="expand-all">Expand all</button>
+            <button type="button" class="reset-button" id="reset-progress">Reset</button>
+        </div>
+    </div>
+
+    <main class="wrap">
+
+        <p class="task-note task-note-boxed guide-only">Please note that this page saves per device &mdash; opening the same link on another device will not remember what you have ticked here.</p>
+
+        <div class="notice" id="default-links-notice">
+            <p><strong>Your registration forms are not loaded.</strong> Please open the personalised link we emailed you &mdash; your forms are unique to you, so they only appear when you use that link. If you cannot find it, email <a href="mailto:info@kinderminds.nz">info@kinderminds.nz</a> and we will resend it.</p>
+        </div>
+
+        <!-- ============ EVERYTHING ABOUT POST-DIAGNOSTIC SUPPORT ============ -->
+        <section class="intro-panel" id="about-assessment">
+            <button type="button" class="stage-head panel-head" aria-expanded="true" aria-controls="about-body">
+                <span class="stage-head-text">
+                    <span class="panel-title">Everything about post-diagnostic support</span>
+                    <span class="stage-peek pd-included">Cost, what a session covers, who you will see, and what is included</span>
+                    <span class="stage-peek pd-standalone">Cost, what a session covers, and who you will see</span>
+                </span>
+                <span class="stage-check" aria-hidden="true"></span>
+                <span class="stage-chev" aria-hidden="true"></span>
+            </button>
+
+            <div class="stage-body" id="about-body">
+
+                <p class="guide-only">Welcome to our interactive guide, designed to help you navigate <span data-name-slot="possessive">your child&rsquo;s</span> <span class="term">post-diagnostic support</span> with Kinder Minds.</p>
+                <p class="leaflet-only">Welcome to our guide to <span class="term">post-diagnostic support</span> at Kinder Minds.</p>
+
+                <p class="guide-only">This guide is designed to cover everything you need to know, with an interactive flow that allows you to keep track of where you are in the process.</p>
+                <p class="leaflet-only">This guide is designed to cover everything you need to know about post-diagnostic support and what it includes.</p>
+
+                <p>A diagnosis is a beginning, not an end. Post-diagnostic support gives you time with one of our clinicians to make sense of the diagnosis, work through the things you are finding hard, and build practical strategies &mdash; so you leave feeling informed, supported and ready for the next step.</p>
+
+                <div class="highlight">
+                    <h4>Who this is for</h4>
+                    <p>Post-diagnostic support is for anyone with an ADHD or autism diagnosis, and for their family &mdash; whether that diagnosis came from us or from somewhere else. There are three ways people reach it.</p>
+                    <ul class="included">
+                        <li><strong>After an assessment with us</strong><span class="li-detail">Support follows on directly from the diagnosis appointment.</span></li>
+                        <li><strong>Diagnosed elsewhere</strong><span class="li-detail">We accept referrals from a GP or another referrer, and directly from a parent or legal guardian.</span></li>
+                        <li><strong>Where no diagnosis was given</strong><span class="li-detail">A session is still worth having, and we can look at what else may be going on.</span></li>
+                    </ul>
+
+                    <h5>For adults</h5>
+                    <p>If you are an adult seeking support for yourself, the pathway is the same &mdash; please contact us and we will talk it through with you.</p>
+                </div>
+
+                <div class="sub-block">
+                    <h3>Appointment options</h3>
+                    <p>Post-diagnostic support sessions can be held either in person at our Whangārei clinic, or online via telehealth.<span class="svc-ot"> A sensory assessment with our Occupational Therapist is carried out in person.</span></p>
+                </div>
+
+                <!-- The included hour. Three states, all driven by ?via=
+                     assessment → this family's, already paid for
+                     referral   → hidden entirely; there is no assessment for it
+                                  to be included with
+                     unset      → a fact about our assessments, naming all three -->
+                <div class="price-panel">
+
+                    <div class="price-panel-head">
+                        <div class="price-block">
+                            <p class="price"><span class="pd-included">1 hour included</span><span class="pd-standalone">$150</span></p>
+                            <p class="price-gst pd-standalone">per hour (inc GST)</p>
+                        </div>
+                        <div class="price-panel-title">
+                            <h3>Post-diagnostic support session</h3>
+                            <p class="pd-included">Included with every ADHD or autism assessment we carry out</p>
+                            <p class="pd-standalone">One full hour with a Nurse Specialist</p>
+                        </div>
+                    </div>
+
+                    <p class="pd-included via-assessment-only">Because <span data-name-slot>your child</span> was assessed with us, this session is already paid for. Book it in the month following the diagnosis appointment.</p>
+
+                    <p class="pd-included via-unknown-only">One full session is included with every assessment we carry out &mdash; our
+                        <a class="term" data-service-link="adhd-child-assessment.html">ADHD Assessment (Under 18s)</a>, our
+                        <a class="term" data-service-link="asd-assessment.html">Autism (ASD) Assessment</a> and our
+                        <a class="term" data-service-link="adhd-asd-combined-assessment.html">Combined ADHD &amp; Autism Assessment</a>.
+                        It is bookable in the month after the diagnosis, and is offered even where a diagnosis is not given.</p>
+
+                    <div class="include-card include-card-wide">
+                        <h4>What we can explore together</h4>
+                        <p>There is no set script &mdash; we follow what matters most to you. A session usually covers some of the following.</p>
+                        <ul class="included">
+                            <li><strong>Understanding the diagnosis</strong><span class="li-detail">What ADHD or autism means for <span data-name-slot>your child</span> and your family.</span></li>
+                            <li><strong>Exploring specific difficulties</strong><span class="li-detail">Talking through the particular challenges you are experiencing.</span></li>
+                            <li><strong>Non-medication strategies</strong><span class="li-detail">Practical tools and approaches for everyday life, at home and at school.</span></li>
+                            <li><strong>Planning the next steps</strong><span class="li-detail">Where to go next, including a pathway into our <a class="term" data-service-link="adhd-titration-clinic.html">ADHD Titration Clinic</a> if medication is being considered.</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="include-card">
+                        <h4>Who you will see</h4>
+                        <ul class="included">
+                            <li>Post-diagnostic support session
+                                <span class="pill-line">
+                                    <span class="pill pill-time">1 hour</span>
+                                    <span class="pill pill-mode">In person or online</span>
+                                    <span class="pill pill-who">Nurse Specialist</span>
+                                </span>
+                            </li>
+                            <li class="svc-ot">Sensory assessment and written report
+                                <span class="pill-line">
+                                    <span class="pill pill-time">1&ndash;1.5 hours</span>
+                                    <span class="pill pill-mode">In person</span>
+                                    <span class="pill pill-who">Occupational Therapist</span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <!-- Only meaningful alongside an included hour. For a standalone
+                     referral $150 is already the headline figure above. -->
+                <div class="price-panel price-panel-alt pd-included">
+
+                    <div class="price-panel-head">
+                        <div class="price-block">
+                            <p class="price">$150</p>
+                            <p class="price-gst">per hour (inc GST)</p>
+                        </div>
+                        <div class="price-panel-title">
+                            <h3>Further sessions</h3>
+                            <p>Whenever they would be helpful</p>
+                        </div>
+                    </div>
+
+                    <p>There is no limit on how often we can help. Some families come back once; others check in as things change.</p>
+
+                </div>
+
+                <div class="price-panel price-panel-alt svc-ot">
+
+                    <div class="price-panel-head">
+                        <div class="price-block">
+                            <p class="price">$800</p>
+                            <p class="price-gst">(inc GST)</p>
+                        </div>
+                        <div class="price-panel-title">
+                            <h3>Sensory assessment &amp; report</h3>
+                            <p>With our Occupational Therapist</p>
+                        </div>
+                    </div>
+
+                    <p>A full sensory assessment and written report, covering sensory strategies, everyday activities and connection through play. Carried out in person over one to one and a half hours, with practical strategies for home and school.</p>
+
+                </div>
+
+                <div class="callout callout-ok">
+                    <p><strong>Even without a diagnosis, we are here to help.</strong> If an assessment does not lead to a diagnosis, a post-diagnostic support session is still valuable &mdash; we can look at other strategies that may help you and your family.</p>
+                </div>
+
+                <div class="action-panel">
+                    <label class="tick">
+                        <input type="checkbox" id="step-read" data-step-tick>
+                        <span>I have read how post-diagnostic support works</span>
+                    </label>
+                </div>
+
+            </div>
+        </section>
+
+        <ol class="task-steps">
+
+            <!-- ============ REFERRAL & TRIAGE ============ -->
+            <li class="info pre-done" id="step-referral">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-referral">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag us leaflet-only">We do this</span>
+                        <span class="stage-tag ok guide-only">Done</span>
+                        <span class="stage-title">Referral &amp; triage</span>
+                        <span class="stage-peek guide-only">Received, reviewed and offered to you</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-referral" hidden>
+                    <p class="leaflet-only">Post-diagnostic support follows naturally from one of our own assessments, and we also accept referrals for people diagnosed elsewhere &mdash; from a GP or another referrer, or directly from a parent or legal guardian.</p>
+
+                    <p class="guide-only via-assessment-only">Because <span data-name-slot>your child</span> was assessed with us, there is nothing to arrange here &mdash; post-diagnostic support follows on directly from the assessment.</p>
+
+                    <p class="guide-only via-referral-only">We have received <span data-name-slot="possessive">your child&rsquo;s</span> referral for post-diagnostic support and would be delighted to help. All referrals are reviewed and triaged by our directors, including Dr Sarah Castle, Consultant Child &amp; Adolescent Psychiatrist.</p>
+
+                    <p class="guide-only via-unknown-only">We have received <span data-name-slot="possessive">your child&rsquo;s</span> referral and would be delighted to help. All referrals are reviewed and triaged by our directors, including Dr Sarah Castle, Consultant Child &amp; Adolescent Psychiatrist.</p>
+                </div>
+            </li>
+
+            <!--@include registration-consent-->
+
+            <!-- ============ FREE INTRODUCTORY CALL ============ -->
+            <li id="step-intro-call">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-intro-call">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag you">Your action</span>
+                        <span class="stage-title">Free 15-minute phone call</span>
+                        <span class="stage-peek">A no-cost conversation to get things started</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-intro-call" hidden>
+                    <p class="pill-line">
+                        <span class="pill pill-time">15 minutes</span>
+                        <span class="pill pill-mode">By phone</span>
+                        <span class="pill pill-who">Nurse Specialist</span>
+                        <span class="pill pill-note">Free</span>
+                    </p>
+
+                    <p>Support begins with a free 15-minute phone call with one of our Nurse Specialists. It is a chance to tell us what you are hoping to get from a session, so we can make sure the time is spent on what matters most to you.</p>
+
+                    <p class="pd-standalone">Because post-diagnostic support is being arranged on its own rather than following an assessment with us, this call is also how we make sure it is the right fit before anything is booked or charged.</p>
+
+                    <p>Just let us know a good time and we will arrange it.</p>
+
+                    <div class="action-panel">
+                        <label class="tick">
+                            <input type="checkbox" id="step-call" data-step-tick>
+                            <span>My introductory phone call is arranged</span>
+                        </label>
+                    </div>
+                </div>
+            </li>
+
+            <!-- ============ BOOK THE SESSION ============ -->
+            <li id="step-book">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-book">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag you">Your action</span>
+                        <span class="stage-title">Book your session</span>
+                        <span class="stage-peek pd-included">Book within a month of the diagnosis</span>
+                        <span class="stage-peek pd-standalone">We will help you find a time</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-book" hidden>
+                    <p>After the call we will help you book your session on our Client Booking Portal, in person at our Whangārei clinic or online, whichever suits you.</p>
+
+                    <div class="highlight pd-included">
+                        <p>Please book the included session within a month of the diagnosis.</p>
+                    </div>
+
+                    <div class="action-panel">
+                        <label class="tick">
+                            <input type="checkbox" id="step-booked" data-step-tick>
+                            <span>My session is booked</span>
+                        </label>
+                    </div>
+                </div>
+            </li>
+
+            <!-- ============ THE SESSION ============ -->
+            <li id="step-session">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-session">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag you">Your action</span>
+                        <span class="stage-title">Your post-diagnostic support session</span>
+                        <span class="stage-peek">One relaxed hour, led by what matters to you</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-session" hidden>
+                    <p class="pill-line">
+                        <span class="pill pill-time">1 hour</span>
+                        <span class="pill pill-mode">In person or online</span>
+                        <span class="pill pill-who">Nurse Specialist</span>
+                    </p>
+
+                    <p>A relaxed, one-to-one hour. There is no set script &mdash; we follow what matters most to you, working through the diagnosis, the challenges you are facing, and the strategies most likely to help.</p>
+
+                    <p>If medication is being considered, this session can open the door to our <a class="term" data-service-link="adhd-titration-clinic.html">ADHD Titration Clinic</a>. If you would rather focus on non-medication approaches, we will talk through the strategies that fit.</p>
+
+                    <div class="action-panel">
+                        <label class="tick">
+                            <input type="checkbox" id="step-attended" data-step-tick>
+                            <span>We have attended the session</span>
+                        </label>
+                    </div>
+                </div>
+            </li>
+
+            <!-- ============ FURTHER SUPPORT ============ -->
+            <li class="info" id="step-further">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-further">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag us">Whenever you need it</span>
+                        <span class="stage-title">Further support</span>
+                        <span class="stage-peek">There is no limit on how often we can help</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-further" hidden>
+                    <p>Additional post-diagnostic support sessions are available any time they would be helpful, at <span class="term">$150 per hour (inc GST)</span>. Some families come back once; others check in as things change.</p>
+                    <p>Our <a class="term" href="#programmes">programmes</a> run alongside this support. Just get in touch when you would like to arrange something.</p>
+                </div>
+            </li>
+
+        </ol>
+
+        <section class="after-stages" id="programmes">
+            <h2>Programmes alongside post-diagnostic support</h2>
+            <p>These run alongside post-diagnostic support rather than replacing it. None is open yet &mdash; ask us about availability and we will let you know as soon as each one starts.</p>
+
+            <div class="callout">
+                <h4>Sensory assessment &amp; support <span class="pill pill-soon">Coming soon</span></h4>
+                <p>One-to-one occupational therapy with our Occupational Therapist, covering sensory strategies, everyday activities and connection through play, in person or by telehealth at <span class="term">$200 per hour (inc GST)</span>. A full sensory assessment and written report is <span class="term">$800 (inc GST)</span>.</p>
+            </div>
+
+            <div class="callout">
+                <h4>ACT for ADHD &amp; autism <span class="pill pill-soon">Coming soon</span></h4>
+                <p>Acceptance and Commitment Therapy, one to one, at <span class="term">$150 per hour (inc GST)</span>. ACT for ADHD with Kezia Schroyen, and ACT for autism with Chris Jackson, from September 2026.</p>
+            </div>
+
+            <div class="callout">
+                <h4>Tuning into Kids <span class="pill pill-soon">Coming soon</span></h4>
+                <p>An evidence-based emotion-coaching programme that helps parents understand and respond to their child&rsquo;s feelings, building warmer, calmer connections at home. Offered by Kezia Schroyen &mdash; ask us about current availability.</p>
+            </div>
+        </section>
+
+        <!--@include page-foot-->

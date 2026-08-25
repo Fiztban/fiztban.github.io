@@ -4,11 +4,15 @@ https://andy-bell.co.uk/a-modern-css-reset/
 https://www.joshwcomeau.com/css/custom-css-reset/
 */
 
-/* 
-Fonts used:
-font-family: 'Fira Sans', sans-serif;
-font-family: 'Fira Sans Condensed', sans-serif;
-font-family: 'Source Serif 4', serif;
+/*
+Fonts used - taken from the guide pages, which follow the clinical report
+template:
+font-family: 'Fira Sans Condensed', sans-serif;   headings, nav
+font-family: 'Fira Sans', sans-serif;             sub-subtitles (medium italic)
+font-family: 'Source Sans 3', sans-serif;         body
+
+Source Serif 4 and Zen Maru Gothic are gone - this version is sans throughout,
+as the guides are.
 */
 
 /* Import the reset.css file */
@@ -23,23 +27,125 @@ font-family: 'Source Serif 4', serif;
 */
 
 
-/* Variables for style */
+/* Variables for style
+   ------------------------------------------------------------------------
+   Palette lifted from guide/guide.css, which follows the clinical report
+   template. Contrast measured against white:
+     #004561  10.38:1  passes        #2F4891   8.55:1  passes
+     #00ACCD   2.70:1  FAILS         #A9CE00   1.82:1  FAILS
+   The last two are brand-correct but unusable as ink, so text uses the
+   hue-preserving darkened pair (--subtitle / --accent), exactly as the guides
+   do. The raw cyan survives only inside the banner gradient, where it is
+   never behind text. */
 :root {
-  --heading-dark: #2C384F;
-  --km-blue: #234A84;
-  --text-blue: #032F69;
-  --text-colour: #70827F;
-  --text-highlight: #A0B8B4;
-  --mid-background: #D3E1DF;
-  --light-background: #F4F2F1;
-  --nav-background: rgba(255, 255, 255, .8); /*  70% opaque white */
-  --nav-background-mobile: rgba(255, 255, 255, 1);
-  --header-height: 100px;
-  --nav-height: 80px;
-  --nav-mobile-height: 60px;
-  /* How far the first article of a section must drop to clear the fixed nav.
-     Redefined in the <=1080px block rather than fought over with selectors. */
-  --nav-offset: 80px;
+  /* Report palette, as specified */
+  --brand-deep:     #004561;   /* titles                     */
+  --brand-cyan:     #00ACCD;   /* subtitles, decorative only */
+  --brand-green:    #A9CE00;   /* sub-subtitles, decorative  */
+  --banner-top:     #2F4891;
+  --banner-bottom:  #38C4D8;
+
+  /* The two failing hues darkened until they clear AA - what text uses. */
+  --subtitle: #00829B;   /* 4.50:1 */
+  --accent:   #687F00;   /* 4.54:1 */
+
+  /* ---- Mint --------------------------------------------------------------
+     The palette is sky and nature, and it had only sky in it. This is the
+     pastel blue with its hue rotated to green and nothing else touched -
+       #38C4D8 = hsl(187, 67%, 53%)   the gradient's lower stop
+       #47D18C = hsl(150, 60%, 55%)   the same register, in green
+     - which is what makes it read as that colour's sibling rather than as a
+       second accent competing with it.
+
+     --mint measures 1.95:1 on white, so it is a SURFACE colour and never ink.
+     --mint-band is it taken down to a tint a full-width band can carry. Text
+     stays on --accent above; the green here is only ever behind things. */
+  --mint:      #47D18C;
+  --mint-band: #E4F7EE;
+
+  /* The band behind the service cards. Built the same way as --mint-band -
+     that tint's own saturation and lightness, hue taken from the gradient's
+     pastel blue - so the two bands are siblings rather than two unrelated
+     tints:
+       --mint-band  hsl(152, 54%, 93%)
+       --sky-band   hsl(186, 54%, 93%)
+     Blue here because the cards sitting on it are blue-white: on the mint the
+     two separated by hue, green ground against cool cards, which read as a
+     clash rather than as depth. */
+  --sky-band: #E4F5F7;
+
+  /* Surfaces. White ground so the logo's baked-in white backing disappears
+     into the page, and a cool inset tint replacing the warm grey the old
+     palette used. */
+  --page-bg:  #FFFFFF;
+  --inset-bg: #F4F8FA;
+  --line:     #DDE7EC;
+  --shadow-card: 0 1px 2px rgba(0, 69, 97, 0.05), 0 2px 8px rgba(0, 69, 97, 0.06);
+  /* The same shadow rebuilt on the mint's hue, for the things that lift on
+     hover. Deep enough to still read as shadow rather than as a green glow. */
+  --shadow-mint: 0 2px 4px rgba(24, 105, 70, 0.10), 0 8px 20px rgba(24, 105, 70, 0.16);
+  /* The same lift on the deep blue's hue, for cards on the sky band - a
+     green-cast shadow there would put back the colour clash being removed. */
+  --shadow-lift: 0 2px 4px rgba(0, 69, 97, 0.10), 0 8px 20px rgba(0, 69, 97, 0.16);
+
+  /* Old website tokens, re-pointed so every rule downstream follows. */
+  --heading-dark:     var(--brand-deep);
+  --km-blue:          var(--brand-deep);
+  --text-blue:        var(--banner-top);
+  --text-colour:      #000;                /* body copy, as the guides set it */
+  --text-highlight:   var(--subtitle);
+  --mid-background:   var(--line);
+  --light-background: var(--inset-bg);
+  --nav-background:   var(--page-bg);      /* solid: no translucent bar here */
+  /* The burger's ring. Matching the strip is what makes it read as a halo over
+     the gradient and as nothing at all over the strip; set it to --inset-bg
+     instead for a ring that stays faintly visible across both. */
+  --burger-ring:      var(--nav-background);
+
+  /* ---- Masthead geometry -------------------------------------------------
+     Two bands. The gradient banner, and below it a strip whose height is
+     exactly the half of the logo that hangs past the banner's lower edge -
+     which is what puts the nav between the gradient and the logo's foot.
+     Floored at 44px so the links stay a usable tap target once condensed.
+
+     NB --logo-width and --nav-height derive from --logo-height, so they are
+     declared on the masthead itself rather than here. A custom property is
+     substituted where it is declared: sitting on :root they would resolve
+     against the root's --logo-height once and inherit down already fixed, and
+     .is-condensed swapping the height further down could never move them. */
+  /* The logo is pinned by a feature INSIDE the artwork, not by its own box.
+     The asset carries an invisible rect, <g id="Threshold">, whose TOP edge is
+     the line that must sit on the gradient's lower edge - always, at every
+     size and in every state. It resolves to 79.47% of the logo's height, which
+     is also exactly where the ring (<g id="Circle">) ends, so the whole mark
+     rides above the gradient and only the wordmark drops below it.
+
+     Re-derive this with scratchpad/svgbox.py if the artwork changes - it is the
+     single number the entire masthead geometry hangs off.
+
+     Everything else follows: 79.47% of the logo has to fit ABOVE the line, so
+     the banner is DERIVED from the logo height rather than set beside it,
+     which is what guarantees the mark can never run off the top at any size.
+     --logo-clear is the gradient left showing above the logo. */
+  --logo-above-threshold: 0.7947;
+  --logo-clear:           12px;
+
+  /* Only the logo sizes are chosen; the bands size themselves to suit. */
+  --logo-full:           130px;
+  --logo-mini:            76px;   /* expanded, once scrolled */
+  --logo-collapsed:       96px;   /* burger mode                */
+  --logo-collapsed-mini:  64px;   /* burger mode, once scrolled */
+
+  --logo-height: var(--logo-full);
+
+  /* What main reserves below the fixed bar: the unscrolled banner plus the
+     strip. Always the FULL height - that is the height the bar has whenever the
+     top of main is on screen - so the page does not shift when it condenses. */
+  --header-reserve: calc(var(--logo-full) * var(--logo-above-threshold) + var(--logo-clear)
+                         + max(44px, calc(var(--logo-full) * (1 - var(--logo-above-threshold)))));
+
+  --chrome-ease: 200ms ease;
+
   --top-bot-padding: 100px;
   --top-bot-padding-mobile: 30px;
 }
@@ -54,125 +160,316 @@ html {
 
 body {
   background-color: white;
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Source Sans 3', system-ui, sans-serif;
   color: var(--text-colour);
   min-width: 350px;
   max-width: 1600px;
   margin-inline: auto;
 }
 
+/* The masthead is fixed, so main reserves its full height. Reserving the
+   full (unscrolled) height rather than the condensed one is what stops the
+   page jumping when the chrome shrinks - by the time it has shrunk, this
+   padding is already scrolled off screen. */
 .responsive-body {
   margin: 0 auto;
+  padding-top: var(--header-reserve);
 }
 
 
 /* ============ NAV BAR  ========= */
-/* Navbar reference video https://www.youtube.com/watch?v=bk3Y4heVdFs */
-header {
-  font-family: 'Fira Sans Condensed', sans-serif;
-  background-color: var(--nav-background);    /*  70% opaque white */
-  /* box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);  /* horizontal offset, vertical offset, blur, color */
-  width: 100%;
-  max-width: 1600px;
+/* Two-band masthead, taken from the guide pages: a gradient banner with the
+   logo straddling its lower edge, and a nav strip below occupying exactly the
+   half of the logo that hangs past the gradient.
+
+   The bar is opaque. The translucent-over-hero version came from the Wix
+   reference and is deliberately dropped here - which also means nothing sits
+   under the bar any more, so the per-article --nav-offset hack goes with it
+   and main reserves the space instead.
+
+   Two independent states, both set by header-v2.js:
+     .is-condensed    scrolled - both bands shrink, links stay horizontal
+     .nav-collapsed   links no longer fit - they become a circular burger
+   A scrolled desktop is condensed but not collapsed; a phone is both. */
+
+header.site-header {
+  /* All derived from --logo-height, and declared HERE rather than on :root: a
+     custom property is substituted where it is declared, so on :root these
+     would resolve against the root's logo height once and inherit down already
+     fixed - and .is-condensed swapping the height could never move them. */
+  --logo-width: calc(var(--logo-height) * 1.124);   /* SVG is 1609:1431 */
+
+  /* Tall enough to hold the 83% of the logo that sits above the plate, plus
+     the clearance. Derived, so no logo size can overrun the gradient. */
+  --banner-height: calc(var(--logo-height) * var(--logo-above-threshold) + var(--logo-clear));
+
+  /* The strip only has to hold the nav links and the part of the logo below
+     the threshold - ~27px at these sizes, so the 44px tap-target floor is what
+     actually binds. The wordmark lands inside the white strip and, both being
+     white, merges into it. */
+  --nav-height: max(44px, calc(var(--logo-height) * (1 - var(--logo-above-threshold))));
+
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
   position: fixed;
+  top: 0;
   left: 0;
   right: 0;
+  width: 100%;
+  max-width: 1600px;
   margin-inline: auto;
   z-index: 100;
+  background-color: var(--nav-background);
+  border-bottom: 1px solid var(--line);
   display: grid;
-  grid-template-columns: 2fr 3fr;
-  grid-template-areas: "logo nav";
-  justify-items: center;
-  align-items: center;
-  height: var(--nav-height);
+  grid-template-columns: auto 1fr;
+  /* The strip is pinned to --nav-height rather than sized by its contents: the
+     drawer leaves the row when it goes absolute, and a row left to shrink to
+     the burger would pull the strip up off the foot of the logo. */
+  grid-template-rows: auto var(--nav-height);
+  grid-template-areas:
+    "banner banner"
+    "burger nav";
+  /* The strip has to ease at the same rate as the gradient. Without this the
+     row snaps to its new height the instant --nav-height changes while the
+     banner is still gliding, and for those 200ms the logo's foot and the
+     strip's bottom edge visibly come apart on every condense. */
+  transition: grid-template-rows var(--chrome-ease);
 }
 
-header:hover {
-  background-color: white;
+/* Condensing only changes the logo size - the bands re-derive themselves. */
+.site-header.is-condensed {
+  --logo-height: var(--logo-mini);
+  box-shadow: var(--shadow-card);
 }
 
-header .nav-left {
-  grid-area: logo;
-  width: 100%;
-  justify-self: start;
+/* ---- gradient band ---- */
+.site-banner {
+  grid-area: banner;
+  height: var(--banner-height);
+  background: linear-gradient(180deg, var(--banner-top) 0%, var(--banner-bottom) 100%);
+  position: relative;
+  transition: height var(--chrome-ease);
 }
 
-header .nav-list {
+/* THE PIN. The top edge of the artwork's own invisible Threshold box sits
+   exactly on the gradient's lower edge - at every size, in every state.
+
+   `bottom: 0` puts the logo's own foot on that edge; the translate then pushes
+   it back down by the part of the artwork BELOW the threshold (20.53%), which
+   leaves the threshold's top edge on the line. Because the offset is a fraction of
+   --logo-height, the pin survives any resize for free.
+
+   The mark above the line is the disc-free variant of the logo, so the ring
+   blends into the gradient instead of sitting on a white cut-out. Below the
+   line the plate is opaque white - it merges into the strip when there is one,
+   and reads as a tab hanging off the gradient when there is not. */
+.banner-logo {
+  position: absolute;
+  right: 20px;
+  bottom: 0;
+  transform: translateY(calc(var(--logo-height) * (1 - var(--logo-above-threshold))));
+  display: block;
+  line-height: 0;
+  z-index: 2;
+}
+
+.banner-logo img {
+  height: var(--logo-height);
+  width: auto;
+  display: block;
+  transition: height var(--chrome-ease);
+}
+
+/* ---- nav strip ---- */
+header.site-header .nav-list {
   grid-area: nav;
-  width: 100%;
-  justify-self: end;
-  max-width: 1000px;
-}
-
-
-.nav-logo {
- font-family: 'Zen Maru Gothic', serif;
- width: 100%;
-}
-
-.nav-logo img {
-  height: calc(var(--nav-height) - 20px);
-  padding-left: 20px;
+  min-width: 0;
+  /* Keeps the links clear of the logo hanging into the strip on the right. */
+  padding-right: calc(var(--logo-width) + 40px);
 }
 
 .nav-list ul {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;   /* left-aligned, unlike the Wix-derived bar */
+  padding-left: 20px;            /* mirrors the logo's inset on the far side */
 }
 
 header .nav-list ul li {
   position: relative;
-  list-style-type: none; /* Remove bullets */
+  list-style-type: none;
+  /* Must not shrink: header-v2.js decides the burger by asking whether the
+     items still fit, and a squeezing row never reports that it does not. */
+  flex: 0 0 auto;
 }
 
-/* Style the links (optional) */
 .nav-list ul li a {
-  display: block;
-  text-decoration: none;
-  color: var(--heading-dark);
-  height: var(--nav-height);
   display: flex;
   align-items: center;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.nav-list ul li ul li {
-  
-  background-color: var(--nav-background);
+  height: var(--nav-height);
+  padding-inline: 18px;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--brand-deep);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: height var(--chrome-ease);
 }
 
 .nav-list li a:hover {
-  color: var(--text-highlight);
-  background-color: var(--light-background);
+  color: var(--subtitle);
+  background-color: var(--inset-bg);
 }
 
+/* ---- dropdowns ---- */
 .nav-list ul li ul {
   position: absolute;
+  top: 100%;
   left: 0;
-  width: 200px;
+  width: 220px;
   background-color: var(--nav-background);
+  border: 1px solid var(--line);
+  border-top: none;
+  box-shadow: var(--shadow-card);
   display: none;
+  z-index: 3;
 }
 
 .nav-list ul li ul li {
   width: 100%;
+}
+
+/* Without this every dropdown row inherits the strip's height and ends up as
+   tall as the bar itself. */
+.nav-list ul li ul li a {
+  height: auto;
+  padding: 0.55rem 18px;
+  font-weight: 400;
 }
 
 .nav-list ul li:focus-within > ul,
 .nav-list ul li:hover > ul {
   display: initial;
-  transition: .5s;
 }
 
+/* ---- burger ---- */
+/* A circle quoting the logo's circular mark across the masthead, carrying the
+   same gradient as the banner.
+
+   It deliberately does NOT sit inside the strip. --burger-centre puts it on the
+   gradient's lower edge - the same axis the logo straddles - so the two circles
+   read as a deliberate pair rather than as two separately placed marks. Set it
+   to 50% instead to centre it on the masthead as a whole.
+
+   That places it over the gradient, where a gradient-filled circle would
+   otherwise disappear; hence the ring, which matches the strip so it haloes the
+   circle above the fold and vanishes into the strip below it. */
 .check-button {
+  --burger-centre: var(--banner-height);
+
+  /* Out of the grid entirely. Note the grid-area:auto - an abspos grid item
+     that keeps a grid-area is contained by that area, which would pin it back
+     inside the nav row this rule exists to escape. */
+  grid-area: auto;
+  position: absolute;
+  left: 20px;
+  top: var(--burger-centre);
+  transform: translateY(-50%);
+  z-index: 3;
+
+  display: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--banner-top) 0%, var(--banner-bottom) 100%);
+  color: white;
+  font-size: 17px;
   cursor: pointer;
+  /* Ring first, card shadow outside it. */
+  box-shadow: 0 0 0 4px var(--burger-ring), var(--shadow-card);
+  transition: top var(--chrome-ease);
+}
+
+#check {
   display: none;
 }
 
-#check{
-  display: none;
+/* ---- collapsed: one gradient band, links become a drawer ---- */
+
+.site-header.nav-collapsed {
+  /* A smaller logo; the banner re-derives itself from it, so the pin and the
+     top clearance hold here exactly as they do expanded. */
+  --logo-height: var(--logo-collapsed);
+
+  grid-template-rows: auto 0; /* the strip row is gone entirely */
+  border-bottom: none;        /* a pale hairline under the gradient reads as grime */
 }
+
+.site-header.nav-collapsed.is-condensed {
+  --logo-height: var(--logo-collapsed-mini);
+}
+
+.site-header.nav-collapsed .check-button {
+  display: grid;
+}
+
+/* NB the logo is deliberately NOT repositioned here. It keeps the same pin as
+   everywhere else - plate top on the gradient's lower edge - so the mark holds
+   its place as it shrinks. With no white strip beneath it, the plate hangs a
+   little past the gradient and reads as a tab. */
+
+.site-header.nav-collapsed .nav-list {
+  /* Back out of the grid: an abspos grid item that keeps a grid-area is
+     contained by that area, so without this the drawer opens over the nav
+     cell only, not the full width of the masthead. */
+  grid-area: auto;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  padding-right: 0;
+  background-color: var(--nav-background);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity .25s ease, transform .25s ease, visibility .25s;
+}
+
+.site-header.nav-collapsed #check:checked ~ .nav-list {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.site-header.nav-collapsed .nav-list ul {
+  flex-direction: column;
+  padding-left: 0;
+}
+
+.site-header.nav-collapsed .nav-list ul li a {
+  height: auto;
+  width: 100%;
+  padding: 0.7rem 20px;
+}
+
+/* In the drawer the submenus are simply open. Hover does not exist on touch,
+   and making each parent a disclosure control is more machinery than five
+   links justify. */
+.site-header.nav-collapsed .nav-list ul li ul {
+  position: static;
+  display: block;
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  background-color: var(--inset-bg);
+}
+
+.site-header.nav-collapsed .nav-list ul li ul li a {
+  padding-left: 40px;
+}
+
 /* ============ NAV BAR END ========= */
 
 
@@ -188,43 +485,65 @@ footer {
   justify-content: center;
 }
 
+/* Guide headings are Fira Sans Condensed 600 throughout, with small-caps on
+   the h1 only. Note the old rule said `text-transform: small-caps`, which is
+   not a valid text-transform value and therefore did nothing - the property
+   wanted is font-variant, below. */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: 'Fira Sans', sans-serif;
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
   color: var(--heading-dark);
-  font-weight: 300;
-  text-transform: small-caps;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   margin-bottom: 2rem;
+}
+
+h1 {
+  font-variant: small-caps;
 }
 
 
 
+/* The How We Can Help bullets sit in a <ul> inside an <h5> and would
+   otherwise inherit the 600 heading weight - far too punchy for a seven-item
+   list. Same font, regular weight. */
+#service-overview h5 ul {
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
 h1.title {
-  font-weight: 300;
+  font-weight: 600;
   font-size: 90px;
   line-height: 1em;
   margin-bottom: 1rem;
   margin-top: 2.2rem;
 }
 
+/* The guide's .subtitle: Fira Sans Condensed medium, in the accessible cyan. */
 h2.subtitle {
   font-size: 24px;
+  font-weight: 500;
+  color: var(--subtitle);
   margin-bottom: 1rem;
 }
 
 /* The role a team member holds, sitting between their name and the rule. The
    negative top margin collapses against the h2's own margin to close the gap,
    so the name and role read as one unit. Needs to out-specify `main p`. */
+/* This is the guide's .sub-subtitle role exactly - a person's title sitting
+   under their name - so it takes that treatment: Fira Sans medium italic. */
 main p.role {
-  font-family: 'Fira Sans', sans-serif;
+  font-family: 'Fira Sans', system-ui, sans-serif;
   font-size: 19px;
-  font-weight: 300;
+  font-weight: 500;
+  font-style: italic;
   line-height: 1.4;
-  color: var(--km-blue);
+  color: var(--accent);
   margin-top: -0.75rem;
   margin-bottom: 0.9rem;
 }
@@ -262,20 +581,25 @@ h3, h5, h5 > ul {
   font-size: 20px;
 }
 
+/* h6 is used as an italic sub-label, which is the guide's sub-subtitle. */
 h6 {
+  font-family: 'Fira Sans', system-ui, sans-serif;
   font-size: 20px;
+  font-weight: 500;
   font-style: italic;
+  color: var(--accent);
   margin-bottom: 1rem;
 }
 
-body a,
-#service-overview h5,
-#service-overview h6 {
-  color: var(--text-colour);
+/* Body copy is black in this palette, so links take the guide's own link
+   colour instead of inheriting it. h5/h6 drop out of this rule and keep the
+   heading colours set above. */
+body a {
+  color: var(--km-blue);
 }
 
 body a:hover {
-  color: var(--text-highlight);
+  color: var(--subtitle);
 }
 
 /* ============ TEXT STYLING END ========= */
@@ -283,10 +607,15 @@ body a:hover {
 
 /* ============ DECORATIONS ========= */
 
+/* The guides make buttons --km-blue rather than the accent, because white on
+   the accent measures 2.7:1 while white on the deep blue is 10.4:1. */
 button {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   width: 195px;
   height: 43px;
-  background-color: var(--text-highlight);
+  background-color: var(--km-blue);
   color: white;
   text-decoration: none;
   padding: 0;
@@ -305,28 +634,31 @@ button.svg-button {
 }
 
 button.inverted {
-  color: var(--text-highlight);
+  color: var(--km-blue);
   background-color: white;
-  border-style: solid;
+  border: 1px solid var(--km-blue);
 }
 
 button:hover {
   cursor: pointer;
-  background-color: var(--text-colour);
+  background-color: var(--banner-top);
 }
 
 button.inverted:hover {
-  color: var(--text-colour);
-  background-color: white;
+  color: var(--banner-top);
+  border-color: var(--banner-top);
+  background-color: var(--inset-bg);
 }
 
 button:focus {
-  background-color: var(--mid-background);
-  color: var(--text-colour);
+  background-color: var(--banner-top);
+  color: white;
+  outline: 2px solid var(--subtitle);
+  outline-offset: 2px;
 }
 
 button.inverted:focus {
-  color: var(--mid-background);
+  color: var(--banner-top);
   background-color: white;
 }
 
@@ -342,7 +674,7 @@ div.button-grid-row > button {
 .rule-title, .rule-title-mobile, .rule-decoration {
   width: 60px;
   height: 3px;
-  background-color: var(--text-colour);
+  background-color: var(--subtitle);
 }
 
 .rule-title {
@@ -403,16 +735,22 @@ div.footer-text {
   background-color: var(--light-background);
 }
 
+/* The full-width bands. These are the whole point of the mint: they are the
+   only element big enough to make the page read as sky AND nature rather than
+   as blue with a green detail somewhere in it. --mid-background is left
+   pointing at --line, which is still what borders and hairlines want. */
 .bg-mid {
-  background-color: var(--mid-background);
+  background-color: var(--mint-band);
 }
 
 /* ACC blurb styling announcing kinder minds does offer ACC services */
+/* Full-bleed strip. Deliberately the banner's top blue rather than its
+   gradient: white text over the gradient's cyan end measures 2.1:1. */
 article.acc-info {
- text-align: center; 
+ text-align: center;
  padding: 20px 0;
- color: var(--mid-background);
- background-color: var(--text-highlight);
+ color: rgba(255, 255, 255, 0.92);
+ background-color: var(--banner-top);
 }
 
 article.acc-info > h5 {
@@ -460,7 +798,7 @@ article.acc-info > p {
 }
 
 .service-section {
-  background-color: var(--mid-background);
+  background-color: var(--mint-band);
 }
 
 .contact-section {
@@ -562,6 +900,9 @@ body.maintenance section article.text-content {
   padding: 2.5rem 3rem;
   border-radius: 20px;
   background-color: var(--light-background);
+  /* Edge rather than fill: the panel keeps its cool inset ground and picks up
+     the mint only as a border, so it sits beside the bands without competing. */
+  border: 1px solid var(--mint);
 }
 
 /* Explicit width: main div { justify-items: center } would otherwise shrink
@@ -692,11 +1033,22 @@ body.maintenance section article.text-content {
 }
 
 
-/* The nav is fixed at every width. The hero is built to sit under it - the bar
-   is translucent over the hero image on purpose - but every other section needs
-   to clear it, or its first heading or picture ends up behind the bar. */
-main > section > article:first-of-type:not(.hero-section) {
-  padding-top: var(--nav-offset);
+/* The old bar was translucent and the hero sat under it on purpose, so every
+   other section needed a per-article offset to clear it. This masthead is
+   opaque and main reserves its height, so nothing sits under the bar and the
+   offset is gone - see --header-reserve on .responsive-body. */
+
+/* Anchors the nav can jump to. scrollIntoView() aligns an element with the
+   viewport top, which sits under the fixed masthead - without this the heading
+   it lands on ends up behind the bar rather than below it.
+
+   The value is the bar's UNSCROLLED height. Jumping to the top of a section
+   therefore lands exactly flush; jumping to an anchor deep in a section (Kezia,
+   Chris) leaves ~25px of extra clearance, because by then the bar has condensed
+   and is that much shorter. Erring toward a small gap rather than a heading
+   half-hidden is the right way round. */
+main [id] {
+  scroll-margin-top: var(--header-reserve);
 }
 
 .hidden {
@@ -727,17 +1079,29 @@ main > section > article:first-of-type:not(.hero-section) {
   padding: 30px 30px 20px 30px;   /* the nav offset now comes from the article */
 }
 
+/* The band behind the cards. Blue rather than mint: the cards are blue-white,
+   so on the mint they separated by hue rather than by depth, and a green ground
+   under cool cards reads as a clash. See --sky-band. */
+.content.service-table.bg-mid {
+  background-color: var(--sky-band);
+}
+
+/* Once the band and the cards share a hue they no longer separate on their own
+   - the two tints measure 1.05:1 against each other. So the cards take a white
+   ground and a resting shadow, which is how the guide defines a card in any
+   case: by edge and shadow rather than by fill. */
 .content-right.service-table {
   grid-template-columns: 1fr 3fr;
   margin: 20px 0;
-  background-color: var(--light-background);
+  background-color: var(--page-bg);
+  box-shadow: var(--shadow-card);
   border-radius: 20px;
   max-width: 1200px;
 /*  box-shadow: 10px 5px 5px darkblue; */
 }
 
 .content-right.service-table:hover {
-  box-shadow: 10px 5px 5px var(--text-highlight);
+  box-shadow: var(--shadow-lift);
   transition: 0.5s;
 }
 
@@ -811,7 +1175,7 @@ body.maintenance section article {
 }
 
 body.maintenance section article h1 {
-  font-family: 'Zen Maru Gothic', serif;
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
   font-weight: bold;
   font-size: 80px;
   line-height: 40px;
@@ -908,11 +1272,11 @@ button.portrait-dismiss:focus {
   max-width: 92vw;
   max-height: 90vh;
   border-radius: 14px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 12px 40px rgba(0, 39, 55, 0.45);
 }
 
 .portrait-full::backdrop {
-  background-color: rgba(44, 56, 79, 0.78);
+  background-color: rgba(0, 69, 97, 0.78);
 }
 
 
@@ -926,6 +1290,19 @@ button.portrait-dismiss:focus {
   width: 100%;
   aspect-ratio: 4 / 5;
 }
+
+/* The clinic band. The three photos are 1.82, 1.59 and 1.33 - too different to
+   share a frame without cropping - so the frame takes the first one's ratio and
+   the other two are cover-fitted into it. */
+.carousel--band {
+  aspect-ratio: 2000 / 1099;
+}
+
+/* Where each shot sits in that frame. The entrance is a 4:3 original and so
+   loses the most height: aimed high to keep the signage and shed the pavement,
+   which is the half of that picture worth losing. */
+.carousel--band .clinic-2 { object-position: 50% 45%; }
+.carousel--band .clinic-3 { object-position: 50% 12%; }
 
 .carousel__track {
   display: flex;
@@ -1049,7 +1426,7 @@ button.carousel__arrow:focus {
   width: min(92vw, 72vh);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 12px 40px rgba(0, 39, 55, 0.45);
 }
 
 /* The rounding and shadow belong to the frame, not to each slide inside it. */
@@ -1077,13 +1454,53 @@ button.carousel__arrow:focus {
 and the navigation bar becomes fixed rather than transparent and overlayed */
 @media (max-width: 1080px) {
   :root {
-    --nav-offset: 60px;
+    /* Below this width the masthead is always collapsed, so the two-band
+       geometry above never applies and main reserves the single gradient band
+       instead: the logo plus its padding, which is exactly what the collapsed
+       rules below compute the band height to be.
+
+       (Above 1080px a nav too wide to fit also collapses, via header-v2.js. The
+       reserve there stays the two-band figure and would be ~70px too generous -
+       but the links would have to roughly double in width before that can
+       happen, so it is left as the simpler of the two.) */
+    --header-reserve: calc(var(--logo-collapsed) * var(--logo-above-threshold)
+                           + var(--logo-clear));
+
+    /* Ground for the marks that hang past the gradient. In burger mode there
+       is no white strip under the band, so the logo's wordmark plate and the
+       lower half of the burger land on whatever the section opens with - a
+       photograph, usually. This is the band they land on instead.
+
+       25px clears both with room to spare: the plate overhangs by
+       logo x (1 - 0.7947) = 19.7px unscrolled and 13.1px condensed, and the
+       burger's lower half is 21px at any size. */
+    --top-strip: 25px;
+  }
+
+  /* Home opens on the hero photo, Services on the mint band, Mission on an
+     image - all three need the ground. Team is deliberately left out: it opens
+     on the logo against plain white, so the plate already has a clean ground
+     there and a band would only introduce a seam. */
+  #sec-home::before,
+  #sec-service::before,
+  #sec-about::before {
+    content: "";
+    display: block;
+    height: var(--top-strip);
+    background-color: var(--inset-bg);
   }
 
   /*======= MAIN BODY ========== */
   /* Gutter colour and centring are set at base; only the cap changes here. */
   body,
   header {
+    max-width: 750px;
+  }
+
+  /* Needs to restate the cap: the base masthead rule is `header.site-header`,
+     which out-specifies the bare `header` above and would otherwise keep the
+     bar full-bleed while the body narrows to 750px. */
+  header.site-header {
     max-width: 750px;
   }
 
@@ -1097,69 +1514,88 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   }
 
   /* ====== NAV  =======*/
-  header {
-    background-color: var(--nav-background-mobile);    /*  70% opaque white */
-    grid-template-columns: 1fr;
-    grid-template-areas: "logo" "nav";
-    justify-items: center;
-    align-items: center;
-    height: var(--nav-mobile-height);
-  }
+  /* Below this width the links never fit alongside the logo, so the burger is
+     unconditional here - header-v2.js only has to decide the cases above it,
+     and this stays the floor for a visitor with JS disabled.
 
-  header .nav-left {
-    height: var(--nav-mobile-height);
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    align-items: center;
-  }
+     `header.site-header` rather than `.site-header`: the base rule is (0,2,1)
+     and would otherwise win on padding-right, leaving the drawer indented by
+     the logo's reserve. Generated from the same template as the .nav-collapsed
+     copy above, so the two cannot drift. */
 
-  header .nav-left .check-button {
-    align-self: center;
-    justify-self: end;
-  }
+  header.site-header {
+  /* A smaller logo; the banner re-derives itself from it, so the pin and the
+     top clearance hold here exactly as they do expanded. */
+  --logo-height: var(--logo-collapsed);
 
-  .nav-logo img {
-    height: calc(var(--nav-mobile-height) - 20px);
-  }
+  grid-template-rows: auto 0; /* the strip row is gone entirely */
+  border-bottom: none;        /* a pale hairline under the gradient reads as grime */
+}
 
-  .check-button {
-    display: initial;
-    font-size: 20px;
-    padding-right: 20px;
-  }
+  header.site-header.is-condensed {
+  --logo-height: var(--logo-collapsed-mini);
+}
 
-  .nav-list {
-    position: relative;
-    width: 100%;
-    background-color: var(--text-highlight);
-    transition: .5s;
-    bottom: 200%;
-    left: 200%;
-    opacity: 0;
-  }
+  header.site-header .check-button {
+  display: grid;
+}
 
-  .nav-list ul,
-  .nav-list ul li ul {
-    flex-direction: column;
-    position: initial;
-    /* Already in the 850px media bracket */
-    /* position: fixed;
-    width: 100%;
-    height: var(--nav-mobile-height); */
-  }
+/* NB the logo is deliberately NOT repositioned here. It keeps the same pin as
+   everywhere else - plate top on the gradient's lower edge - so the mark holds
+   its place as it shrinks. With no white strip beneath it, the plate hangs a
+   little past the gradient and reads as a tab. */
 
-  .nav-list ul,
-  .nav-list ul li,
-  .nav-list ul li a,
-  .nav-list ul li ul {
-    width: 100%;
-  }
+  header.site-header .nav-list {
+  /* Back out of the grid: an abspos grid item that keeps a grid-area is
+     contained by that area, so without this the drawer opens over the nav
+     cell only, not the full width of the masthead. */
+  grid-area: auto;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  padding-right: 0;
+  background-color: var(--nav-background);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity .25s ease, transform .25s ease, visibility .25s;
+}
 
-  #check:checked ~ .nav-list {
-    bottom: 0;
-    left: 0;
-    opacity: 1;
-  }
+  header.site-header #check:checked ~ .nav-list {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+  header.site-header .nav-list ul {
+  flex-direction: column;
+  padding-left: 0;
+}
+
+  header.site-header .nav-list ul li a {
+  height: auto;
+  width: 100%;
+  padding: 0.7rem 20px;
+}
+
+/* In the drawer the submenus are simply open. Hover does not exist on touch,
+   and making each parent a disclosure control is more machinery than five
+   links justify. */
+  header.site-header .nav-list ul li ul {
+  position: static;
+  display: block;
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  background-color: var(--inset-bg);
+}
+
+  header.site-header .nav-list ul li ul li a {
+  padding-left: 40px;
+}
 
 
   /* ======= TEXT STYLING ========== */
@@ -1209,12 +1645,6 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
   .content,
   .linked-content {
     width: 100%;
-  }
-
-  /* Once the bar turns opaque the hero has to clear it too. Every other
-     section is already handled by the base rule via --nav-offset. */
-  main > section > article.hero-section:first-of-type {
-    padding-top: var(--nav-offset);
   }
 
   /* Specific section styling has to come after base styling*/
@@ -1274,7 +1704,7 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
     max-height: none;   /* override the blanket 400px cap on .image-container */
     margin: 16px 5% calc(-1 * var(--portrait-overhang)) auto;
     border-radius: 50%;
-    box-shadow: 0 4px 16px rgba(44, 56, 79, 0.22);
+    box-shadow: 0 4px 16px rgba(0, 69, 97, 0.22);
     position: relative;
     z-index: 2;
   }

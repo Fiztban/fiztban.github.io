@@ -13,3 +13,12 @@ assets/Unused/
 # Markup staged for a future release and deliberately not deployed, such as a
 # team member whose agreement is not signed yet. Local only.
 _pending/
+
+# Retired designs kept for reference. Local only, never deployed; git history
+# holds the real record.
+_archive/
+
+# Superseded experiments and retired page markup. Kept on disk for reference,
+# but there is no reason to publish them and text-nav.html carries broken links
+# to images that moved years ago.
+Testing Archive/

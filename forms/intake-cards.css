@@ -1,0 +1,135 @@
+/* ==========================================================================
+   Kinder Minds — new patient intake form, CARD VIEW
+
+   The deck shell — bar, rail, cards, section header, start panel, pager — is
+   inherited wholesale from the consent card view, which is where it currently
+   lives. That import is the honest arrangement rather than the tidy one: if
+   both card views go forward, the shell should be lifted out into its own
+   deck.css and both should import THAT. Doing it now would mean editing the
+   consent view, which is parked.
+
+   Chain: reset -> leaflet -> intake -> guide -> consent -> consent-cards -> here.
+
+   What this file adds is the vocabulary a data-entry form needs and a reading
+   form does not: field grids, required markers, and a date input. The consent
+   form asked 14 questions in 5,400 words; this one asks 52 in 878.
+   ========================================================================== */
+
+@import 'consent-cards.css';
+
+/* ============ FIELD GRIDS ========= */
+/* Short related inputs sit two-up on anything wider than a phone. Name fields
+   and address parts read as one thing; stacking them one per row makes four
+   boxes look like four separate questions. */
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.9rem 1.1rem;
+  margin: 1.1rem 0;
+}
+
+.fld label {
+  display: block;
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--brand-deep);
+  margin-bottom: 0.25rem;
+}
+
+.fld .text-input,
+.fld .text-area { margin: 0; }
+
+.fld .text-area { min-height: 4.2rem; }
+
+/* ============ REQUIRED / OPTIONAL ========= */
+/* Marked in words rather than with an asterisk. An asterisk needs a legend
+   somewhere else on the page, and on a card deck "somewhere else" may be six
+   screens back. */
+
+.req,
+.opt-note {
+  font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-left: 0.35rem;
+}
+
+.req      { color: #8A3324; }
+.opt-note { color: var(--text-muted); text-transform: none; letter-spacing: 0; font-size: 0.85rem; }
+
+/* ============ OPTION SUB-TEXT ========= */
+/* The consent form's options carry their own legal wording. This form's are
+   bare ("Yes", "No"), so the plain-language consequence goes underneath. */
+
+.opt-sub {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* ============ DATE ========= */
+
+.date-input {
+  max-width: 16rem;
+  font-family: 'Fira Sans', system-ui, sans-serif;
+}
+
+/* What the date of birth turned into. Not a warning — it reports the one
+   derivation this form makes, at the moment it is made, rather than letting
+   whole sections appear and disappear with no stated cause. */
+#age-note {
+  background-color: var(--gate-bg);
+  border-color: var(--gate-line);
+  color: var(--brand-deep);
+}
+
+.text-area.tall { min-height: 8rem; }
+
+/* ============ DERIVED ANSWER ========= */
+/* Where the page has answered a Zanda field on the reader's behalf and says so
+   in place, not only on the review. */
+
+.derived-note {
+  margin: 1.1rem 0;
+  padding: 0.75rem 0.95rem;
+  border-radius: var(--radius);
+  background-color: var(--derived-bg);
+  border: 1px solid var(--derived-line);
+  font-size: 0.95rem;
+  color: #43377A;
+}
+
+.derived-note:empty { display: none; }
+
+.derived-note strong { color: #332A5E; }
+
+/* ============ PROFILE FIELD NOTICE ========= */
+/* Temporary, and deliberately conspicuous: these fields are not yet mapped.
+   It goes when the mapping is known. */
+
+.profile-note {
+  font-size: 0.9rem;
+}
+
+/* ============ GATED BLOCK ========= */
+/* consent.css styles .gated for the therapy-dog waiver; the custody follow-up
+   is the same pattern and reuses it. Only the margin differs, because here it
+   follows a radio group rather than a single tick. */
+
+.gated { margin-top: 1.2rem; }
+
+/* ============ NARROW ========= */
+
+@media (max-width: 700px) {
+  .field-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .date-input { max-width: none; }
+}

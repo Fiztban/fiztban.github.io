@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Your ADHD assessment | Kinder Minds</title>
-    <meta name="description" content="Your ADHD Assessment (Under 18s, complex) at Kinder Minds: what happens at each stage, what it costs, and what we need from you.">
+    <title>Your autism assessment | Kinder Minds</title>
+    <meta name="description" content="Your Autism (ASD) Comprehensive Assessment at Kinder Minds: what happens at each stage, what it costs, and what we need from you.">
 
-    <!-- Unlisted. The URL can carry a client's first name, so it must never be
-         indexed and must never leak its query string via a Referer header. -->
     <meta name="robots" content="noindex, nofollow">
     <meta name="referrer" content="no-referrer">
 
@@ -22,8 +20,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Fira+Sans+Condensed:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
 
-    <!-- Set the mode before first paint so neither version flashes.
-         intake.js re-asserts it once the links are validated. -->
     <script>
     (function () {
       var q = new URLSearchParams(window.location.search);
@@ -32,24 +28,25 @@
     })();
     </script>
 
-    <script src="../intake/intake.js" defer></script>
+    <script src="masthead-v2.js" defer></script>
+    <script src="guide-core.js" defer></script>
     <script src="guide.js" defer></script>
 </head>
 
 <body>
 
-    <header class="site-banner">
+    <header class="site-banner" id="site-header">
         <div class="wrap">
             <a class="banner-logo" href="../index.html" aria-label="Kinder Minds home">
-                <img src="../assets/Logos/km-logo-name-below.svg" alt="Kinder Minds">
+                <img src="../assets/Logos/km-logo-name-below-open-2.svg" alt="Kinder Minds">
             </a>
         </div>
     </header>
 
     <div class="title-block">
         <div class="wrap">
-            <p class="eyebrow">ADHD Assessment (Under 18s)</p>
-            <h1>Your ADHD assessment</h1>
+            <p class="eyebrow">Autism (ASD) Comprehensive Assessment</p>
+            <h1>Your autism assessment</h1>
             <p class="subtitle">What happens at each stage, and what we need from you</p>
             <p class="for-whom" id="for-whom" hidden></p>
         </div>
@@ -68,110 +65,167 @@
 
     <main class="wrap">
 
-        <p class="lede guide-only">Welcome to this interactive guide to help you navigate <span data-name-slot="possessive">your child&rsquo;s</span> ADHD Assessment.</p>
-        <p class="lede leaflet-only">Welcome to this guide to our ADHD Assessment (Under 18s).</p>
-
-        <p>Below is a summary of the full assessment process with explanations on what to expect, followed by a flow of the next steps. <span class="guide-only">You can tick off the steps on this page as you go.</span></p>
-
-        <p class="task-note guide-only">Please note that this page saves per device &mdash; opening the same link on another device will not remember what you have ticked here.</p>
+        <p class="task-note task-note-boxed guide-only">Please note that this page saves per device &mdash; opening the same link on another device will not remember what you have ticked here.</p>
 
         <div class="notice" id="default-links-notice">
             <p><strong>Your registration forms are not loaded.</strong> Please open the personalised link we emailed you &mdash; your forms are unique to you, so they only appear when you use that link. If you cannot find it, email <a href="mailto:info@kinderminds.nz">info@kinderminds.nz</a> and we will resend it.</p>
         </div>
 
-        <!-- ============ HOW IT WORKS (reference panel, not a step) ============ -->
+        <!-- ============ EVERYTHING ABOUT AN AUTISM ASSESSMENT ============ -->
         <section class="intro-panel" id="about-assessment">
             <button type="button" class="stage-head panel-head" aria-expanded="true" aria-controls="about-body">
                 <span class="stage-head-text">
-                    <span class="panel-title">How your ADHD assessment works</span>
-                    <span class="stage-peek">Cost, diagnostic criteria, what&rsquo;s included and additional services</span>
+                    <span class="panel-title">Everything about an autism assessment</span>
+                    <span class="stage-peek">Cost, appointments, what&rsquo;s included, and the two tools we use</span>
                 </span>
                 <span class="stage-check" aria-hidden="true"></span>
-                    <span class="stage-chev" aria-hidden="true"></span>
+                <span class="stage-chev" aria-hidden="true"></span>
             </button>
 
             <div class="stage-body" id="about-body">
 
+                <p class="guide-only">Welcome to our interactive guide, designed to help you navigate <span data-name-slot="possessive">your child&rsquo;s</span> <span class="term">Autism (ASD) Assessment</span> with Kinder Minds.</p>
+                <p class="leaflet-only">Welcome to our guide to the <span class="term">Autism (ASD) Assessment</span> at Kinder Minds.</p>
+
+                <p class="guide-only">This guide is designed to cover everything you need to know, with an interactive flow that allows you to keep track of where you are in the process.</p>
+                <p class="leaflet-only">This guide is designed to cover everything you need to know about the assessment and what it includes.</p>
+
+                <div class="highlight">
+                    <h4>Who this assessment is for</h4>
+                    <p>We assess autism from <span class="term">age 5 upwards</span>. This guide is written for parents and families, which is who most of our autism assessments are for.</p>
+
+                    <h5>For adults</h5>
+                    <p>If you are an adult seeking an assessment for yourself, the pathway is the same &mdash; please contact us and we will talk it through with you.</p>
+                </div>
+
                 <div class="sub-block">
-                    <h3>Cost of the assessment</h3>
+                    <h3>Appointment options</h3>
+                    <p>The ADI-R interview is held online, and the ADOS-2 observation must be carried out in person at our Whangārei clinic. All other appointments can be held either online via telehealth or in person.</p>
+                </div>
 
-                    <p class="guide-only">Following the information provided to us by yourselves and/or your GP or referrer, we are happy to see <span data-name-slot>your child</span> for an <span class="term">ADHD Assessment (Under 18s)</span>.</p>
-                    <p class="leaflet-only">This is our <span class="term">ADHD Assessment (Under 18s)</span> for referrals we have assessed as more complex, carried out by Dr Sarah Castle, Consultant Child &amp; Adolescent Psychiatrist.</p>
+                <div class="price-panel">
 
-                    <div class="price-single">
-                        <p class="price">$1,800</p>
-                        <p class="price-what">(inc GST) Full ADHD assessment for children and young people under 18, carried out by Dr Sarah Castle, Consultant Child &amp; Adolescent Psychiatrist.</p>
+                    <div class="price-panel-head">
+                        <div class="price-block">
+                            <p class="price">$2,600</p>
+                            <p class="price-gst">(inc GST)</p>
+                        </div>
+                        <div class="price-panel-title">
+                            <h3>Comprehensive Autism (ASD) Assessment</h3>
+                            <p>Includes all that is listed below</p>
+                        </div>
                     </div>
 
-                    <p>The price covers everything listed below for the assessment, as well as a one-hour post-diagnostic support appointment for you to ask any follow-up questions about the outcome and about implementing any of the strategies put forward by our team. Our goal is for you to feel supported and covered on all your needs throughout and after the assessment.</p>
+                    <div class="include-card include-card-wide">
+                        <h4>During the assessment</h4>
+                        <ul class="included">
+                            <li>ADI-R developmental history interview
+                                <span class="pill-line">
+                                    <span class="pill pill-time">1 hour</span>
+                                    <span class="pill pill-mode">Online only</span>
+                                    <span class="pill pill-who">Nurse Specialist</span>
+                                </span>
+                            </li>
+                            <li>ADOS-2 assessment
+                                <span class="pill-line">
+                                    <span class="pill pill-time">1 hour</span>
+                                    <span class="pill pill-must">In person, Whangārei only</span>
+                                </span>
+                            </li>
+                            <li>Multidisciplinary team review of evidence
+                                <span class="pill-line">
+                                    <span class="pill pill-who">Dr Castle&rsquo;s input given</span>
+                                </span>
+                            </li>
+                            <li>Diagnosis appointment
+                                <span class="pill-line">
+                                    <span class="pill pill-time">1 hour</span>
+                                    <span class="pill pill-mode">In person or online</span>
+                                    <span class="pill pill-who">Dr Castle</span>
+                                </span>
+                            </li>
+                            <li class="also-included">One-hour post-diagnostic support <a class="read-more" href="#support-after">Read more</a>
+                                <span class="pill-line">
+                                    <span class="pill pill-time">1 hour</span>
+                                    <span class="pill pill-mode">In person or online</span>
+                                    <span class="pill pill-who">Nurse Specialist</span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
 
-                    <p>This assessment can be done completely online. Some appointments can also be booked in person at our Whangārei clinic, whichever is most convenient for your family &mdash; see each stage below for details.</p>
+                    <div class="include-card">
+                        <h4>What you receive</h4>
+                        <ul class="included">
+                            <li>Draft report within two weeks for your review</li>
+                            <li>Final report, sent to your GP on request</li>
+                        </ul>
+                        <h5>As needed</h5>
+                        <ul class="included">
+                            <li>Letter to <span data-name-slot="possessive">your child&rsquo;s</span> school, with strategies</li>
+                            <li>Child Disability Allowance form completed</li>
+                            <li>Northable or local service referral for autism support</li>
+                            <li>Onward referrals</li>
+                        </ul>
+                    </div>
+
                 </div>
 
                 <div class="sub-block">
-                    <h3>About ADHD assessment diagnostic criteria</h3>
+                    <h3>Assessment components and pathway options</h3>
 
-                    <p>An ADHD assessment relies on observations made in separate environments in order to meet diagnostic criteria. This means that ahead of the appointment that decides the diagnosis, we need to collect information in the form of a parental interview and specialised questionnaires. Without these we will not be able to complete the assessment.</p>
+                    <p>An autism assessment cannot be completed in a single appointment. Diagnostic criteria ask both how <span data-name-slot>your child</span> has developed over time and how they present today, so the assessment is built from two components.</p>
 
-                    <p>Two questionnaires are sent to a teacher who knows <span data-name-slot>your child</span> well. We recommend a teacher who has known <span data-name-slot>your child</span> for at least six months. If we are undertaking the assessment at the start of an academic year, or after a recent school change, then <span data-name-slot="possessive">your child&rsquo;s</span> previous teacher is usually the best candidate for this part of the assessment.</p>
-                </div>
-
-                <div class="sub-block">
-                    <h3>Everything included in the price</h3>
-
-                    <h4>During the assessment</h4>
-                    <ul class="included">
-                        <li>Parental interview (ADHD Child Evaluation or Young DIVA)
-                            <span class="pill-line">
+                    <div class="included-groups">
+                        <div class="include-card include-card-component">
+                            <h4>Autism Diagnostic Interview&ndash;Revised (ADI-R)</h4>
+                            <p class="pill-line">
                                 <span class="pill pill-time">1 hour</span>
                                 <span class="pill pill-mode">Online only</span>
-                                <span class="pill pill-who">Specialist Nurse</span>
-                            </span>
-                        </li>
-                        <li>Conners-4 and additional Kinder Minds questionnaires</li>
-                        <li>Multidisciplinary team review of evidence
-                            <span class="pill-line">
-                                <span class="pill pill-who">Dr Castle&rsquo;s input given</span>
-                            </span>
-                        </li>
-                        <li>Feedback appointment
-                            <span class="pill-line">
-                                <span class="pill pill-time">1 hour</span>
-                                <span class="pill pill-mode">In person or online</span>
-                                <span class="pill pill-who">Dr Sarah Castle</span>
-                            </span>
-                        </li>
-                        <li>Draft report within two weeks for your review</li>
-                    </ul>
+                                <span class="pill pill-who">Nurse Specialist</span>
+                            </p>
+                            <p>A structured interview covering <span data-name-slot="possessive">your child&rsquo;s</span> early years, with the people who know them best &mdash; usually both parents. <span data-name-slot="cap">Your child</span> does not attend, so you can speak freely.</p>
+                            <div class="component-price">
+                                <p class="component-price-tag">Component price</p>
+                                <p class="component-price-figure">$900 <span class="price-gst-inline">(inc GST)</span></p>
+                                <a class="read-more" href="#pathway-options">&darr; Read below</a>
+                            </div>
+                        </div>
 
-                    <h4>What you receive</h4>
-                    <ul class="included">
-                        <li>Final report which we can send to your GP for you</li>
-                        <li>Letter to <span data-name-slot="possessive">your child&rsquo;s</span> school
-                            <span class="pill-line"><span class="pill pill-note">As needed</span></span>
-                        </li>
-                        <li>Child Disability Allowance form completed
-                            <span class="pill-line"><span class="pill pill-note">As needed</span></span>
-                        </li>
-                        <li>Onward referrals
-                            <span class="pill-line"><span class="pill pill-note">As needed</span></span>
-                        </li>
-                        <li>Post-diagnostic support
-                            <span class="pill-line">
+                        <div class="include-card include-card-component">
+                            <h4>Autism Diagnostic Observation Schedule (ADOS-2)</h4>
+                            <p class="pill-line">
                                 <span class="pill pill-time">1 hour</span>
-                                <span class="pill pill-mode">In person or online</span>
-                                <span class="pill pill-who">Specialist Nurse</span>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="sub-block">
-                    <h3>Additional services</h3>
-                    <div class="callout">
-                        <h4>School meeting</h4>
-                        <p>If desired, a nurse from our team can attend a school meeting (within Northland) to share additional strategies that may help further support <span data-name-slot="possessive">your child&rsquo;s</span> education. This service is charged at <span class="term">$200 per hour (inc GST)</span>.</p>
+                                <span class="pill pill-must">In person, Whangārei only</span>
+                            </p>
+                            <p>The global standard observation, with <span data-name-slot>your child</span> and two of our clinicians. Activities give social communication a chance to show itself naturally. It is not a test, so there is nothing to prepare.</p>
+                            <div class="component-price">
+                                <p class="component-price-tag">Component price</p>
+                                <p class="component-price-figure">$1,200 <span class="price-gst-inline">(inc GST)</span></p>
+                                <a class="read-more" href="#pathway-options">&darr; Read below</a>
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="highlight">
+                        <p>If either assessment component is not completed, we cannot finish the assessment.</p>
+                    </div>
+
+                    <p>Both components are brought to our multidisciplinary team meeting, led by Dr Castle, before the final appointment. Note that neither component on its own produces a diagnosis.</p>
+
+                    <h4 class="sub-heading" id="pathway-options">When the component prices apply</h4>
+
+                    <p>The component prices above are charged only when the assessment does not run to completion &mdash; either because you choose to stop after a component is finished, or because what we have learned points somewhere else.</p>
+
+                    <p>During the ADI-R or ADOS-2 the picture can change. If it does, we would discuss the options with you. Typically these are:</p>
+
+                    <ul class="included">
+                        <li>Autism does not seem likely, and we suggest discontinuing the assessment.</li>
+                        <li>ADHD seems more likely than autism, and we suggest moving to our <a class="term" data-service-link="adhd-child-assessment.html">ADHD Assessment</a>.</li>
+                        <li>Both autism and ADHD seem likely, and we suggest moving to our <a class="term" data-service-link="adhd-asd-combined-assessment.html">Combined ADHD &amp; Autism Assessment</a>.</li>
+                    </ul>
+
+                    <p>Where we move to another assessment, any component already completed that also forms part of that pathway is covered by its price &mdash; you are not charged twice. Only components that sit outside the new pathway are charged at the prices above, and we will always set out the figures with you first.</p>
                 </div>
 
                 <div class="action-panel">
@@ -187,8 +241,8 @@
         <ol class="task-steps">
 
             <!-- ============ 1 · REFERRAL & TRIAGE ============ -->
-            <li class="info pre-done" id="step-1">
-                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-1">
+            <li class="info pre-done" id="step-referral">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-referral">
                     <span class="stage-num"></span>
                     <span class="stage-head-text">
                         <span class="stage-tag us leaflet-only">We do this</span>
@@ -199,10 +253,10 @@
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
-                <div class="stage-body" id="body-1" hidden>
-                    <p class="guide-only">We have received <span data-name-slot="possessive">your child&rsquo;s</span> referral, from either yourself or your GP or referring person. On review of the information provided to us, we would be delighted to see <span data-name-slot>your child</span> for an <span class="term">ADHD Assessment (Under 18s)</span>. Based on that review, <span data-name-slot="possessive">your child&rsquo;s</span> assessment will be carried out by Dr Sarah Castle, Consultant Child &amp; Adolescent Psychiatrist.</p>
-                    <p class="leaflet-only">A child can be referred to Kinder Minds by their GP or another referrer, or by a parent or legal guardian directly. We accept referrals for children and young people under 18.</p>
-                    <p>All referrals are reviewed and triaged by our directors, including Dr Sarah Castle, Consultant Child &amp; Adolescent Psychiatrist.</p>
+                <div class="stage-body" id="body-referral" hidden>
+                    <p class="guide-only">We have received <span data-name-slot="possessive">your child&rsquo;s</span> referral, from either yourself or your GP or referring person. On review of the information provided to us, we would be delighted to see <span data-name-slot>your child</span> for an <span class="term">Autism (ASD) Comprehensive Assessment</span>.</p>
+                    <p class="leaflet-only">A referral can come from a GP or another referrer, or from a parent or legal guardian directly. Adults can refer themselves. We assess autism from age 5 upwards.</p>
+                    <p>All referrals are reviewed and triaged by our directors, including Dr Castle, so we can plan the right assessment for <span data-name-slot>your child</span>.</p>
                 </div>
             </li>
 
@@ -362,92 +416,70 @@
                 </div>
             </li>
 
-            <!-- ============ 3 · PARENTAL INTERVIEW ============ -->
-            <li id="step-3">
-                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-3">
+
+            <!-- ============ 3 · ADI-R ============ -->
+            <li id="step-adir">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-adir">
                     <span class="stage-num"></span>
                     <span class="stage-head-text">
                         <span class="stage-tag you">Your action</span>
-                        <span class="stage-title">Parental interview (ADHD Child Evaluation or Young DIVA)</span>
-                        <span class="stage-peek">Parents and guardians only &mdash; 1 hour, online</span>
+                        <span class="stage-title">ADI-R developmental history interview</span>
+                        <span class="stage-peek">Parents only &mdash; the developmental history</span>
                     </span>
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
-                <div class="stage-body" id="body-3" hidden>
+                <div class="stage-body" id="body-adir" hidden>
                     <p class="pill-line">
                         <span class="pill pill-time">1 hour</span>
                         <span class="pill pill-mode">Online only</span>
-                        <span class="pill pill-who">Specialist Nurse</span>
+                        <span class="pill pill-who">Nurse Specialist</span>
                     </p>
-
-                    <p>Following completion of <a class="step-link" href="#step-registration">step 2</a> we will assist in booking the parental interview. This is a one-hour appointment with a set structure. The aim is to take a detailed history for <span data-name-slot="possessive">your child&rsquo;s</span> ADHD assessment.</p>
-
-                    <p>This appointment is attended only by the parents or legal guardians &mdash; <span data-name-slot>your child</span> is not required to attend. This makes it easier for you to talk through <span data-name-slot="possessive">your child&rsquo;s</span> strengths and challenges.</p>
-
-                    <p>It is led by one of our Specialist Nurses (Chris or Kezia), who will also be the one to deliver post-diagnostic support once the assessment is complete.</p>
-
+                    <p>Following completion of <a class="step-link" href="#step-registration">step 2</a> we will assist in booking the ADI-R. The <span class="term">Autism Diagnostic Interview&ndash;Revised (ADI-R)</span> is an interview with parents only, looking for signs of autism in the early years. It is led by our Nurse Specialist and is held online.</p>
+                    <p>This appointment is attended only by the parents or legal guardians &mdash; <span data-name-slot>your child</span> is not required to attend. It helps to have to hand anything that records the early years: a Plunket or Well Child book, early school reports, or any previous reports from other services.</p>
                     <div class="action-panel">
                         <label class="tick">
-                            <input type="checkbox" id="step-interview" data-step-tick>
-                            <span>My parental interview is booked</span>
+                            <input type="checkbox" id="step-adir-booked" data-step-tick>
+                            <span>My ADI-R interview is booked</span>
                         </label>
                     </div>
                 </div>
             </li>
 
-            <!-- ============ 4 · QUESTIONNAIRES ============ -->
-            <li id="step-4">
-                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-4">
+            <!-- ============ 4 · ADOS-2 ============ -->
+            <li id="step-ados">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-ados">
                     <span class="stage-num"></span>
                     <span class="stage-head-text">
                         <span class="stage-tag you">Your action</span>
-                        <span class="stage-title">Conners-4 &amp; Kinder Minds questionnaires</span>
-                        <span class="stage-peek">Completed by you, <span data-name-slot>your child</span> and a teacher</span>
+                        <span class="stage-title">ADOS-2 assessment</span>
+                        <span class="stage-peek">With <span data-name-slot>your child</span> &mdash; in person in Whangārei</span>
                     </span>
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
-                <div class="stage-body" id="body-4" hidden>
-                    <p>Following completion of <a class="step-link" href="#step-registration">step 2</a> we will also send out the Conners-4 and Kinder Minds questionnaires needed to complete the ADHD diagnostic process. These are key for obtaining evidence of behaviours relevant to ADHD being observed across different settings.</p>
-
-                    <h4>Family questionnaires</h4>
-                    <ul class="included">
-                        <li>Conners-4 parent questionnaire
-                            <span class="pill-line"><span class="pill pill-note">Completed by you</span></span>
-                        </li>
-                        <li>Conners-4 self-report questionnaire
-                            <span class="pill-line"><span class="pill pill-note">Completed by <span data-name-slot>your child</span><span class="unless-16plus"> if aged 9 or older</span></span></span>
-                        </li>
-                    </ul>
-
-                    <h4>School questionnaires</h4>
-                    <ul class="included">
-                        <li>Conners-4 teacher questionnaire
-                            <span class="pill-line"><span class="pill pill-note">Completed by a teacher you select</span></span>
-                        </li>
-                        <li>Kinder Minds School Questionnaire
-                            <span class="pill-line"><span class="pill pill-note">Completed by the same teacher</span></span>
-                        </li>
-                    </ul>
-
-                    <div class="callout">
-                        <h4>Choosing a teacher</h4>
-                        <p>We recommend a teacher who has known <span data-name-slot>your child</span> for at least six months. If we are undertaking the assessment at the start of an academic year, or after a recent school change, then <span data-name-slot="possessive">your child&rsquo;s</span> previous teacher is usually the best candidate for this part of the assessment.</p>
+                <div class="stage-body" id="body-ados" hidden>
+                    <p class="pill-line">
+                        <span class="pill pill-time">1 hour</span>
+                        <span class="pill pill-must">In person, Whangārei only</span>
+                    </p>
+                    <p>The <span class="term">Autism Diagnostic Observation Schedule (ADOS-2)</span> is a structured observation carried out with <span data-name-slot>your child</span>, taking approximately one hour.</p>
+                    <p>There is nothing to prepare. It is not a test and there is no pass or fail &mdash; the activities are designed so that social communication can show itself naturally. Please do not coach <span data-name-slot>your child</span> beforehand, as that makes the observation harder to read.</p>
+                    <div class="highlight">
+                        <p>This is the one appointment that must be completed face to face at our Whangārei clinic &mdash; it cannot be done online.</p>
                     </div>
-
                     <div class="action-panel">
                         <label class="tick">
-                            <input type="checkbox" id="step-questionnaires" data-step-tick>
-                            <span>All questionnaires are completed and returned</span>
+                            <input type="checkbox" id="step-ados-booked" data-step-tick>
+                            <span>My ADOS-2 appointment is booked</span>
                         </label>
                     </div>
                 </div>
             </li>
 
             <!-- ============ 5 · MDT ============ -->
-            <li class="info" id="step-5">
-                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-5">
+            <li class="info" id="step-mdt">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-mdt">
                     <span class="stage-num"></span>
                     <span class="stage-head-text">
                         <span class="stage-tag us">We do this</span>
@@ -456,48 +488,43 @@
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
-                <div class="stage-body" id="body-5" hidden>
-                    <p><span data-name-slot="cap-possessive">Your child&rsquo;s</span> case is discussed by our multidisciplinary team, bringing different expertise together before any conclusion is reached. Dr Sarah Castle leads this part, to ensure we have everything needed to complete the ADHD assessment.</p>
+                <div class="stage-body" id="body-mdt" hidden>
+                    <p><span data-name-slot="cap-possessive">Your child&rsquo;s</span> case is discussed by our multidisciplinary team, bringing different expertise together to understand the presentation and what may be helpful from members of different disciplines. Dr Castle leads this part, to ensure we have everything needed to complete the assessment.</p>
                 </div>
             </li>
 
-            <!-- ============ 6 · FEEDBACK APPOINTMENT ============ -->
-            <li id="step-6">
-                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-6">
+            <!-- ============ 6 · ASSESSMENT COMPLETION ============ -->
+            <li id="step-feedback">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-feedback">
                     <span class="stage-num"></span>
                     <span class="stage-head-text">
                         <span class="stage-tag you">Your action</span>
-                        <span class="stage-title">Feedback appointment</span>
-                        <span class="stage-peek">The outcome, and your tailored management plan</span>
+                        <span class="stage-title">Diagnosis appointment</span>
+                        <span class="stage-peek">With Dr Castle &mdash; the outcome and your tailored management plan</span>
                     </span>
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
-                <div class="stage-body" id="body-6" hidden>
+                <div class="stage-body" id="body-feedback" hidden>
                     <p class="pill-line">
                         <span class="pill pill-time">1 hour</span>
                         <span class="pill pill-mode">In person or online</span>
-                        <span class="pill pill-who">Dr Sarah Castle</span>
+                        <span class="pill pill-who">Dr Castle</span>
                     </p>
-
-                    <p>This appointment is booked after completion of <a class="step-link" href="#step-registration">step 2</a>, based on availability and allowing enough time for <a class="step-link" href="#step-3">step 3</a> and <a class="step-link" href="#step-4">step 4</a> to be completed.</p>
-
-                    <p>The one-hour feedback appointment is attended by <span data-name-slot>your child</span> and any parents or legal guardians, and can be held either online or in person at our Whangārei clinic. During the session, led by Dr Sarah Castle, Consultant Child &amp; Adolescent Psychiatrist, the outcome of the assessment is discussed &mdash; and regardless of the diagnosis you will leave with a tailored management plan to fully support <span data-name-slot>your child</span>.</p>
-
-                    <p>Any appropriate medication options will also be mentioned, though no medication is started at this appointment. See <a href="#medication">If medication is recommended</a> at the bottom of this page for how medication commencement works.</p>
-
+                    <p>This appointment is booked after completion of <a class="step-link" href="#step-registration">step 2</a>, based on availability and allowing enough time for steps <a class="step-link" href="#step-adir">3</a> to <a class="step-link" href="#step-ados">4</a> to be completed.</p>
+                    <p>The one-hour appointment is attended by <span data-name-slot>your child</span> and any parents or legal guardians, and can be held either online or in person at our Whangārei clinic. During the session, led by Dr Castle, the outcome of the assessment is discussed &mdash; and regardless of the diagnosis you will leave with a tailored management plan to fully support <span data-name-slot>your child</span>.</p>
                     <div class="action-panel">
                         <label class="tick">
-                            <input type="checkbox" id="step-feedback" data-step-tick>
-                            <span>We have attended the feedback appointment</span>
+                            <input type="checkbox" id="step-feedback-attended" data-step-tick>
+                            <span>We have attended the diagnosis appointment</span>
                         </label>
                     </div>
                 </div>
             </li>
 
             <!-- ============ 7 · DRAFT REPORT ============ -->
-            <li id="step-7">
-                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-7">
+            <li id="step-report">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-report">
                     <span class="stage-num"></span>
                     <span class="stage-head-text">
                         <span class="stage-tag you">Your action</span>
@@ -507,11 +534,11 @@
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
-                <div class="stage-body" id="body-7" hidden>
-                    <p>Within two weeks of your feedback appointment we will email you a copy of the assessment report and invite your comments and any amendments. This review is your chance to correct anything before the report is finalised.</p>
+                <div class="stage-body" id="body-report" hidden>
+                    <p>Within two weeks of your diagnosis appointment we will email you a copy of the assessment report and invite your comments and any amendments. This review is your chance to correct anything before the report is finalised.</p>
                     <div class="action-panel">
                         <label class="tick">
-                            <input type="checkbox" id="step-report" data-step-tick>
+                            <input type="checkbox" id="step-report-reviewed" data-step-tick>
                             <span>I have reviewed the draft report</span>
                         </label>
                     </div>
@@ -519,8 +546,8 @@
             </li>
 
             <!-- ============ 8 · FINALISED & SHARED ============ -->
-            <li class="info" id="step-8">
-                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-8">
+            <li class="info" id="step-shared">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-shared">
                     <span class="stage-num"></span>
                     <span class="stage-head-text">
                         <span class="stage-tag us">We do this</span>
@@ -529,20 +556,20 @@
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
-                <div class="stage-body" id="body-8" hidden>
-                    <p>Once the report is finalised we can send it to your GP on your behalf. As needed, we can also write a school letter to support <span data-name-slot="possessive">your child&rsquo;s</span> education, complete a Child Disability Allowance form, and make onward referrals.</p>
+                <div class="stage-body" id="body-shared" hidden>
+                    <p>Once the report is finalised we can send it to your GP on your behalf. As needed, we can also write to <span data-name-slot="possessive">your child&rsquo;s</span> school offering suggestions and strategies that may help, complete a Child Disability Allowance form, and make a Northable or local service referral for autism support.</p>
                     <p class="pill-line">
                         <span class="pill pill-note">Report to GP: optional</span>
                         <span class="pill pill-note">School letter: as needed</span>
                         <span class="pill pill-note">CDA form: as needed</span>
-                        <span class="pill pill-note">Onward referrals: as needed</span>
+                        <span class="pill pill-note">Northable referral: as needed</span>
                     </p>
                 </div>
             </li>
 
             <!-- ============ 9 · POST-DIAGNOSTIC SUPPORT ============ -->
-            <li id="step-9">
-                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-9">
+            <li id="step-pds">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-pds">
                     <span class="stage-num"></span>
                     <span class="stage-head-text">
                         <span class="stage-tag you">Your action</span>
@@ -552,24 +579,23 @@
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
-                <div class="stage-body" id="body-9" hidden>
+                <div class="stage-body" id="body-pds" hidden>
                     <p class="pill-line">
                         <span class="pill pill-time">1 hour</span>
                         <span class="pill pill-mode">In person or online</span>
-                        <span class="pill pill-who">Specialist Nurse</span>
+                        <span class="pill pill-who">Nurse Specialist</span>
                     </p>
-
-                    <p>To further support <span data-name-slot>your child</span> and family, we include with the assessment a one-hour post-diagnostic support appointment, which you can request to book directly with the Specialist Nurse who delivered the parental interview.</p>
-
+                    <p>To further support <span data-name-slot>your child</span> and family, we include with the assessment a one-hour post-diagnostic support appointment with one of our Nurse Specialists.</p>
                     <p>This session is ideal for talking through the outcome of the diagnosis and what it means, asking questions, planning next steps, and getting practical advice on how to implement any of the advice you have received.</p>
-
-                    <div class="highlight">
-                        <p>Please book this within a month following the feedback appointment (<a class="step-link" href="#step-6">step 6</a>).</p>
+                    <div class="callout">
+                        <p>Even if a diagnosis isn&rsquo;t given, this session is still valuable &mdash; a chance to look at other strategies and understand more about what may be going on for <span data-name-slot>your child</span>. If further therapeutic support is helpful, we can refer you on to our <a class="term" data-service-link="post-diagnostic-support.html" data-service-params="via=assessment">post-diagnostic clinic</a>.</p>
                     </div>
-
+                    <div class="highlight">
+                        <p>Please book this within a month following the diagnosis appointment (<a class="step-link" href="#step-feedback">step 6</a>).</p>
+                    </div>
                     <div class="action-panel">
                         <label class="tick">
-                            <input type="checkbox" id="step-pds" data-step-tick>
+                            <input type="checkbox" id="step-pds-booked" data-step-tick>
                             <span>My post-diagnostic support session is booked</span>
                         </label>
                     </div>
@@ -578,11 +604,21 @@
 
         </ol>
 
-        <section class="after-stages" id="medication">
-            <h2>If medication is recommended</h2>
-            <p>At Kinder Minds we do not start medication during the assessment. We consider this an important decision to be made together as a family, and we encourage you to first consider the recommended strategies and take your time deciding whether medication is right for you.</p>
-            <p>Both the feedback appointment (<a class="step-link" href="#step-6">step 6</a>) and the post-diagnostic support session (<a class="step-link" href="#step-9">step 9</a>) are ideal times to discuss any questions you may have about medication. If you choose to commence medication, or have already done so and need it reviewed, our <a class="term" data-service-link="adhd-titration-clinic.html">ADHD Titration Clinic</a> explains how a medication trial is carried out.</p>
+        <!-- The "Further support we offer" callout (further sessions, Tuning into
+             Kids, ACT, OT sensory) was removed 2026-08-25 while those services are
+             not yet running. Restore it here once Tuning into Kids and the OT
+             sensory assessment are live. -->
+        <section class="after-stages" id="support-after">
+            <h2>Support after the diagnosis</h2>
+            <p>Your pathway includes a one-hour post-diagnostic support session with one of our Nurse Specialists, which you can book in the month following <span data-name-slot="possessive">your child&rsquo;s</span> assessment (<a class="step-link" href="#step-pds">step 9</a>). It is a chance to talk through what the diagnosis means, ask questions, and plan the next steps together.</p>
+            <p>If further therapeutic support would be helpful after that, we can refer you on to our <a class="term" data-service-link="post-diagnostic-support.html" data-service-params="via=assessment">post-diagnostic clinic</a>.</p>
         </section>
+
+        <section class="after-stages" id="school-visit">
+            <h2>School visit or school meeting</h2>
+            <p>A nurse from our team can attend a school visit or school meeting (within Northland), to share additional strategies that may help support <span data-name-slot="possessive">your child&rsquo;s</span> education. This is charged at <span class="term">$200 per hour (inc GST)</span>.</p>
+        </section>
+
 
         <div class="contact-cta" id="contact">
             <h2>Questions? We&rsquo;re here to help.</h2>

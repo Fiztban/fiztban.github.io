@@ -11,14 +11,18 @@
     <meta name="referrer" content="no-referrer">
 
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/Logos/km-favicon-32x32.png">
-    <link rel="stylesheet" href="../leaflets/leaflet.css">
+    <link rel="stylesheet" href="../guide/guide.css">
+    <script src="../guide/masthead-v2.js" defer></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=Fira+Sans+Condensed:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Fira+Sans+Condensed:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
 
 <style>
-    /* Builder-specific styling. Palette and typography come from leaflet.css. */
+    /* Builder-specific styling only: form furniture guide.css has no reason to
+       carry. Palette, typography and page chrome come from guide.css, which the
+       five client guides use, so this tool and the pages it builds links for
+       cannot drift apart. */
 
     .field { margin-bottom: 1.1rem; }
 
@@ -130,18 +134,17 @@
 
 <body>
 
-    <header class="leaflet-header">
+    <header class="site-banner" id="site-header">
         <div class="wrap">
-            <a href="../index.html" aria-label="Kinder Minds home">
-                <img src="../assets/Logos/KM%20Logo%20-%20Name%20Side%20Long.svg" alt="Kinder Minds">
+            <a class="banner-logo" href="../index.html" aria-label="Kinder Minds home">
+                <img src="../assets/Logos/km-logo-name-below-open-2.svg" alt="Kinder Minds">
             </a>
-            <div class="header-contact">Staff tool &mdash; not for clients</div>
         </div>
     </header>
 
     <div class="title-block">
         <div class="wrap">
-            <p class="eyebrow">Internal</p>
+            <p class="eyebrow">Internal &middot; staff tool, not for clients</p>
             <h1>Intake link builder</h1>
             <p class="subtitle">Paste the three Zanda form links, get one link to drop into the Missive template.</p>
         </div>
@@ -172,22 +175,43 @@
             <div class="field">
                 <label for="in-service">Service</label>
                 <select id="in-service">
-                    <option value="guide/adhd-child-assessment.html">ADHD Assessment (Under 18s) — $1,500, Nurse Practitioner</option>
-                    <option value="guide/adhd-child-assessment-complex.html">ADHD Assessment (Under 18s), complex — $1,800, Dr Castle</option>
+                    <option value="guide/adhd-child-assessment.html">ADHD Assessment (Under 18s)</option>
                     <option value="guide/adhd-asd-combined-assessment.html">Combined ADHD &amp; Autism (Under 18s) — $3,000</option>
                     <option value="guide/adhd-titration-clinic.html">ADHD Titration Clinic — $250/$350 + monthly</option>
-                    <option value="" disabled>ASD Assessment Pathway — guide not yet built</option>
-                    <option value="" disabled>Post-Diagnostic Support — guide not yet built</option>
+                    <option value="guide/asd-assessment.html">Autism (ASD) Assessment — $2,600</option>
+                    <option value="guide/post-diagnostic-support.html">Post-Diagnostic Support</option>
                     <option value="" disabled>Psychiatric Services — guide not yet built</option>
                 </select>
             </div>
 
+            <div class="field" id="pathway-field">
+                <label>Which pathway did triage decide?</label>
+                <p class="hint">ADHD Assessment only. Leaving this unset is safe &mdash; the page then shows both prices and says triage decides, rather than quoting one that may be wrong.</p>
+                <div class="radio-row">
+                    <label><input type="radio" name="pathway" value="" checked> Not decided yet &mdash; show both</label>
+                    <label><input type="radio" name="pathway" value="standard"> Standard &mdash; $1,500, Nurse Practitioner</label>
+                    <label><input type="radio" name="pathway" value="complex"> Complex &mdash; $1,800, Dr Castle</label>
+                </div>
+            </div>
+
+            <div class="field" id="via-field">
+                <label>How are they coming to post-diagnostic support?</label>
+                <p class="hint">Post-Diagnostic Support only. &ldquo;After an assessment with us&rdquo; keeps the included hour and skips registration. &ldquo;On its own&rdquo; removes the included hour, so the free call leads.</p>
+                <div class="radio-row">
+                    <label><input type="radio" name="via" value="" checked> Not specified &mdash; general page</label>
+                    <label><input type="radio" name="via" value="assessment"> After an assessment with us</label>
+                    <label><input type="radio" name="via" value="referral"> On its own &mdash; new referral</label>
+                </div>
+                <p class="hint">The post-diagnostic page also understands <span class="term">ot=1</span>, which reveals the occupational therapy service &mdash; the sensory assessment and its <span class="term">$800</span> fee. That is a preview switch for checking the page before OT launches, and there is deliberately no control for it here, so it cannot reach a family by accident. Add it to the URL by hand if you need to look at it.</p>
+            </div>
+
             <div class="field" id="dx-field">
                 <label>Where was the ADHD diagnosed?</label>
-                <p class="hint">Titration Clinic only. Choosing &ldquo;by Kinder Minds&rdquo; removes the $350 outside-diagnosis fee and its caveats, so the family only sees the price they will actually pay.</p>
+                <p class="hint">Titration Clinic only. Setting this shows just the fee that applies. Leaving it unset is safe &mdash; the page then shows both fees and explains what decides.</p>
                 <div class="radio-row">
-                    <label><input type="radio" name="dx" value="" checked> Not known / diagnosed elsewhere</label>
-                    <label><input type="radio" name="dx" value="km"> By Kinder Minds</label>
+                    <label><input type="radio" name="dx" value="" checked> Not known &mdash; show both</label>
+                    <label><input type="radio" name="dx" value="km"> By Kinder Minds &mdash; $250, already registered</label>
+                    <label><input type="radio" name="dx" value="ext"> Elsewhere &mdash; $350, reports needed</label>
                 </div>
             </div>
 
@@ -285,8 +309,13 @@
 
   /* The diagnosis-origin question only means anything on the Titration Clinic. */
   function syncDxVisibility() {
-    var f = $('dx-field');
-    if (f) { f.style.display = /titration/.test($('in-service').value) ? '' : 'none'; }
+    var svc = $('in-service').value;
+    var dxf = $('dx-field');
+    var pwf = $('pathway-field');
+    if (dxf) { dxf.style.display = /titration/.test(svc) ? '' : 'none'; }
+    if (pwf) { pwf.style.display = /adhd-child-assessment/.test(svc) ? '' : 'none'; }
+    var vf = $('via-field');
+    if (vf) { vf.style.display = /post-diagnostic/.test(svc) ? '' : 'none'; }
   }
 
   /* Zanda custom-form URLs look like:
@@ -368,6 +397,8 @@
 
     var ref = $('in-ref').value;
     var dx = document.querySelector('input[name="dx"]:checked').value;
+    var pathway = document.querySelector('input[name="pathway"]:checked').value;
+    var via = document.querySelector('input[name="via"]:checked').value;
 
     syncDxVisibility();
 
@@ -377,6 +408,8 @@
     if (!name && ref) { qs.push('ref=' + ref); }
     if (age)  { qs.push('age=' + age); }
     if (dx && /titration/.test(service)) { qs.push('dx=' + dx); }
+    if (pathway && /adhd-child-assessment/.test(service)) { qs.push('pathway=' + pathway); }
+    if (via && /post-diagnostic/.test(service)) { qs.push('via=' + via); }
 
     if (canShorten) {
       qs.push('client=' + encodeURIComponent(uniqueHashes[0]));
@@ -409,7 +442,7 @@
     $(id).addEventListener('input', build);
     $(id).addEventListener('change', build);
   });
-  document.querySelectorAll('input[name="age"], input[name="fmt"], input[name="dx"]').forEach(function (r) {
+  document.querySelectorAll('input[name="age"], input[name="fmt"], input[name="dx"], input[name="pathway"], input[name="via"]').forEach(function (r) {
     r.addEventListener('change', build);
   });
 

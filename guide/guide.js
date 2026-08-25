@@ -202,6 +202,8 @@
       });
     });
 
+    renumberStepLinks();
+
     /* Someone may arrive on a link that already carries a step fragment. */
     if (/^#step-[\w-]+$/.test(window.location.hash)) {
       window.setTimeout(function () { reveal(window.location.hash.slice(1)); }, 60);
@@ -223,10 +225,42 @@
         var v = (here.get(k) || '').trim();
         if (v) { out.set(k, v); }
       });
-      out.set('dx', 'km');
+      /* Any extra parameters are declared on the link itself. Assuming them
+         here sent dx=km — a titration-only value — onto assessment links. */
+      var extra = a.getAttribute('data-service-params') || '';
+      extra.split('&').forEach(function (pair) {
+        var bits = pair.split('=');
+        if (bits[0] && bits[1]) { out.set(bits[0].trim(), bits[1].trim()); }
+      });
 
       var qs = out.toString();
       a.href = a.getAttribute('data-service-link') + (qs ? '?' + qs : '');
+    });
+  }
+
+  /* "step 4" in prose has to mean whatever that stage is actually numbered,
+     and stages can disappear — the previous-diagnosis stage is removed when we
+     made the diagnosis ourselves, renumbering everything after it. Rather than
+     maintain the numbers by hand across four pages, each link is rewritten from
+     its target's real position among the stages that rendered. */
+  function renumberStepLinks() {
+    var visible = stages().filter(function (li) {
+      return window.getComputedStyle(li).display !== 'none';
+    });
+
+    document.querySelectorAll('a[href^="#step-"]').forEach(function (a) {
+      var target = document.getElementById(a.getAttribute('href').slice(1));
+      var index = visible.indexOf(target);
+      if (index === -1) { return; }
+
+      var n = index + 1;
+      var text = a.textContent.trim();
+
+      if (/^\d+$/.test(text)) {
+        a.textContent = String(n);
+      } else if (/^step\s+\d+$/i.test(text)) {
+        a.textContent = text.replace(/\d+/, String(n));
+      }
     });
   }
 
