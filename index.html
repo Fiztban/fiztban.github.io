@@ -30,17 +30,35 @@
     
     
         <!-- Open Graph Tags for Social Media Sharing -->
-        <meta property="og:title" content="Kinder Minds">
-        <meta property="og:description" content="Expert psychiatric and therapeutic services for children and adolescents.">
-        <meta property="og:image" content="https://www.kinderminds.nz/assets/Logos/KM%20Logo%20-%20Logo%20with%20Name.svg">
-        <meta property="og:url" content="https://www.kinderminds.nz">
+        <!-- Link previews: Outlook, WhatsApp, Slack, LinkedIn, iMessage, Facebook.
+             Three things have to hold or the card comes up blank, and all three
+             were wrong before:
+               1. the image must be RASTER. Every one of these silently drops an
+                  SVG, so the old logo reference never rendered anywhere.
+               2. the URL must be absolute and reachable WITHOUT a redirect.
+                  www.kinderminds.nz 301s to the bare domain, and some scrapers
+                  will not follow it.
+               3. the dimensions should be declared, so a client can lay the card
+                  out before the image arrives.
+             The card is 1200x630 with the logo inside the middle 630x630, so it
+             survives the square centre-crop WhatsApp and others apply. -->
+        <meta property="og:site_name" content="Kinder Minds">
+        <meta property="og:title" content="Kinder Minds | Child and Adolescent Psychiatric and Therapeutic Services">
+        <meta property="og:description" content="Neurodevelopmental assessment, psychiatric care and post-diagnostic support for children and adolescents in Whang&#257;rei.">
+        <meta property="og:url" content="https://kinderminds.nz/">
         <meta property="og:type" content="website">
-    
-        <!-- Twitter Card Tags -->
+        <meta property="og:locale" content="en_NZ">
+        <meta property="og:image" content="https://kinderminds.nz/assets/Logos/km-social-card.png">
+        <meta property="og:image:type" content="image/png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="The Kinder Minds logo: a tree whose canopy forms a brain, within an open circle.">
+
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Kinder Minds | Child and Adolescent Psychiatric and Therapeutic Services">
-        <meta name="twitter:description" content="Kinder Minds offers expert psychiatric and therapeutic services for children and adolescents. Learn about our mission, team, and approach.">
-        <meta name="twitter:image" content="https://www.kinderminds.nz/assets/Logos/KM%20Logo%20-%20Logo%20with%20Name.svg">
+        <meta name="twitter:description" content="Neurodevelopmental assessment, psychiatric care and post-diagnostic support for children and adolescents in Whang&#257;rei.">
+        <meta name="twitter:image" content="https://kinderminds.nz/assets/Logos/km-social-card.png">
+        <meta name="twitter:image:alt" content="The Kinder Minds logo: a tree whose canopy forms a brain, within an open circle.">
     
         <!-- FAVICON -->
         <link rel="icon" type="image/png" sizes="96x96" href="assets/Logos/km-favicon-96x96.png">
