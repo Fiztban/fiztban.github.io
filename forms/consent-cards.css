@@ -34,7 +34,10 @@
 
 .deck-bar {
   position: sticky;
-  top: 0;
+  /* Parks below the fixed masthead, not behind it — the same offset
+     .progress-wrap uses on the guides. At top: 0 the rail slid under the
+     banner and disappeared the moment the page scrolled. */
+  top: var(--banner-condensed);
   z-index: 20;
   background-color: var(--light-background);
   border-bottom: 1px solid var(--mid-background);

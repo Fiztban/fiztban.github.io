@@ -10,10 +10,28 @@
 # up; it does not follow that it belongs on kinderminds.nz.
 
 exclude:
-  # Consent and intake form prototypes. Work in progress, nothing on the site
-  # links to them, and at 17 MB they are the largest thing in the repository
-  # after the images. Kept in git; no reason to serve them.
-  - forms
+  # The consent prototype IS served, so families and staff can be shown the two
+  # views side by side: combined-consent-cards.html and combined-consent.html,
+  # their CSS and JS, and the form snapshot they render from. Both pages carry
+  # noindex/no-referrer, nothing links to them, and neither can submit.
+  #
+  # Everything else under forms/ stays in git and off the web: the handover
+  # notes and the spec, the drift-check and single-file tooling, the test suite,
+  # the npm manifests, and the intake prototype, which is not part of what is
+  # being shown and is not finished.
+  - forms/HANDOVER.md
+  - forms/README.md
+  - forms/build-single-file.py
+  - forms/capture-form.mjs
+  - forms/consent.test.js
+  - forms/consent-cards.test.js
+  - forms/intake-cards.test.js
+  - forms/intake-cards.html
+  - forms/intake-cards.css
+  - forms/intake-cards.js
+  - forms/zanda-patient-intake.json
+  - forms/package.json
+  - forms/package-lock.json
 
   # Developer notes, not site content.
   - CLAUDE.md
