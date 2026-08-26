@@ -129,6 +129,77 @@
     .alert.bad  { background: #FBEAEA; border: 1px solid #D9A0A0; color: #7A2020; }
     .alert.warn { background: #FDF6E3; border: 1px solid #E8D9A8; color: #6B551A; }
     .alert.good { background: #EDF6F0; border: 1px solid #BFD8CB; color: #23543C; }
+
+    /* The reference list. Deliberately plain: it is a lookup table, not a
+       feature, and it should read as one. */
+    .linklist { margin: 0; }
+
+    .linklist h3 {
+        font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+        font-size: 0.82rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin: 1.2rem 0 0.5rem;
+    }
+    .linklist h3:first-child { margin-top: 0; }
+
+    /* Two fixed lines, name over URL, buttons pinned right across both. A flex
+       row wrapped into three ragged lines once the URL ran long, which is most
+       of them; a grid keeps every row the same shape at every width. */
+    .linkrow {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        column-gap: 0.8rem;
+        row-gap: 0.1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--mid-background);
+    }
+
+    .linkrow .name {
+        grid-column: 1;
+        font-family: 'Fira Sans', system-ui, sans-serif;
+        font-weight: 600;
+        color: var(--heading-dark);
+    }
+
+    /* Selectable as text as well as copyable by button, because sometimes you
+       want half a URL and a button cannot give you that. */
+    .linkrow .url {
+        grid-column: 1;
+        font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        word-break: break-all;
+        user-select: all;
+    }
+
+    .linkrow .row-actions {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        align-self: center;
+        display: flex;
+        gap: 0.35rem;
+    }
+
+    /* Not .button: these repeat eight times and would shout. */
+    .linkrow button,
+    .linkrow a.mini {
+        font-family: 'Fira Sans Condensed', system-ui, sans-serif;
+        font-size: 0.8rem;
+        padding: 0.2rem 0.6rem;
+        border: 1px solid var(--text-highlight);
+        border-radius: 6px;
+        background: white;
+        color: var(--km-blue);
+        cursor: pointer;
+        text-decoration: none;
+        line-height: 1.6;
+    }
+    .linkrow button:hover,
+    .linkrow a.mini:hover { background: var(--light-background); }
+    .linkrow button:focus-visible,
+    .linkrow a.mini:focus-visible { outline: 3px solid var(--km-blue); outline-offset: 1px; }
 </style>
 </head>
 
@@ -290,6 +361,23 @@
                 <button type="button" class="button" id="copy-btn">Copy link</button>
                 <a class="button" id="preview-btn" target="_blank" rel="noopener">Preview</a>
                 <span class="copied" id="copied-msg" hidden>Copied</span>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>4 &middot; Every page, for reference</legend>
+            <p class="hint">
+                Generic links with no client attached, so they are safe to open, bookmark or
+                share internally. To send one to a family, build it above instead: these carry
+                no name, no Zanda forms and no pathway.
+                Addresses follow the <strong>Site address</strong> field in section 3.
+            </p>
+
+            <div class="linklist" id="link-list"></div>
+
+            <div class="actions">
+                <button type="button" class="button" id="copy-all-btn">Copy all as a list</button>
+                <span class="copied" id="copied-all-msg" hidden>Copied</span>
             </div>
         </fieldset>
 
@@ -465,6 +553,145 @@
       done();
     }
   });
+
+  /* ---------------------------------------------------------------------
+     Reference list. A lookup table for the pages that already exist, kept
+     separate from the builder above: nothing here is personalised.
+
+     The five guides are read out of the Service <select> rather than retyped,
+     so a guide added there appears here for free and the two cannot disagree.
+     Its labels carry prices, which are noise in a link list, so everything
+     from the first em dash on is trimmed off.
+     --------------------------------------------------------------------- */
+
+  var EXTRA_GROUPS = [
+    { title: 'Consent forms', items: [
+      { path: 'forms/combined-consent-cards.html', name: 'Consent &amp; information, card view' },
+      { path: 'forms/combined-consent.html',       name: 'Consent &amp; information, single page' }
+    ] }
+  ];
+
+  function guideGroup() {
+    var items = [];
+    Array.prototype.forEach.call($('in-service').options, function (opt) {
+      if (!opt.value) { return; }              /* skip "guide not yet built" */
+      items.push({ path: opt.value, name: opt.textContent.split('—')[0].trim() });
+    });
+    return { title: 'Client guides', items: items };
+  }
+
+  function siteBase() {
+    return $('in-site').value.trim().replace(/\/+$/, '') || 'https://kinderminds.nz';
+  }
+
+  /* Shared by the per-row buttons and Copy all. The async clipboard API needs
+     a secure context, which this page has in production but not if it is ever
+     opened over plain http, so the execCommand path stays as a fallback. */
+  function copyText(text, msgEl) {
+    var flash = function () {
+      if (!msgEl) { return; }
+      msgEl.hidden = false;
+      window.setTimeout(function () { msgEl.hidden = true; }, 1500);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(flash, function () { legacy(text); flash(); });
+    } else {
+      legacy(text); flash();
+    }
+  }
+
+  function legacy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) { /* nothing else to try */ }
+    document.body.removeChild(ta);
+  }
+
+  function referenceGroups() { return [guideGroup()].concat(EXTRA_GROUPS); }
+
+  function renderLinkList() {
+    var base = siteBase();
+    var host = $('link-list');
+    if (!host) { return; }
+    host.innerHTML = '';
+
+    referenceGroups().forEach(function (group) {
+      var h = document.createElement('h3');
+      h.textContent = group.title;
+      host.appendChild(h);
+
+      group.items.forEach(function (item) {
+        var url = base + '/' + item.path;
+
+        var row = document.createElement('div');
+        row.className = 'linkrow';
+
+        var name = document.createElement('span');
+        name.className = 'name';
+        name.innerHTML = item.name;
+
+        var link = document.createElement('span');
+        link.className = 'url';
+        link.textContent = url;
+
+        var actions = document.createElement('span');
+        actions.className = 'row-actions';
+
+        var copy = document.createElement('button');
+        copy.type = 'button';
+        copy.textContent = 'Copy';
+        copy.addEventListener('click', function () { copyText(url, null); flashButton(copy); });
+
+        var open = document.createElement('a');
+        open.className = 'mini';
+        open.href = url;
+        open.target = '_blank';
+        open.rel = 'noopener';
+        open.textContent = 'Open';
+
+        actions.appendChild(copy);
+        actions.appendChild(open);
+        row.appendChild(name);
+        row.appendChild(link);
+        row.appendChild(actions);
+        host.appendChild(row);
+      });
+    });
+  }
+
+  /* Eight rows sharing one "Copied" message would be ambiguous, so each button
+     confirms on itself. */
+  function flashButton(btn) {
+    var was = btn.textContent;
+    btn.textContent = 'Copied';
+    window.setTimeout(function () { btn.textContent = was; }, 1200);
+  }
+
+  function plainList() {
+    var base = siteBase();
+    return referenceGroups().map(function (group) {
+      return group.title + '\n' + group.items.map(function (item) {
+        /* &amp; is fine in markup, wrong in a plain-text paste. */
+        return '  ' + item.name.replace(/&amp;/g, '&') + ': ' + base + '/' + item.path;
+      }).join('\n');
+    }).join('\n\n');
+  }
+
+  $('copy-all-btn').addEventListener('click', function () {
+    copyText(plainList(), $('copied-all-msg'));
+  });
+
+  /* The list follows the Site address field, so a staging host shows through
+     here as well as in the built link. */
+  $('in-site').addEventListener('input', renderLinkList);
+  $('in-service').addEventListener('change', renderLinkList);
+
+  renderLinkList();
 
   build();
 })();
