@@ -11,6 +11,8 @@ Live at [kinderminds.nz](https://kinderminds.nz).
 - **The site** — `index.html`, one page with hash-routed sections.
 - **Client guides** — `guide/`, five per-service pages driven by URL parameters and
   sent to families individually. Public but unlisted; nothing links to them.
+  Published as dated releases (`guide/20260827/`) so a family's link keeps the
+  fees and terms they were quoted; `_build/versions.json` is the registry.
 - **Staff tooling** — `staff/link-builder.html`, which builds those guide links.
 - **Form prototypes** — `forms/`, work in progress. In the repository, but excluded
   from the published site by `_config.yml`.

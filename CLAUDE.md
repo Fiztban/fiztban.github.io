@@ -13,10 +13,10 @@ Static site on GitHub Pages, custom domain via `CNAME`. Hand-built by Edo while 
 Three things live in one repository, and they are only loosely related:
 
 1. **The marketing site** (`index.html`), one page with hash-routed sections.
-2. **Client guides** (`guide/`), five per-service pages driven by URL parameters, sent to families individually. Not linked from the marketing site.
+2. **Client guides** (`guide/`), five per-service pages driven by URL parameters, sent to families individually. Not linked from the marketing site. Published as dated releases (`guide/<yyyymmdd>/`) so a family's link keeps the fees and terms they were quoted.
 3. **Staff tooling** (`staff/link-builder.html`), which builds those guide links.
 
-There is no build step for the marketing site. The guides *are* generated, from sources in `_build/`. See `guide/HANDOVER.md`.
+There is no build step for the marketing site. The guides *are* generated, from sources in `_build/`, into `guide/` and a dated release folder; `_build/versions.json` is the release registry. See `guide/HANDOVER.md`.
 
 ---
 
@@ -73,8 +73,8 @@ It depends on `[hidden] { display: none !important; }` in `style.css`. `[hidden]
 | `script.js` | Section routing, dated copy. |
 | `header-v2.js` | Masthead condense and collapse. |
 | `maintenanc.html` | Maintenance page (note the missing final `e`). Styled by `body.maintenance` rules in `style.css`. |
-| `guide/` | Five client guides plus `guide.css`, `guide.js`, `guide-core.js`, `masthead-v2.js`. Self-contained. |
-| `_build/` | Guide sources and assembler. Not published. |
+| `guide/` | Five client guides plus `guide.css`, `guide.js`, `guide-core.js`, `masthead-v2.js`. Self-contained. Plus `versions.json` and one folder per release (`20260827/`), each with its own copy of the CSS and JS. Older release folders are frozen. |
+| `_build/` | Guide sources, the assembler, and `versions.json`, the release registry. Not published. |
 | `staff/link-builder.html` | Builds personalised guide links. |
 | `forms/` | Consent and intake prototypes. In git, not served. |
 | `assets/Used`, `assets/Logos` | Deployed. `assets/Unused` is not. |
@@ -102,6 +102,7 @@ Images are sized to cover their layout box at 2x, long edge capped at 1600px, JP
 ## Deploy
 
 - Push to `main` = live, usually under a minute.
+- A new `guide/<version>/` folder is a release: tag the commit `guide-<version>` once it lands.
 - **Never auto-commit or push. Ask each time.**
 - Verify against the live URL afterwards, not the local copy. Both the deploy landing and the retired paths returning 404 are worth checking.
 
@@ -146,7 +147,9 @@ Three things make this bigger than a find-and-replace:
 - **`masthead-v2.js` spans all four tiers** — five guides, the five
   `_build/pages/` sources behind them, both consent forms, and the staff link
   builder. Miss the `_build/` sources and the next `node _build/build.js`
-  silently reverts the guides.
+  silently reverts the guides. `SUPPORT` in `build.js` names the file too.
+  Frozen `guide/<version>/` folders keep their own copy under the old name
+  and are not touched; only `guide/` and the latest release folder follow.
 - **The logo's `-2` is not a version.** Only that file carries the invisible
   `<g id="Threshold">` marker rect that `guide.css` derives
   `--logo-above-threshold: 0.7947` from, and its comment says so. Rename the

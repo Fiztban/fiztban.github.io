@@ -7,7 +7,7 @@
 > site links to them, and they are reached only through the personalised link a
 > staff member builds.
 >
-> Last worked on: 2026-08-25
+> Last worked on: 2026-08-27
 
 ---
 
@@ -46,18 +46,22 @@ overwrites them.
 ```
 _build/
   build.js                       the assembler
+  versions.json                  the release registry — see Versioning
   partials/
     registration-consent.html    the shared registration & consent stage
     page-foot.html               contact, signature, footer
   pages/
     *.html                       SOURCES — edit these
 guide/
-  *.html                         OUTPUT — generated, do not edit
+  *.html                         OUTPUT — the current release, generated
+  versions.json                  OUTPUT — copy of the registry
+  <yyyymmdd>/                    OUTPUT — one folder per release; the latest
+                                 is rebuilt in place, older ones are frozen
 ```
 
 ```bash
-node _build/build.js           # build all pages
-node _build/build.js --check   # exit 1 if guide/ is out of date
+node _build/build.js           # build guide/ and the latest release folder
+node _build/build.js --check   # exit 1 on drift, or if a frozen folder changed
 ```
 
 Include syntax in a source page, on its own line:
@@ -68,13 +72,110 @@ Include syntax in a source page, on its own line:
 
 The partial replaces that line verbatim — partials carry their own indentation,
 so there is no re-indentation step. Line endings are preserved exactly (the repo
-is CRLF; a build that rewrote endings would make every rebuild a whole-file diff).
+is LF, pinned by `.gitattributes`; a build that rewrote endings would make every
+rebuild a whole-file diff).
 
 **Why partials exist:** the registration & consent stage is ~9,800 characters and
 byte-identical on all four pages. It carries the consent forms, the guardian
 rule and the Care of Children Act wording — content where one page silently
 drifting out of step is a real problem. Held in one file, it can only be wrong
 once.
+
+---
+
+## Versioning
+
+A family's personalised link is a record of the fees, service structure and
+terms they were quoted. When any of those change, the page they were sent must
+survive untouched. So the guides are published as dated releases.
+
+**What counts as a release:** a change to fees, to service structure, or to the
+Terms of Service / consent form (one thing: the Zanda form). Nothing else.
+Wording, layout, a service going live (OT) are in-place updates to the current
+release, and reach every family holding a current link.
+
+**Naming:** the release's effective date as `yyyymmdd`, for example
+`guide/20260827/`. Eight digits rather than six so a New Zealand reader cannot
+mistake it for dd/mm/yy. The bare `guide/` path is the current release, for
+leaflet links; every personalised link points into a dated folder.
+
+**The registry** is `_build/versions.json`, one entry per release: `version`
+(the folder name), `effective` (the same date in ISO form), `kind`, `services`
+(which pages' quoted content changed), `tos` (the Terms of Service date in
+force) and a `note`. The build copies it to `guide/versions.json`, where the
+link builder reads it.
+
+**What the build does with it.** Every page is written to `guide/` and to
+`guide/<latest>/`, together with private copies of `guide.css`, `guide.js`,
+`guide-core.js` and `masthead-v2.js`, so a dated folder never reaches back into
+`guide/` for anything. The build only ever writes the latest release's folder;
+older folders are frozen, and `--check` asks git whether anything has touched
+them. Each page's footer is stamped from the `<!--@version-->` marker in
+`page-foot.html`: "Guide version 27 August 2026", or, once a service's own last
+change predates the release it sits in, "Guide release … · fees and terms for
+this service effective …".
+
+**The cut guard.** When a release folder is created for the first time, every
+page is compared against the previous folder. Because in-place edits went into
+that folder as they happened, the difference is exactly this release's change.
+A page that differs but is not in the release's `services` stops the build.
+This matters because figures are shared: `$900`, `$1,200` and `$200` sit on all
+three assessment pages, `$150` on titration and post-diagnostic. A component
+price change is three pages, and the guard is what stops a release listing one.
+A listed page that did not change is only a note (normal for a terms-only
+release, since the terms live in Zanda).
+
+**Paths are root-relative** (`/assets/…`, `/`) so one build works at both
+depths. The consequence: a guide opened straight from Explorer over `file://`
+loses its logo and favicon. Test over `python -m http.server` as documented.
+
+### Cutting a release
+
+1. Edit the sources for the change (fees, structure) — or, for a terms change,
+   update the Zanda form first.
+2. Add the registry entry: next date, `kind`, the services that changed, `tos`.
+3. `node _build/build.js`. The guard names any page that changed but is not
+   listed. If that change was wording rather than fees, remove the registry
+   entry, build (so it lands in the previous folder in place), then cut again.
+4. Commit, then tag `guide-<version>`.
+5. Deploy and open one page in the new folder on the live site.
+
+Nothing is ever written to an older folder. If git shows one modified, restore
+it.
+
+### What the link builder does
+
+It fetches `../guide/versions.json` on load and pins every personalised link
+to the latest release: `guide/adhd-child-assessment.html` becomes
+`guide/20260827/adhd-child-assessment.html`. If the registry cannot be read
+(opened over `file://`, or the fetch fails) it builds **no link** and says so:
+an unversioned link would drift with the site, which is the one thing these
+links must never do. The reference list in section 4 is deliberately not
+pinned; those are the current pages, for bookmarking.
+
+### Still to build
+
+Designed on 2026-08-27, not yet in place, in order:
+
+1. **Returning client, new consent needed.** A third state for the shared
+   registration stage (registered, but the consent form has been updated since
+   they last signed), set from a Client status control in the link builder as
+   `reg=done` plus `c1`/`c2`. Replaces the titration page inferring
+   `reg-complete` from `dx=km`.
+2. **Superseded-page hooks.** Hidden markup baked into every page — a notice
+   above stage 1 and a swap block in the consent stage — that a later fetch of
+   `versions.json` reveals when a family opens a link into a folder since
+   superseded for their service. A terms release hides the consent buttons and
+   says "contact us"; a fee-only release leaves them. The page never decides
+   whether a family "started before"; it states both cases and staff decide at
+   booking. Needs a `[hidden] { display: none !important }` guard in
+   `guide.css`, which currently has none.
+3. **An updates section** at the foot of each page, collapsed, client-language
+   only, generated from the registry.
+4. **Zanda side:** at a terms change, duplicate the consent form template under
+   a dated name rather than editing it in place, and void unsigned instances
+   issued before the date. An issued form freezes its text at issue, so this
+   is what actually enforces what the page explains.
 
 ---
 
@@ -148,7 +249,9 @@ guide/
   guide.css                      self-contained, 1,434 lines
   guide-core.js                  names, form links, ticks, progress
   guide.js                       accordion, step links, tick sync
-  *.html                         generated pages
+  *.html                         generated pages — the current release
+  versions.json                  copy of the release registry
+  20260827/                      release folder: the same pages, CSS and JS
 ```
 
 `guide.css` was flattened out of `guide.css → intake.css → leaflet.css →
@@ -171,6 +274,8 @@ Still outside `guide/`, deliberately:
 **Live on kinderminds.nz** since 2026-08-25:
 - all five pages in `guide/`, plus `guide.css`, `guide.js`, `guide-core.js` and
   `masthead-v2.js`
+- since 2026-08-27, `guide/versions.json` and the release folder
+  `guide/20260827/`, which personalised links point into
 - `staff/link-builder.html`
 
 Unlisted rather than secret. Nothing links to them, so they are reached only
@@ -275,10 +380,11 @@ page loaded `../intake/intake.js` and the staff tool loaded
 ```bash
 python -m http.server 8731          # from the site root
 node _build/build.js                # rebuild after editing a source
-node _build/build.js --check        # confirm guide/ matches sources
+node _build/build.js --check        # confirm guide/ and the release folder match
 ```
 
-Then open each page in both modes:
+Then open each page in both modes, and at least one in its release folder
+(`guide/20260827/…`), since that is the path families actually receive:
 
 ```
 guide/adhd-child-assessment.html                                   # leaflet
