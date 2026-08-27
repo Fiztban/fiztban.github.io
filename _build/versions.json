@@ -1,0 +1,19 @@
+{
+  "_about": "Guide version registry. One entry per release that changed fees, service structure, or the Terms of Service / consent form. Wording and layout changes are not releases: they are built into the current version in place. `version` names the folder guide/<version>/, `effective` is the same date in ISO form, `services` lists the pages whose quoted content changed in that release, `tos` is the date of the Terms of Service in force. The build refuses a release that changes a page it does not list. See guide/HANDOVER.md.",
+  "versions": [
+    {
+      "version": "20260827",
+      "effective": "2026-08-27",
+      "kind": ["initial"],
+      "services": [
+        "adhd-child-assessment",
+        "asd-assessment",
+        "adhd-asd-combined-assessment",
+        "adhd-titration-clinic",
+        "post-diagnostic-support"
+      ],
+      "tos": "2026-08-27",
+      "note": "First versioned release: the five guides as sent to the first families."
+    }
+  ]
+}
