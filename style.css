@@ -1398,7 +1398,9 @@ button.carousel__arrow:focus {
   --vb-left: 8.9%;
 }
 
-/* Chris: x 252-1022, y 114-884 of 1295x1727 */
+/* Chris: x 252-1022, y 114-884 of the 1295x1727 source. The served file is that
+   same frame downscaled to 1200x1600, and these are insets rather than pixels,
+   so they carry over unchanged. */
 #chris {
   --vb-top: 6.6%;
   --vb-right: 21.08%;

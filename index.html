@@ -154,6 +154,7 @@
                         <li><a href="#edoardo" data-target="sec-team">Edoardo Giorgi</a></li>
                         <li><a href="#neve" data-target="sec-team">Neve</a></li>
                         <li><a href="#kezia" data-target="sec-team">Kezia Schroyen</a></li>
+                        <li><a href="#chris" data-target="sec-team">Chris Jackson</a></li>
                     </ul>
                 </li>
                 <li><a href="#contact" data-target="sec-home">Contact</a>
@@ -707,12 +708,32 @@
             
         </article>
 
+        <article class="grid-row content-left more-text-space no-pad-bot framed-portrait" id="chris">
+            <div class="decoration image-container">
+                <button class="portrait-trigger" popovertarget="chris-photo" aria-label="Enlarge photo of Chris Jackson">
+                    <img src="assets/Used/Chris_Jackson.jpg" class="profile_chris" alt="Chris Jackson">
+                </button>
+            </div>
+
+            <div class="content text-content">
+
+                <h2>Chris Jackson</h2>
+                <p class="role">Nurse Specialist</p>
+                <div class="rule-decoration"></div>
+
+                <p>Chris has taken the long and interesting way round to neurodevelopmental nursing. Before training as a nurse he spent eight years in the Royal Navy as a weapon engineer, and later worked as a podiatrist before moving to New Zealand in 2011.</p>
+
+                <p>As a registered nurse, Chris went on to work in a CAMHS (Child and Adolescent Mental Health Services) neurodevelopmental team, where he found his calling supporting autistic and ADHD young people and their families. He is ADOS-qualified, one of the gold-standard tools used in autism assessment, and has completed the British Psychological Society-approved Introduction to Male Psychology and Mental Health, reflecting a particular interest in how boys and men experience mental health and neurodivergence.</p>
+
+                <p>Chris also brings something to the team that no training course can teach: he is autistic himself, diagnosed at the age of 50. He knows how much it can mean to families to work with someone who genuinely understands from the inside. His own later-in-life diagnosis gives him real empathy for the children, young people and adults he sees, and for the clarity and relief that understanding yourself can bring at any age.</p>
+
+                <p>Outside of work, Chris has played guitar for over 30 years and has a lifelong love of baseball, having played, managed and served as president of Manchester Baseball Club. He enjoys reading about philosophy and history, and is a devoted fan of a good spy novel, with John le Carré a particular favourite.</p>
+            </div>
+
+        </article>
+
         <!-- The full pictures behind the framed portraits. Native popover, so
              no JS, and Esc / click-outside dismissal come for free. -->
-                <!-- Chris Jackson: held back until his agreement is signed.
-                     The markup lives in _pending/chris-jackson.html, which is
-                     gitignored. Paste the three fragments back at these markers
-                     and copy his photo into assets/Used to restore. -->
 
         <div id="neve-photos" popover class="portrait-full portrait-full--carousel">
             <div class="carousel">
@@ -733,10 +754,11 @@
             </button>
         </div>
 
-                <!-- Chris Jackson: held back until his agreement is signed.
-                     The markup lives in _pending/chris-jackson.html, which is
-                     gitignored. Paste the three fragments back at these markers
-                     and copy his photo into assets/Used to restore. -->
+        <div id="chris-photo" popover class="portrait-full">
+            <button class="portrait-dismiss" popovertarget="chris-photo" popovertargetaction="hide" aria-label="Close photo">
+                <img src="assets/Used/Chris_Jackson.jpg" alt="Chris Jackson">
+            </button>
+        </div>
 
         <div id="kezia-photo" popover class="portrait-full">
             <button class="portrait-dismiss" popovertarget="kezia-photo" popovertargetaction="hide" aria-label="Close photo">
