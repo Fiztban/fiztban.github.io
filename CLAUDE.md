@@ -178,6 +178,7 @@ Two loose ends found while scoping, worth doing in the same pass:
 - **Heredocs eat backslashes.** `\\d` reaches Python as `\d`, and a `\` before a newline becomes a line continuation, so a multi-line search string silently stops matching. Write scripts with the editor when escapes matter.
 - **OneDrive restores files mid-operation** and rewrites mtimes. If a file reappears after you move it, suspect sync before suspecting yourself. Office documents also hash differently after a copy, because SharePoint stamps a GUID into `docProps/custom.xml`.
 - **Assert every replacement.** A silent no-op looks exactly like success.
+- **A push can be silently dropped by GitHub Pages.** On 2026-08-27 a push landed on `main`, the files were fetchable from the repository, and the site kept serving the previous commit for 75 minutes: no build run in Actions, and **no deployment record at all**, during an open GitHub services incident. That absence is the diagnosis — a broken site would leave a failed run and a build-failure email. Check `api.github.com/repos/<owner>/<repo>/actions/runs` and `/deployments?environment=github-pages` for the pushed sha; if neither mentions it, nothing is wrong with the commit. An empty commit raises a fresh push event and it deployed 15 seconds later.
 
 ---
 
