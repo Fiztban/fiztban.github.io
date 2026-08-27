@@ -350,6 +350,8 @@
                 <input type="text" id="in-site" value="https://kinderminds.nz" autocomplete="off" spellcheck="false">
             </div>
 
+            <p class="alert warn" id="version-note">Loading the guide version list&hellip;</p>
+
             <div class="field">
                 <label for="output">Generated link</label>
                 <textarea id="output" readonly rows="4" aria-live="polite"></textarea>
@@ -369,7 +371,8 @@
             <p class="hint">
                 Generic links with no client attached, so they are safe to open, bookmark or
                 share internally. To send one to a family, build it above instead: these carry
-                no name, no Zanda forms and no pathway.
+                no name, no Zanda forms and no pathway, and they are not pinned to a guide
+                version: they always show the current page.
                 Addresses follow the <strong>Site address</strong> field in section 3.
             </p>
 
@@ -394,6 +397,47 @@
   var $ = function (id) { return document.getElementById(id); };
 
   var fields = ['in-name', 'in-ref', 'in-service', 'in-reg', 'in-c1', 'in-c2', 'in-site'];
+
+  /* Personalised links are pinned to a guide version, so a family keeps the
+     page they were quoted after the site moves on. The version list is what
+     _build/build.js publishes beside the guides; LATEST is its last entry. */
+  var LATEST = null;
+
+  /* guide/x.html -> guide/<version>/x.html. Paths outside guide/ (the consent
+     forms) are not versioned and pass through. Null while no version is known. */
+  function versionedPath(p) {
+    if (!/^guide\//.test(p)) { return p; }
+    if (!LATEST) { return null; }
+    return p.replace(/^guide\//, 'guide/' + LATEST.version + '/');
+  }
+
+  function loadVersions() {
+    var note = $('version-note');
+    var show = function (cls, text) {
+      note.className = 'alert ' + cls;
+      note.textContent = text;
+    };
+    var fail = function (why) {
+      LATEST = null;
+      show('bad', 'Could not read the guide version list (' + why + '). No link can be built. ' +
+                  'Open this page from kinderminds.nz, or from a local server, and reload.');
+      build();
+    };
+    if (!window.fetch) { fail('this browser cannot fetch'); return; }
+    window.fetch('../guide/versions.json', { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('HTTP ' + r.status); }
+        return r.json();
+      })
+      .then(function (reg) {
+        var v = reg && reg.versions && reg.versions[reg.versions.length - 1];
+        if (!v || !/^\d{8}$/.test(String(v.version))) { throw new Error('malformed list'); }
+        LATEST = v;
+        show('good', 'Links point at guide version ' + v.version + ', effective ' + v.effective + '.');
+        build();
+      })
+      .catch(function (err) { fail(err && err.message ? err.message : String(err)); });
+  }
 
   /* The diagnosis-origin question only means anything on the Titration Clinic. */
   function syncDxVisibility() {
@@ -512,17 +556,25 @@
       });
     }
 
-    var url = site + '/' + service + (qs.length ? '?' + qs.join('&') : '');
+    /* No version list, no link: an unversioned link would drift with the
+       site, which is the one thing these links must never do. */
+    var pinned = versionedPath(service);
+    var url = pinned ? site + '/' + pinned + (qs.length ? '?' + qs.join('&') : '') : '';
     $('output').value = url;
+    if (pinned) { $('output').setAttribute('data-version', LATEST.version); }
+    else { $('output').removeAttribute('data-version'); }
+    $('copy-btn').disabled = !url;
 
     var lenEl = $('len-note');
     if (lenEl) {
-      lenEl.textContent = url.length + ' characters'
-        + (fmt === 'short' && !canShorten ? ' — could not shorten, using full URLs' : '');
+      lenEl.textContent = url
+        ? url.length + ' characters'
+          + (fmt === 'short' && !canShorten ? ' — could not shorten, using full URLs' : '')
+        : 'No link until the guide version list has loaded.';
     }
 
     var prev = $('preview-btn');
-    if (service) { prev.href = url; prev.removeAttribute('aria-disabled'); }
+    if (service && url) { prev.href = url; prev.removeAttribute('aria-disabled'); }
     else { prev.removeAttribute('href'); prev.setAttribute('aria-disabled', 'true'); }
   }
 
@@ -694,6 +746,7 @@
   renderLinkList();
 
   build();
+  loadVersions();
 })();
 </script>
 
