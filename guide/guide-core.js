@@ -254,6 +254,60 @@
     applyBranch(choice);
   }
 
+  /* ---------- the titration fork (titration guide only) ----------
+
+     Titration can be run by us or handed to the GP, and the answer decides
+     whether the four Kinder Minds steps apply at all:
+
+       unanswered  dimmed but readable — the reader is choosing between two
+                   pathways, so both have to be legible before choosing
+       yes         the four steps are live
+       no          they are replaced by a single Hand Over step
+
+     Unanswered is a real third state, not a default to "yes": presenting the
+     Kinder Minds pathway as chosen would be the wrong way to fail. */
+
+  function applyTitration(choice) {
+    if (!document.getElementById('step-handover')) { return; }   /* not this guide */
+
+    var root = document.documentElement;
+    root.classList.toggle('titr-unset', choice !== 'yes' && choice !== 'no');
+    root.classList.toggle('titr-yes', choice === 'yes');
+    root.classList.toggle('titr-no', choice === 'no');
+
+    /* Every step on the handover route, not just the handover itself —
+       confirming the GP will take it on is part of that route too. */
+    document.querySelectorAll('.titr-handover').forEach(function (li) {
+      li.hidden = (choice !== 'no');
+    });
+
+    /* A dimmed step must not be tickable, or progress could be advanced
+       against a pathway that has not been chosen. Disabled rather than
+       pointer-events, so it is out of the keyboard order too. */
+    document.querySelectorAll('.titr-with-us .tick input[type="checkbox"]')
+      .forEach(function (box) { box.disabled = (choice !== 'yes'); });
+
+    updateProgress();
+  }
+
+  function initTitration() {
+    if (!document.getElementById('step-handover')) { return; }
+
+    var saved = state.titration;
+    var choice = (saved === 'yes' || saved === 'no') ? saved : null;
+
+    document.querySelectorAll('input[name="titration-choice"]').forEach(function (radio) {
+      radio.checked = (radio.value === choice);
+      radio.addEventListener('change', function () {
+        state.titration = this.value;
+        writeState(state);
+        applyTitration(this.value);
+      });
+    });
+
+    applyTitration(choice);
+  }
+
   /* ---------- tick boxes ---------- */
 
   /* Which ticks count toward progress.
@@ -274,6 +328,20 @@
     /* A tick inside a consent branch counts only when that branch is chosen. */
     var branch = box.closest('.branch');
     if (branch && branch.hidden) { return false; }
+
+    /* A tick in a Kinder Minds titration step counts only once the family has
+       said we are doing the titration. Checked by class rather than by
+       visibility, because these steps stay on screen while dimmed — the point
+       is that they are readable but not yet in play. */
+    if (box.closest('.titr-with-us')
+        && !document.documentElement.classList.contains('titr-yes')) { return false; }
+
+    /* A step removed from this reader's route owes nothing to the total. The
+       [hidden] attribute on the <li> is the test, not computed display: a step
+       folded shut by the accordion hides its body, never itself, so folding
+       still must not move the denominator. */
+    var step = box.closest('.task-steps > li');
+    if (step && step.hidden) { return false; }
 
     /* Leaflet mode hides the tick's own label via stylesheet. */
     var label = box.closest('.tick');
@@ -351,6 +419,10 @@
         r.checked = false;
       });
       applyBranch(null);
+      document.querySelectorAll('input[name="titration-choice"]').forEach(function (r) {
+        r.checked = false;
+      });
+      applyTitration(null);
     });
   }
 
@@ -360,6 +432,7 @@
     applyName();
     applyLinks();
     initBranch();
+    initTitration();
     initTicks();
     initReset();
   });

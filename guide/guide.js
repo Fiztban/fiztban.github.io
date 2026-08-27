@@ -20,10 +20,16 @@
     return Array.prototype.slice.call(document.querySelectorAll('.task-steps > li'));
   }
 
-  /* The about-the-assessment panel behaves like a stage — collapsible, with its
-     own tick — but sits outside the numbered sequence, so it is handled
-     separately everywhere stages() is used. */
-  function panel() { return document.getElementById('about-assessment'); }
+  /* The about-the-assessment panels behave like stages — collapsible, sharing
+     one tick — but sit outside the numbered sequence, so they are handled
+     separately everywhere stages() is used.
+     Selected by class, not id: most guides carry a single panel, but the
+     titration guide splits its introduction into three (the clinic, the
+     consultation, titration and monitoring). One panel is simply an array of
+     one, so nothing changes for the other guides. */
+  function panels() {
+    return Array.prototype.slice.call(document.querySelectorAll('.intro-panel'));
+  }
 
   function panelRead() {
     var t = document.getElementById('step-read');
@@ -70,12 +76,37 @@
     return !!h && h.getAttribute('aria-expanded') === 'true';
   }
 
+  /* Whether a stage is on the page at all for this reader.
+
+     Steps come and go: dx hides the outside-diagnosis steps, and the titration
+     fork replaces four steps with one. Opening a step nobody can see reads as
+     nothing having happened, which is worse than opening the wrong one — so
+     these are excluded before anything is chosen as "next".
+
+     Folding does not interfere: a folded stage hides its .stage-body, never
+     the <li>, so a stage the reader collapsed still counts as in play. */
+  function inPlay(li) {
+    if (li.hidden) { return false; }
+    if (window.getComputedStyle(li).display === 'none') { return false; }
+
+    /* Registration is already held when we made the diagnosis ourselves. */
+    if (li.id === 'step-registration'
+        && document.documentElement.classList.contains('reg-complete')) { return false; }
+
+    return true;
+  }
+
   /* A stage is outstanding when it has a summary tick that is not yet ticked
-     and is actually in play (its consent branch chosen, if it has one). */
+     and is actually in play (its consent branch chosen, if it has one; its
+     tick enabled, which the titration steps are not until the fork is
+     answered). */
   function outstanding(li) {
+    if (!inPlay(li)) { return false; }
+
     var ticks = li.querySelectorAll('[data-step-tick]');
     for (var i = 0; i < ticks.length; i++) {
       var t = ticks[i];
+      if (t.disabled) { continue; }
       var branch = t.closest('.branch');
       if (branch && branch.hidden) { continue; }
       if (!t.checked) { return true; }
@@ -101,14 +132,14 @@
     var pref = readPanelPref();
     var showPanel = (pref === null) ? true : pref;
 
-    setOpen(panel(), showPanel);
+    panels().forEach(function (p) { setOpen(p, showPanel); });
 
     var target = showPanel ? null : firstOutstanding();
     all.forEach(function (li) { setOpen(li, li === target); });
   }
 
   function allOpen() {
-    return stages().every(isOpen) && isOpen(panel());
+    return stages().every(isOpen) && panels().every(isOpen);
   }
 
   function syncExpandAll() {
@@ -188,14 +219,25 @@
       if (!li) { return false; }
       setOpen(li, true);
       syncExpandAll();
-      li.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      /* Centring only works for something that fits on screen. An introduction
+         panel is taller than the viewport the moment it opens, so centring it
+         puts its heading off the top — which reads as overshooting the link.
+         Anchor tall targets to their top instead; the [id] scroll-margin-top
+         already clears the fixed masthead and the sticky progress bar.
+         Measured after setOpen, because a shut element has no height. */
+      var tall = li.getBoundingClientRect().height > window.innerHeight * 0.8;
+      li.scrollIntoView({ behavior: 'smooth', block: tall ? 'start' : 'center' });
       li.classList.remove('just-linked');
       void li.offsetWidth;                 /* restart the flash */
       li.classList.add('just-linked');
       return true;
     }
 
-    document.querySelectorAll('a[href^="#step-"]').forEach(function (a) {
+    /* #about- covers the introduction panels, which fold exactly like stages.
+       Without this a link to a shut panel scrolls to a closed header and looks
+       broken. */
+    document.querySelectorAll('a[href^="#step-"], a[href^="#about-"]').forEach(function (a) {
       a.addEventListener('click', function (e) {
         var id = this.getAttribute('href').slice(1);
         if (reveal(id)) { e.preventDefault(); }
@@ -205,7 +247,7 @@
     renumberStepLinks();
 
     /* Someone may arrive on a link that already carries a step fragment. */
-    if (/^#step-[\w-]+$/.test(window.location.hash)) {
+    if (/^#(step|about)-[\w-]+$/.test(window.location.hash)) {
       window.setTimeout(function () { reveal(window.location.hash.slice(1)); }, 60);
     }
   }
@@ -268,7 +310,7 @@
     var all = stages();
     if (!all.length) { return; }
 
-    all.concat([panel()]).forEach(function (li) {
+    all.concat(panels()).forEach(function (li) {
       if (!li) { return; }
       var h = head(li);
       if (!h) { return; }
@@ -276,7 +318,7 @@
       h.addEventListener('click', function () {
         var nowOpen = !isOpen(li);
         setOpen(li, nowOpen);
-        if (li === panel()) { writePanelPref(nowOpen); }
+        if (panels().indexOf(li) !== -1) { writePanelPref(nowOpen); }
         syncExpandAll();
       });
     });
@@ -285,13 +327,13 @@
     var read = document.getElementById('step-read');
     if (read) {
       read.addEventListener('change', function () {
-        var p = panel();
-        if (p) { p.classList.toggle('done', this.checked); }
-        if (!this.checked) { return; }
-        /* Fold it and move on, and remember that it is shut — but only because
+        var checked = this.checked;
+        panels().forEach(function (p) { p.classList.toggle('done', checked); });
+        if (!checked) { return; }
+        /* Fold them and move on, and remember they are shut — but only because
            the reader ticked it, never as a side effect of anything else. */
         window.setTimeout(function () {
-          setOpen(p, false);
+          panels().forEach(function (p) { setOpen(p, false); });
           writePanelPref(false);
           var next = firstOutstanding();
           if (next) {
@@ -301,8 +343,7 @@
           syncExpandAll();
         }, 220);
       });
-      var p0 = panel();
-      if (p0) { p0.classList.toggle('done', read.checked); }
+      panels().forEach(function (p) { p.classList.toggle('done', read.checked); });
     }
 
     /* When a stage's summary tick completes it, fold it and open whatever is
@@ -333,7 +374,7 @@
     if (btn) {
       btn.addEventListener('click', function () {
         var open = !allOpen();
-        stages().concat([panel()]).forEach(function (li) {
+        stages().concat(panels()).forEach(function (li) {
           if (li) { setOpen(li, open); }
         });
         writePanelPref(open);

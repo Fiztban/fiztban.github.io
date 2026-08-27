@@ -270,6 +270,69 @@ main { padding-bottom: 3.5rem; }
   border-left-color: var(--ok-green);
 }
 
+/* The deciding variant, for a choice the reader has to make rather than a
+   step we carry out. Mint surface, teal rule, both already in the palette:
+   --subtitle is the darkened cyan that clears AA, and the raw --brand-cyan
+   is decorative only and never used as ink.
+   Body copy computes to black on these pages, so measured rather than
+   assumed: black on #E6F4F1 is 18.6:1. */
+.callout-mint {
+  background-color: #E6F4F1;
+  border-left-color: var(--subtitle);
+}
+
+/* A .highlight nested inside a callout is a condition attached to the choice
+   it sits in, so it tucks in rather than floating: no trailing margin, and
+   never flush against the parent's last paragraph.
+   .highlight is reused rather than a second amber variant added — it already
+   carries the amber this page uses for "something is required of you", and two
+   near-identical ambers would only invite drift. */
+.callout .highlight,
+.callout .callout {
+  margin: 1rem 0 0;
+}
+
+/* ============ TITRATION DECISION ========= */
+/* Only the titration guide uses these; the selectors are inert elsewhere.
+
+   The fork is: do we run the titration, or does the GP? Until that is answered
+   the four Kinder Minds steps are dimmed rather than hidden, because the reader
+   is choosing between two pathways and cannot choose blind. Dimmed, not
+   disabled-looking: the headers still open so the steps can be read. */
+
+.task-steps > li.decision-step {
+  /* A question, not a step. No number, so no counter. */
+  counter-increment: none;
+  padding-left: 1.25rem;
+  background-color: var(--light-background);
+  border-style: dashed;
+}
+
+.decision-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Unanswered: readable, clearly not yet in play. Opacity alone would also fade
+   the border that carries the card's shape, so the text is dimmed and the card
+   left intact. */
+html.titr-unset .titr-with-us .stage-head-text,
+html.titr-unset .titr-with-us .stage-body {
+  opacity: 0.5;
+}
+
+html.titr-unset .titr-with-us .stage-num {
+  background-color: var(--text-highlight);
+}
+
+/* Answered "no": the Kinder Minds titration steps do not apply. display:none
+   rather than [hidden] so the CSS counter skips them too, which is what
+   renumbers Hand Over to follow the consultation. */
+html.titr-no .titr-with-us {
+  display: none;
+}
+
 /* ============ INCLUDED LIST ========= */
 
 .included-groups {
@@ -315,6 +378,13 @@ main { padding-bottom: 3.5rem; }
   height: 0.7rem;
   border-radius: 50%;
   background-color: var(--text-highlight);
+}
+
+/* An included item that is an outcome rather than a component — something the
+   reader leaves the appointment with. Same green the finished states use, so
+   it reads as "this is settled" without needing a legend. */
+.included li.included-yes::before {
+  background-color: var(--ok-green);
 }
 
 /* ============ JOURNEY STEPS ========= */

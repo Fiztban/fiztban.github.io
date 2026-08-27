@@ -119,9 +119,52 @@ Images are sized to cover their layout box at 2x, long edge capped at 1600px, JP
 
 1. **`<button href="...">`** throughout. Buttons don't take `href`; it works only because `script.js` reads `href` off whatever was clicked. A semantic fix means `<a class="button">` or `data-href`.
 2. **Prices are hardcoded in HTML.** Every pricing change is a code edit. The strongest argument for a CMS.
-3. Some `-v2` names outlived the changeover: `header-v2.js`, `guide/masthead-v2.js`, `km-logo-name-below-open-2.svg`. Cosmetic, but they read oddly now that v2 simply is the site.
+3. Some `-v2` names outlived the changeover. **Scoped 2026-08-27, not yet done** — see below.
 
 Surface these when relevant. Don't fix them during unrelated work.
+
+---
+
+## TODO — retire the `-v2` naming
+
+`v2` implies a successor to a `v1` that no longer exists. Nothing is broken; the
+names just mislead. Scoped 2026-08-27, ~3–4 hours, mostly verification.
+
+| Item | Mentions / files | Proposed name |
+|---|---|---|
+| `header-v2.js` | 12 / 6 | `header.js` |
+| `guide/masthead-v2.js` | 16 / 15 | `guide/masthead.js` |
+| `assets/Logos/km-logo-name-below-open-2.svg` | 18 / 18 | `km-logo-masthead.svg` |
+| `assets/Used/2024.03.10_141105_IMG_v2.jpg` | 1 (`index.html`) | drop the suffix |
+
+The two mastheads keep their distinction from the directory they live in, not
+from a number: `header.js` runs the marketing nav, `guide/masthead.js` is the
+condense-only version the guides and forms use.
+
+Three things make this bigger than a find-and-replace:
+
+- **`masthead-v2.js` spans all four tiers** — five guides, the five
+  `_build/pages/` sources behind them, both consent forms, and the staff link
+  builder. Miss the `_build/` sources and the next `node _build/build.js`
+  silently reverts the guides.
+- **The logo's `-2` is not a version.** Only that file carries the invisible
+  `<g id="Threshold">` marker rect that `guide.css` derives
+  `--logo-above-threshold: 0.7947` from, and its comment says so. Rename the
+  file and that comment has to follow. `km-logo-name-below.svg` is a different
+  asset, still live in `forms/intake-cards.html`, so that name is taken.
+- **Verification is the bulk of it.** Every masthead-bearing page across all
+  four tiers needs a browser check that condense still fires and the logo still
+  pins, plus `node _build/build.js --check` and a live-URL pass after deploy.
+
+Splits into three independent commits: the two scripts, the logo, then the docs.
+
+Two loose ends found while scoping, worth doing in the same pass:
+
+- **`assets/Used/Mental Health Wire Brushes_v2.jpg` is referenced by nothing.**
+  `assets/Used/` is meant to hold exactly what the site renders; this is dead
+  weight being deployed. Probably belongs in `assets/Unused/`.
+- **Docs name files that no longer exist**: `index-v2.html` and `style-v2.css`
+  are cited in this file, in `guide/HANDOVER.md`, and at `guide/guide.css:947`.
 
 ---
 
