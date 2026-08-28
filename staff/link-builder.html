@@ -399,8 +399,10 @@
             <p class="hint">
                 Generic links with no client attached, so they are safe to open, bookmark or
                 share internally. To send one to a family, build it above instead: these carry
-                no name, no Zanda forms and no pathway, and they are not pinned to a guide
-                version: they always show the current page.
+                no name, no Zanda forms and no pathway.
+                Guide links point at the <strong>current release snapshot</strong> &mdash; the same
+                version a personalised link uses &mdash; and move to each new release on their own.
+                The consent forms are not versioned.
                 Addresses follow the <strong>Site address</strong> field in section 3.
             </p>
 
@@ -450,6 +452,7 @@
       show('bad', 'Could not read the guide version list (' + why + '). No link can be built. ' +
                   'Open this page from kinderminds.nz, or from a local server, and reload.');
       build();
+      renderLinkList();            /* drops the guide rows rather than showing unversioned ones */
     };
     if (!window.fetch) { fail('this browser cannot fetch'); return; }
     window.fetch('../guide/versions.json', { cache: 'no-store' })
@@ -463,6 +466,7 @@
         LATEST = v;
         show('good', 'Links point at guide version ' + v.version + ', effective ' + v.effective + '.');
         build();
+        renderLinkList();          /* section 4 resolves against LATEST too */
       })
       .catch(function (err) { fail(err && err.message ? err.message : String(err)); });
   }
@@ -730,7 +734,14 @@
     var items = [];
     Array.prototype.forEach.call($('in-service').options, function (opt) {
       if (!opt.value) { return; }              /* skip "guide not yet built" */
-      items.push({ path: opt.value, name: opt.textContent.split('—')[0].trim() });
+      /* Snapshot, not the living page. A guide URL that anyone might keep has
+         to be one we can still reason about after the next release: the dated
+         folder stands still, so it can later carry a superseded notice, while
+         guide/<page>.html silently becomes something else. This follows LATEST
+         rather than a fixed date, so it moves to each new release on its own. */
+      var path = versionedPath(opt.value);
+      if (!path) { return; }                   /* no registry yet: no guide rows */
+      items.push({ path: path, name: opt.textContent.split('—')[0].trim() });
     });
     return { title: 'Client guides', items: items };
   }
@@ -776,6 +787,7 @@
     host.innerHTML = '';
 
     referenceGroups().forEach(function (group) {
+      if (!group.items.length) { return; }     /* registry not loaded: no heading */
       var h = document.createElement('h3');
       h.textContent = group.title;
       host.appendChild(h);
@@ -829,7 +841,7 @@
 
   function plainList() {
     var base = siteBase();
-    return referenceGroups().map(function (group) {
+    return referenceGroups().filter(function (g) { return g.items.length; }).map(function (group) {
       return group.title + '\n' + group.items.map(function (item) {
         /* &amp; is fine in markup, wrong in a plain-text paste. */
         return '  ' + item.name.replace(/&amp;/g, '&') + ': ' + base + '/' + item.path;
