@@ -21,6 +21,9 @@
      c1      consent form — guardian 1 / patient    e.g. c1=2832
      c2      consent form — guardian 2 (under 16)   e.g. c2=2833
      age     optional preset: "16plus" or "under16"
+     reconsent  "1" — returning family, consent forms only. The branch then
+                follows the number of consent links supplied, and the family is
+                not asked.
 
    Build these links with staff/link-builder.html rather than by hand.
    ========================================================================== */
@@ -93,6 +96,22 @@
   var dx = (params.get('dx') || '').trim().toLowerCase();
   if (dx === 'km' || dx === 'ext') {
     document.documentElement.classList.add('dx-' + dx);
+  }
+
+  /* Returning family whose consent has been superseded since they signed.
+     Registration stands; only the consent forms are reissued.
+
+     Set in the page's pre-paint script as well as here — that one stops the
+     new-client wording flashing up before this file loads, this one is the
+     authoritative correction once the links have been parsed. */
+  var reconsent = (params.get('reconsent') || '').trim() === '1';
+  if (reconsent) {
+    document.documentElement.classList.add('reg-reconsent');
+    /* The two states are mutually exclusive: reg-complete means there is
+       nothing to do, and here there is. A page that inferred reg-complete from
+       something coarser — the titration page does, from dx=km — must not
+       override a link that explicitly asks for a consent refresh. */
+    document.documentElement.classList.remove('reg-complete');
   }
 
   /* ---------- personalisation ---------- */
@@ -238,6 +257,17 @@
   }
 
   function initBranch() {
+    /* A consent refresh is not a question. Staff have the age from the record
+       before the link is built and express it in the link itself: one consent
+       form means the young person consents for themselves, two means both
+       legal guardians. The radios are hidden by CSS in this mode, so nothing
+       here reads or writes them — and a stale saved answer from an earlier
+       visit must not reach applyBranch either. */
+    if (reconsent) {
+      applyBranch(links.c2 ? 'under16' : '16plus');
+      return;
+    }
+
     var preset = params.get('age');
     var saved = state.age;
     var choice = (preset === '16plus' || preset === 'under16') ? preset : saved;
@@ -324,6 +354,13 @@
        complete steps they cannot see. */
     if (document.documentElement.classList.contains('reg-complete')
         && box.closest('#step-registration')) { return false; }
+
+    /* On a consent refresh the registration card is hidden by CSS. Needed as
+       its own rule because the label check further down cannot see it: the
+       computed display of an element inside a display:none ancestor is still
+       its own value, not none, so the tick would otherwise be counted and the
+       family told to submit a form they cannot see. */
+    if (reconsent && box.closest('.card-reg')) { return false; }
 
     /* A tick inside a consent branch counts only when that branch is chosen. */
     var branch = box.closest('.branch');

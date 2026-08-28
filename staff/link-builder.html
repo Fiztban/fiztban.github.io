@@ -287,6 +287,29 @@
             </div>
 
             <div class="field">
+                <label>Client status</label>
+                <p class="hint">A <span class="term">consent refresh</span> is for a family already registered with us whose Consent and Terms of Service Form has been superseded since they signed. The page then drops the registration form and asks only for the consent forms.</p>
+                <div class="radio-row">
+                    <label><input type="radio" name="status" value="" checked> New client &mdash; registration and consent</label>
+                    <label><input type="radio" name="status" value="reconsent"> Consent refresh &mdash; already registered</label>
+                </div>
+
+                <!-- Asked here, of staff, rather than of the family: on a refresh we
+                     already hold the age. It is not decoration — it decides which form
+                     fields section 3 offers, so the number of consent links in the
+                     finished URL cannot disagree with what the page will tell the
+                     family about who may lawfully consent. -->
+                <div id="rc-who-wrap" hidden>
+                    <label>Who signs the new consent?</label>
+                    <p class="hint">The page does not ask the family this &mdash; you hold the age already. Your answer decides how many consent links you are asked for below, so the two can never drift apart.</p>
+                    <div class="radio-row">
+                        <label><input type="radio" name="rcwho" value="16plus"> 16 or older &mdash; consents for themselves (one form)</label>
+                        <label><input type="radio" name="rcwho" value="under16"> Under 16 &mdash; both legal guardians (two forms)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field" id="field-age">
                 <label>Consent branch</label>
                 <p class="hint">Leave on &ldquo;Let the family choose&rdquo; unless you already know the age &mdash; the page asks them anyway.</p>
                 <div class="radio-row">
@@ -301,17 +324,17 @@
             <legend>2 &middot; The three Zanda links</legend>
             <p class="hint" style="margin-bottom:1rem">Copy each straight out of Zanda or the Missive template. Paste them whole &mdash; no need to trim or encode anything.</p>
 
-            <div class="field">
+            <div class="field" id="field-reg">
                 <label for="in-reg">New Patient Registration Form</label>
                 <input type="url" id="in-reg" placeholder="https://clientportal.zandahealth.com/clientportal/kinderminds/customform/…" autocomplete="off" spellcheck="false">
             </div>
 
-            <div class="field">
+            <div class="field" id="field-c1">
                 <label for="in-c1">Combined Consent &amp; Information Form &mdash; Guardian 1 (or the young person)</label>
                 <input type="url" id="in-c1" placeholder="https://clientportal.zandahealth.com/clientportal/kinderminds/customform/…" autocomplete="off" spellcheck="false">
             </div>
 
-            <div class="field">
+            <div class="field" id="field-c2">
                 <label for="in-c2">Combined Consent &amp; Information Form &mdash; Guardian 2</label>
                 <p class="hint">Only used by the under-16 branch. Leave blank if the young person is consenting for themselves.</p>
                 <input type="url" id="in-c2" placeholder="https://clientportal.zandahealth.com/clientportal/kinderminds/customform/…" autocomplete="off" spellcheck="false">
@@ -331,6 +354,11 @@
             <div class="alert bad"  id="alert-mismatch" hidden></div>
             <div class="alert warn" id="alert-dupe" hidden></div>
             <div class="alert good" id="alert-ok" hidden></div>
+            <!-- Consent refresh only. The page infers who signs from how many
+                 consent links the URL carries, which makes a paste slip a
+                 statement about who may legally consent. Said back in words
+                 here, in front of the person who can still fix it. -->
+            <div class="alert"      id="alert-reconsent" hidden></div>
         </fieldset>
 
         <fieldset>
@@ -472,11 +500,39 @@
     var service = $('in-service').value;
     var site = $('in-site').value.trim().replace(/\/+$/, '');
     var age = document.querySelector('input[name="age"]:checked').value;
+    var reconsent = document.querySelector('input[name="status"]:checked').value === 'reconsent';
+    var rcWhoEl = document.querySelector('input[name="rcwho"]:checked');
+    var rcWho = rcWhoEl ? rcWhoEl.value : '';
+
+    /* Which form fields this link can carry. On a refresh the answer follows
+       from who signs, so the fields are offered rather than merely validated:
+       there is no way to paste a second consent link for a young person who
+       signs alone, which is the mismatch that would otherwise reach a family
+       as a statement about who may lawfully consent.
+
+       The consent-branch control is a question put to the FAMILY, and a
+       refresh never asks it — hidden here rather than left on screen setting a
+       parameter the link will not carry. */
+    $('rc-who-wrap').hidden = !reconsent;
+    $('field-age').hidden   = reconsent;
+    $('field-reg').hidden   = reconsent;
+    $('field-c2').hidden    = reconsent && rcWho !== 'under16';
+
+    /* A hidden field may still hold what someone pasted before switching mode.
+       Dropping those rows here rather than clearing the inputs keeps the URL,
+       the diagnostics table and the visible fields all saying the same thing,
+       without destroying a link the user may want back on switching mode. */
+    var activeRows = ROWS.filter(function (row) {
+      if (!reconsent) { return true; }
+      if (row.key === 'reg') { return false; }
+      if (row.key === 'c2')  { return rcWho === 'under16'; }
+      return true;
+    });
 
     var parsed = {}, hashes = [], forms = [], invalid = [];
     var body = '';
 
-    ROWS.forEach(function (row) {
+    activeRows.forEach(function (row) {
       var raw = $(row.input).value.trim();
       var p = raw ? parseZanda(raw) : null;
       parsed[row.key] = raw;
@@ -495,7 +551,7 @@
     var uniqueHashes = hashes.filter(function (h, i) { return hashes.indexOf(h) === i; });
     var mismatch = uniqueHashes.length > 1;
 
-    var supplied = ROWS.map(function (r) { return parsed[r.key]; }).filter(Boolean);
+    var supplied = activeRows.map(function (r) { return parsed[r.key]; }).filter(Boolean);
     var dupe = supplied.length > 1 &&
                supplied.some(function (v, i) { return supplied.indexOf(v) !== i; });
 
@@ -519,13 +575,52 @@
                         ' · forms ' + forms.join(', ') + '.';
     }
 
+    /* Consent refresh: say back, in the words the family will read, what this
+       link is about to claim — and withhold the link until it is true.
+
+       The page has no parameter for "who may consent"; it reads that off the
+       number of consent links. So an incomplete refresh is not a half-built
+       link, it is a link that would tell a family the wrong thing about who
+       must sign. Refusing to emit one is the only honest failure here. */
+    var rEl = $('alert-reconsent');
+    var blocked = false;
+    rEl.hidden = !reconsent;
+    if (reconsent) {
+      var who = name || 'the young person';
+      if (!rcWho) {
+        rEl.className = 'alert bad';
+        rEl.textContent = 'Choose who signs the new consent, above. Until then there is no '
+                        + 'link — the page has no other way to tell a family whether one '
+                        + 'signature is needed or two.';
+        blocked = true;
+      } else if (!parsed.c1) {
+        rEl.className = 'alert bad';
+        rEl.textContent = 'Paste the consent link for '
+                        + (rcWho === 'under16' ? 'Guardian 1.' : who + '.');
+        blocked = true;
+      } else if (rcWho === 'under16' && !parsed.c2) {
+        rEl.className = 'alert bad';
+        rEl.textContent = 'Under 16 needs both guardians. Paste the Guardian 2 consent link, '
+                        + 'or switch to “16 or older” if ' + who + ' consents alone.';
+        blocked = true;
+      } else if (rcWho === 'under16') {
+        rEl.className = 'alert good';
+        rEl.textContent = 'Two consent forms. The page will tell them ' + who + ' is under 16 '
+                        + 'and both legal guardians must sign. No registration form is asked for.';
+      } else {
+        rEl.className = 'alert good';
+        rEl.textContent = 'One consent form. The page will tell them ' + who + ' is 16 or older '
+                        + 'and consents for themselves. No registration form is asked for.';
+      }
+    }
+
     /* --- the link --- */
     var fmt = document.querySelector('input[name="fmt"]:checked').value;
 
     /* The short form needs every supplied link to sit under one client hash;
        if they do not, fall back to full URLs rather than emit a wrong link. */
     var canShorten = fmt === 'short' && uniqueHashes.length === 1 && !invalid.length &&
-                     ROWS.every(function (r) { return !parsed[r.key] || parseZanda(parsed[r.key]); });
+                     activeRows.every(function (r) { return !parsed[r.key] || parseZanda(parsed[r.key]); });
 
     var ref = $('in-ref').value;
     var dx = document.querySelector('input[name="dx"]:checked').value;
@@ -538,19 +633,23 @@
     if (name) { qs.push('name=' + encodeURIComponent(name)); }
     /* ref is only consulted when there is no name, so omit it when one is set. */
     if (!name && ref) { qs.push('ref=' + ref); }
-    if (age)  { qs.push('age=' + age); }
+    /* age pre-answers a question the refresh never asks, so the two are
+       mutually exclusive rather than merely redundant: emitting both would put
+       a contradiction in the URL for the next person to read. */
+    if (age && !reconsent) { qs.push('age=' + age); }
+    if (reconsent) { qs.push('reconsent=1'); }
     if (dx && /titration/.test(service)) { qs.push('dx=' + dx); }
     if (pathway && /adhd-child-assessment/.test(service)) { qs.push('pathway=' + pathway); }
     if (via && /post-diagnostic/.test(service)) { qs.push('via=' + via); }
 
     if (canShorten) {
       qs.push('client=' + encodeURIComponent(uniqueHashes[0]));
-      ROWS.forEach(function (row) {
+      activeRows.forEach(function (row) {
         var p = parsed[row.key] ? parseZanda(parsed[row.key]) : null;
         if (p) { qs.push(row.key + '=' + p.form); }
       });
     } else {
-      ROWS.forEach(function (row) {
+      activeRows.forEach(function (row) {
         var v = parsed[row.key];
         if (v && isHttps(v)) { qs.push(row.key + '=' + encodeURIComponent(v)); }
       });
@@ -559,7 +658,9 @@
     /* No version list, no link: an unversioned link would drift with the
        site, which is the one thing these links must never do. */
     var pinned = versionedPath(service);
-    var url = pinned ? site + '/' + pinned + (qs.length ? '?' + qs.join('&') : '') : '';
+    var url = (pinned && !blocked)
+      ? site + '/' + pinned + (qs.length ? '?' + qs.join('&') : '')
+      : '';
     $('output').value = url;
     if (pinned) { $('output').setAttribute('data-version', LATEST.version); }
     else { $('output').removeAttribute('data-version'); }
@@ -570,7 +671,9 @@
       lenEl.textContent = url
         ? url.length + ' characters'
           + (fmt === 'short' && !canShorten ? ' — could not shorten, using full URLs' : '')
-        : 'No link until the guide version list has loaded.';
+        : (blocked
+            ? 'No link until the consent refresh above is complete.'
+            : 'No link until the guide version list has loaded.');
     }
 
     var prev = $('preview-btn');
@@ -582,7 +685,7 @@
     $(id).addEventListener('input', build);
     $(id).addEventListener('change', build);
   });
-  document.querySelectorAll('input[name="age"], input[name="fmt"], input[name="dx"], input[name="pathway"], input[name="via"]').forEach(function (r) {
+  document.querySelectorAll('input[name="age"], input[name="fmt"], input[name="dx"], input[name="pathway"], input[name="via"], input[name="status"]').forEach(function (r) {
     r.addEventListener('change', build);
   });
 

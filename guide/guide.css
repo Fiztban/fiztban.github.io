@@ -1286,6 +1286,29 @@ html.reg-complete .task-steps > li#step-registration {
 html.reg-complete #step-registration .stage-num { background-color: var(--ok-green); }
 html.reg-complete #step-registration .stage-check { display: flex; }
 
+/* ============ CONSENT REFRESH ========= */
+/* reconsent=1: the family is registered and stays registered, but the Consent
+   and Terms of Service Form has been superseded since they signed, so only the
+   consent forms are reissued.
+
+   Which branch shows is decided by how many consent links the URL carries —
+   one means the young person consents for themselves, two means both legal
+   guardians — and never by asking the family, because staff have the age from
+   the record before the link is built. The age question is therefore hidden
+   here rather than pre-answered.
+
+   This deliberately does NOT set .reg-complete: that class means "nothing to
+   do", and here there is something to do. The two are mutually exclusive, and
+   the page scripts give reconsent precedence over the dx=km inference. */
+
+html:not(.reg-reconsent) .reconsent-only { display: none; }
+html.reg-reconsent .new-only { display: none; }
+
+/* The registration form card is the only thing removed from either branch;
+   the branches themselves, and their Care of Children Act wording, are shared
+   with the new-client flow so they can only ever be written once. */
+html.reg-reconsent .card-reg { display: none; }
+
 /* ============ STEP LINKS ========= */
 /* Cross-references between stages. Clicking one opens the target stage as well
    as scrolling to it — see guide.js. */

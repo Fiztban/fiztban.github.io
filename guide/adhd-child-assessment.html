@@ -30,6 +30,13 @@
       var has = ['reg', 'c1', 'c2'].some(function (k) { return (q.get(k) || '').trim(); });
       document.documentElement.classList.add(has ? 'mode-guide' : 'mode-leaflet');
 
+      /* Returning family whose consent has been superseded since they signed.
+         Registration stands; only the consent forms are reissued. Set before
+         first paint so the new-client wording never flashes up. */
+      if ((q.get('reconsent') || '').trim() === '1') {
+        document.documentElement.classList.add('reg-reconsent');
+      }
+
       /* Which pathway this family is on. Absent is a legitimate state, not an
          error: the page then shows both prices and explains that triage
          decides, which is never wrong — rather than guessing a price. */
@@ -303,8 +310,10 @@
                     <span class="stage-head-text">
                         <span class="stage-tag you reg-needed">Your action</span>
                         <span class="stage-tag ok reg-done">Already done</span>
-                        <span class="stage-title">Registration &amp; consent forms</span>
-                        <span class="stage-peek reg-needed">We cannot book anything until these are in</span>
+                        <span class="stage-title new-only">Registration &amp; consent forms</span>
+                        <span class="stage-title reconsent-only">Updated consent forms</span>
+                        <span class="stage-peek reg-needed new-only">We cannot book anything until these are in</span>
+                        <span class="stage-peek reg-needed reconsent-only">We cannot book anything further until these are in</span>
                         <span class="stage-peek reg-done">Completed when you registered with us</span>
                     </span>
                     <span class="stage-check" aria-hidden="true"></span>
@@ -320,6 +329,16 @@
                     </div>
 
                     <div class="reg-needed">
+
+                    <!-- Returning family whose consent needs renewing. Registration
+                         stands; only the consent forms are reissued. Which branch
+                         shows is decided by how many consent links the staff member
+                         supplied, not by asking the family. -->
+                    <div class="reconsent-only">
+                        <p>Your registration with us is current, so there is nothing to complete there. Our Consent and Terms of Service Form has been updated since <span data-name-slot>your child</span> last came to us, so we need a fresh copy before we can book anything further.</p>
+                    </div>
+
+                    <div class="new-only">
                     <p>To be able to start booking the next steps, we need both of the following completed:</p>
                     <ul class="included">
                         <li>Patient Registration Form for <span data-name-slot>your child</span></li>
@@ -327,6 +346,7 @@
                     </ul>
 
                     <p>Which Consent and Terms of Service Form(s) are needed depends on whether <span data-name-slot>your child</span> can give consent for themselves.</p>
+                    </div>
 
                     <!-- Leaflet mode: both cases explained, since there is no chooser. -->
                     <div class="consent-rules leaflet-only">
@@ -339,7 +359,7 @@
                         <p>We will email you a personalised link with your own forms ready to complete.</p>
                     </div>
 
-                    <fieldset class="age-question guide-only">
+                    <fieldset class="age-question guide-only new-only">
                         <legend>Is <span data-name-slot>your child</span> 16 or older?</legend>
                         <div class="age-options">
                             <label>
@@ -357,7 +377,10 @@
                     <div class="branch" id="branch-16plus" hidden>
                         <div class="branch-intro">
                             <p>Because <span data-name-slot>your child</span> is 16 or older, they consent for themselves under the Care of Children Act 2004. So we only need <strong>one</strong> Consent and Terms of Service Form, completed by <span data-name-slot>your child</span>.</p>
-                            <p>The Patient Registration Form can be completed by either <span data-name-slot>your child</span> or any of their parents or guardians.</p>
+                            <!-- Registration only. A consent refresh reissues no registration
+                                 form, so this sentence would be describing a card that is not
+                                 on the page. -->
+                            <p class="new-only">The Patient Registration Form can be completed by either <span data-name-slot>your child</span> or any of their parents or guardians.</p>
                             <p>Parents and guardians are still welcome to be involved throughout the assessment &mdash; this is separate from the consent process.</p>
                         </div>
 
@@ -366,7 +389,7 @@
                         </div>
 
                         <ul class="form-list">
-                            <li class="form-card">
+                            <li class="form-card card-reg">
                                 <span class="form-name term">Patient Registration Form</span>
                                 <span class="form-who">Completed by <span data-name-slot>your child</span> or any parent or guardian</span>
                                 <a class="button" data-form="reg" target="_blank" rel="noopener">Open form</a>
@@ -389,7 +412,8 @@
                         <div class="action-panel">
                             <label class="tick">
                                 <input type="checkbox" id="step-forms-a" data-step-tick>
-                                <span>All my registration and consent forms are submitted</span>
+                                <span class="new-only">All my registration and consent forms are submitted</span>
+                                <span class="reconsent-only">My updated consent form is submitted</span>
                             </label>
                         </div>
                     </div>
@@ -412,7 +436,7 @@
                         <p>Please tell us if more than two copies are needed (for example, where a third legal guardian is involved).</p>
 
                         <ul class="form-list">
-                            <li class="form-card">
+                            <li class="form-card card-reg">
                                 <span class="form-name term">Patient Registration Form</span>
                                 <span class="form-who">Completed once, by either parent or guardian</span>
                                 <a class="button" data-form="reg" target="_blank" rel="noopener">Open form</a>
@@ -444,7 +468,8 @@
                         <div class="action-panel">
                             <label class="tick">
                                 <input type="checkbox" id="step-forms-b" data-step-tick>
-                                <span>All my registration and consent forms are submitted</span>
+                                <span class="new-only">All my registration and consent forms are submitted</span>
+                                <span class="reconsent-only">Both updated consent forms are submitted</span>
                             </label>
                         </div>
                     </div>
