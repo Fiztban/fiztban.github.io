@@ -16,6 +16,10 @@
 (function () {
   'use strict';
 
+  /* The fragments this accordion owns — a stage (#step-…) or an introduction
+     panel (#about-…). Anything else on the page is left to the browser. */
+  var STEP_HASH = /^#(step|about)-[\w-]+$/;
+
   function stages() {
     return Array.prototype.slice.call(document.querySelectorAll('.task-steps > li'));
   }
@@ -247,9 +251,24 @@
     renumberStepLinks();
 
     /* Someone may arrive on a link that already carries a step fragment. */
-    if (/^#(step|about)-[\w-]+$/.test(window.location.hash)) {
+    if (STEP_HASH.test(window.location.hash)) {
       window.setTimeout(function () { reveal(window.location.hash.slice(1)); }, 60);
     }
+
+    /* …and the fragment may change on a page that is already open: a link
+       followed into an existing tab, or the address bar edited by hand. That is
+       a same-document navigation, so it fires no DOMContentLoaded and the check
+       above never runs again. Without this the browser scrolls to a stage whose
+       .stage-body is still hidden — a collapsed header, which reads as the link
+       having done nothing.
+
+       In-page cross-links never reach here: their click handler calls
+       preventDefault(), so the hash does not change and reveal() runs once. */
+    window.addEventListener('hashchange', function () {
+      if (STEP_HASH.test(window.location.hash)) {
+        reveal(window.location.hash.slice(1));
+      }
+    });
   }
 
   /* Cross-links to another service's guide carry the client's details, so a
