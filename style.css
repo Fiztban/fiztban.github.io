@@ -1408,6 +1408,24 @@ button.carousel__arrow:focus {
   --vb-left: 19.46%;
 }
 
+/* Jenae: x 150-1030, y 230-1110 of the 1200x1600 served file. Measured on
+   Jenae_Valk.jpg, the Display P3 master converted to sRGB and downscaled. */
+#jenae {
+  --vb-top: 14.38%;
+  --vb-right: 14.17%;
+  --vb-bottom: 30.63%;
+  --vb-left: 12.5%;
+}
+
+/* Sarah Beney: x 145-705, y 140-700 of 912x1278 (Sarah_Beney.jpg). The id
+   carries the surname because #sarah is already Dr Castle. */
+#sarah-beney {
+  --vb-top: 10.95%;
+  --vb-right: 22.7%;
+  --vb-bottom: 45.23%;
+  --vb-left: 15.9%;
+}
+
 /* Neve: x 90-550, y 112-572 of 800x939 (neve-lake.jpg) */
 #neve {
   --vb-top: 11.93%;
@@ -1752,6 +1770,14 @@ and the navigation bar becomes fixed rather than transparent and overlayed */
 
   #chris .profile_chris {
     object-position: 48% 12%;
+  }
+
+  #jenae .profile_jenae {
+    object-position: 50% 14%;
+  }
+
+  #sarah-beney .profile_sarah_beney {
+    object-position: 50% 4%;
   }
 
   /* Stacked, Neve swaps the inline carousel for the same framed circle as the

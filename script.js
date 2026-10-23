@@ -20,7 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
     '#edoardo': 'sec-team',
     '#neve': 'sec-team',
     '#kezia': 'sec-team',
-    '#chris': 'sec-team'
+    '#chris': 'sec-team',
+    '#jenae': 'sec-team',
+    '#sarah-beney': 'sec-team'
   };
 
   function hideAllSectionsExcept(exceptId) {
