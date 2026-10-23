@@ -7,10 +7,12 @@
    on 2026-08-25 once the guides absorbed both halves, so this file is now the
    only copy — the two had already diverged before it went.
 
-   Three jobs:
+   Four jobs:
      1. Read the client's form links out of the URL query string.
-     2. Branch the registration step on the age-16 consent question.
+     2. Branch the page on the questions it asks: the age-16 consent question,
+        the titration fork, and the adult requirements check.
      3. Remember ticked steps in localStorage so the family can come back.
+     4. Turn an all-ages page into its adult version when the link asks.
 
    No dependencies, no build step, no data ever leaves the browser.
 
@@ -24,6 +26,10 @@
      reconsent  "1" — returning family, consent forms only. The branch then
                 follows the number of consent links supplied, and the family is
                 not asked.
+     for     "adult" — the adult version of a page that serves all ages (the
+             Titration Clinic, Post-Diagnostic Support and the Autism
+             assessment). Only a page whose own <head> script opts in acts on
+             it; every guide passes it on through its service links.
 
    Build these links with staff/link-builder.html rather than by hand.
    ========================================================================== */
@@ -114,6 +120,37 @@
     document.documentElement.classList.remove('reg-complete');
   }
 
+  /* ---------- the adult version ----------
+
+     The Titration Clinic, Post-Diagnostic Support and the Autism assessment
+     are the same process at any age, so each is one page with an adult
+     version rather than two pages. for=adult selects it, but this file does
+     not read the parameter: the page's own <head> script turns it into the
+     for-adult class, before first paint. That is the opt-in. A page that never
+     sets the class, such as an assessment carrying for=adult on to its
+     service links, is left as it is. */
+  var adult = document.documentElement.classList.contains('for-adult');
+
+  /* Whole steps that differ by age live in <template>s, which are inert: not
+     shown, not counted, and their ids do not clash with the steps on the
+     page. Unpacked before anything else reads the stages.
+
+       #registration-adult       replaces #step-registration — an adult
+                                 consents for themselves
+       template[data-adult-step] a step only the adult version has (the
+                                 Autism observer check), unpacked where it
+                                 stands */
+  function applyAudience() {
+    if (!adult) { return; }
+    var tpl = document.getElementById('registration-adult');
+    var step = document.getElementById('step-registration');
+    if (tpl && step) { step.parentNode.replaceChild(tpl.content.cloneNode(true), step); }
+
+    document.querySelectorAll('template[data-adult-step]').forEach(function (t) {
+      t.parentNode.replaceChild(t.content.cloneNode(true), t);
+    });
+  }
+
   /* ---------- personalisation ---------- */
 
   var rawName = (params.get('name') || '').trim().slice(0, 40);
@@ -158,6 +195,16 @@
            cap-possessive  as above, sentence-initial */
       var kind = el.getAttribute('data-name-slot') || '';
       var out;
+
+      /* The adult version speaks to the client directly, so every mention is
+         "you", whether or not the link carries a name. The name still heads
+         the page and the tab title, below. Sentences are written so the slot
+         is never the subject: "since we last saw you", not "since you was". */
+      if (adult) {
+        out = /possessive/.test(kind) ? 'your' : 'you';
+        el.textContent = /^cap/.test(kind) ? capitalise(out) : out;
+        return;
+      }
 
       if (kind === 'possessive')          { out = possessive(display); }
       else if (kind === 'cap-possessive') { out = capitalise(possessive(display)); }
@@ -338,6 +385,103 @@
     applyTitration(choice);
   }
 
+  /* ---------- the requirements check (adult guides only) ----------
+
+     Two questions decide whether the client can supply the evidence an adult
+     assessment needs: school reports, and an observer for the interviews. The
+     second depends on the first, because without school reports the observer
+     has to be family who has known the client from childhood to today.
+
+       first answer     req-reports-yes / req-reports-no on <html>
+       both answered    req-met (observer yes) or req-contact (observer no)
+
+     The answers stay on this device and never reach the clinic, which is why
+     the contact outcome tells the client to get in touch.
+
+     The step's own tick follows the answers, not the reader: ticked when the
+     requirements are met, unticked while unanswered, and in the contact
+     outcome it is the reader's "I have spoken to Kinder Minds" tick. CSS hides
+     it outside that outcome. Hidden rather than disabled, because guide.js
+     passes over a disabled tick when choosing the stage to open, and an
+     unanswered check is exactly the stage to open.
+
+     No school reports also skips the School reports step: CSS greys it, its
+     tick is disabled here, and tickCounts leaves it out of the total.
+
+     The adult Autism check asks only the observer question: there are no
+     school reports in an autism assessment. A page without the reports
+     question counts it as answered. */
+
+  function applyRequirements() {
+    var step = document.getElementById('step-requirements');
+    if (!step) { return; }                                  /* not this guide */
+
+    var reports = state.reqReports;
+    var observer = state.reqObserver;
+    var asksReports = !!step.querySelector('input[name="req-reports"]');
+    var answered = (!asksReports || reports === 'yes' || reports === 'no')
+      && (observer === 'yes' || observer === 'no');
+
+    var root = document.documentElement;
+    root.classList.toggle('req-reports-yes', reports === 'yes');
+    root.classList.toggle('req-reports-no', reports === 'no');
+    root.classList.toggle('req-met', answered && observer === 'yes');
+    root.classList.toggle('req-contact', answered && observer === 'no');
+
+    var box = step.querySelector('[data-step-tick]');
+    if (box) {
+      box.checked = answered && (observer === 'yes' || !!state.reqSpoken);
+      if (state[box.id] !== box.checked) {
+        state[box.id] = box.checked;
+        writeState(state);
+      }
+      markCard(box);
+    }
+
+    document.querySelectorAll('.req-reports-step .tick input[type="checkbox"]')
+      .forEach(function (b) { b.disabled = (reports === 'no'); });
+
+    updateProgress();
+  }
+
+  function initRequirements() {
+    var step = document.getElementById('step-requirements');
+    if (!step) { return; }
+
+    function bind(name, key, onChange) {
+      document.querySelectorAll('input[name="' + name + '"]').forEach(function (radio) {
+        radio.checked = (radio.value === state[key]);
+        radio.addEventListener('change', function () {
+          state[key] = this.value;
+          onChange();
+          writeState(state);
+          applyRequirements();
+        });
+      });
+    }
+
+    /* The second question asks something different depending on the first,
+       so changing the first clears it, and the contact tick with it. */
+    bind('req-reports', 'reqReports', function () {
+      delete state.reqObserver;
+      delete state.reqSpoken;
+      document.querySelectorAll('input[name="req-observer"]')
+        .forEach(function (r) { r.checked = false; });
+    });
+    bind('req-observer', 'reqObserver', function () { delete state.reqSpoken; });
+
+    /* Only reachable in the contact outcome, where the tick is the reader's. */
+    var box = step.querySelector('[data-step-tick]');
+    if (box) {
+      box.addEventListener('change', function () {
+        state.reqSpoken = this.checked;
+        writeState(state);
+      });
+    }
+
+    applyRequirements();
+  }
+
   /* ---------- tick boxes ---------- */
 
   /* Which ticks count toward progress.
@@ -372,6 +516,12 @@
        is that they are readable but not yet in play. */
     if (box.closest('.titr-with-us')
         && !document.documentElement.classList.contains('titr-yes')) { return false; }
+
+    /* On the adult guides the School reports step is skipped when the client
+       has none. Checked by class for the same reason as the titration steps:
+       the step stays on screen, greyed, so it can still be read. */
+    if (box.closest('.req-reports-step')
+        && document.documentElement.classList.contains('req-reports-no')) { return false; }
 
     /* A step removed from this reader's route owes nothing to the total. The
        [hidden] attribute on the <li> is the test, not computed display: a step
@@ -460,17 +610,27 @@
         r.checked = false;
       });
       applyTitration(null);
+      document.querySelectorAll('input[name="req-reports"], input[name="req-observer"]')
+        .forEach(function (r) { r.checked = false; });
+      applyRequirements();
+
+      /* Each apply above refreshes the count only on a page that has its
+         question. The adult Post-Diagnostic Support page has none of them,
+         so without this its label kept the old total after a reset. */
+      updateProgress();
     });
   }
 
   /* ---------- go ---------- */
 
   document.addEventListener('DOMContentLoaded', function () {
+    applyAudience();        /* first: it decides which registration step exists */
     applyName();
     applyLinks();
     initBranch();
     initTitration();
     initTicks();
+    initRequirements();     /* after initTicks: the answers decide its tick */
     initReset();
   });
 })();

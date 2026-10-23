@@ -14,6 +14,17 @@
       ],
       "tos": "2026-08-27",
       "note": "First versioned release: the five guides as sent to the first families."
+    },
+    {
+      "version": "20261023",
+      "effective": "2026-10-23",
+      "kind": ["service-added"],
+      "services": [
+        "adhd-adult-assessment",
+        "adhd-asd-combined-adult-assessment"
+      ],
+      "tos": "2026-08-27",
+      "note": "Adult ADHD and Adult Combined ADHD & Autism guides added, at the under-18 fees. The other five pages are as in 20260827, where their wording updates (an adult version of the Titration Clinic and Post-Diagnostic Support, and 30-minute support appointments) were built in place first. The Autism page then gained its adult version (for=adult) here, in place: same fee, family version unchanged."
     }
   ]
 }

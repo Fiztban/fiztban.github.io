@@ -58,6 +58,13 @@
       if ((q.get('ot') || '').trim() === '1') {
         document.documentElement.classList.add('ot-on');
       }
+
+      /* The adult version: the same support, spoken to the client as "you",
+         with the adult registration step. Set here, before first paint, and
+         only on pages that have an adult version — see guide-core.js. */
+      if ((q.get('for') || '').trim().toLowerCase() === 'adult') {
+        document.documentElement.classList.add('for-adult');
+      }
     })();
     </script>
 
@@ -131,24 +138,28 @@
                     <p>Post-diagnostic support is for anyone with an ADHD or autism diagnosis, and for their family &mdash; whether that diagnosis came from us or from somewhere else. There are three ways people reach it.</p>
                     <ul class="included">
                         <li><strong>After an assessment with us</strong><span class="li-detail">Support follows on directly from the diagnosis appointment.</span></li>
-                        <li><strong>Diagnosed elsewhere</strong><span class="li-detail">We accept referrals from a GP or another referrer, and directly from a parent or legal guardian.</span></li>
+                        <li><strong>Diagnosed elsewhere</strong><span class="li-detail">We accept referrals from a GP or another referrer, <span class="not-adult">and directly from a parent or legal guardian</span><span class="adult-only">and directly from you</span>.</span></li>
                         <li><strong>Where no diagnosis was given</strong><span class="li-detail">A session is still worth having, and we can look at what else may be going on.</span></li>
                     </ul>
 
-                    <h5>For adults</h5>
-                    <p>If you are an adult seeking support for yourself, the pathway is the same &mdash; please contact us and we will talk it through with you.</p>
+                    <h5 class="not-adult">For adults</h5>
+                    <p class="not-adult">If you are an adult seeking support for yourself, the pathway is the same &mdash; please contact us and we will talk it through with you.</p>
                 </div>
 
                 <div class="sub-block">
                     <h3>Appointment options</h3>
-                    <p>Post-diagnostic support sessions can be held either in person at our Whangārei clinic, or online via telehealth.<span class="svc-ot"> A sensory assessment with our Occupational Therapist is carried out in person.</span></p>
+                    <p>Post-diagnostic support sessions can be held either in person at our Whangārei clinic, or online via telehealth.<span class="svc-ot not-adult"> A sensory assessment with our Occupational Therapist is carried out in person.</span></p>
                 </div>
 
                 <!-- The included hour. Three states, all driven by ?via=
                      assessment → this family's, already paid for
                      referral   → hidden entirely; there is no assessment for it
                                   to be included with
-                     unset      → a fact about our assessments, naming all three -->
+                     unset      → a fact about our assessments, naming all three
+
+                     Every appointment is 30 minutes or 1 hour, so the included
+                     hour can be one appointment or two of 30 minutes. Said once
+                     in each state here, then wherever a booking is made. -->
                 <div class="price-panel">
 
                     <div class="price-panel-head">
@@ -159,17 +170,21 @@
                         <div class="price-panel-title">
                             <h3>Post-diagnostic support session</h3>
                             <p class="pd-included">Included with every ADHD or autism assessment we carry out</p>
-                            <p class="pd-standalone">One full hour with a Nurse Specialist</p>
+                            <p class="pd-standalone">30&nbsp;minutes or 1&nbsp;hour with a Nurse Specialist</p>
                         </div>
                     </div>
 
-                    <p class="pd-included via-assessment-only">Because <span data-name-slot>your child</span> was assessed with us, this session is already paid for. Book it in the month following the diagnosis appointment.</p>
+                    <p class="pd-included via-assessment-only">Because we assessed <span data-name-slot>your child</span>, this hour is already paid for. You can use it as one 1-hour appointment or two 30-minute ones, booked in the month following the diagnosis appointment.</p>
 
-                    <p class="pd-included via-unknown-only">One full session is included with every assessment we carry out &mdash; our
-                        <a class="term" data-service-link="adhd-child-assessment.html">ADHD Assessment (Under 18s)</a>, our
+                    <p class="pd-included via-unknown-only">One hour is included with every assessment we carry out &mdash; our
+                        <span class="not-adult"><a class="term" data-service-link="adhd-child-assessment.html">ADHD Assessment (Under 18s)</a>, our
                         <a class="term" data-service-link="asd-assessment.html">Autism (ASD) Assessment</a> and our
-                        <a class="term" data-service-link="adhd-asd-combined-assessment.html">Combined ADHD &amp; Autism Assessment</a>.
-                        It is bookable in the month after the diagnosis, and is offered even where a diagnosis is not given.</p>
+                        <a class="term" data-service-link="adhd-asd-combined-assessment.html">Combined ADHD &amp; Autism Assessment</a></span><span class="adult-only"><a class="term" data-service-link="adhd-adult-assessment.html">Adult ADHD Assessment</a>, our
+                        <a class="term" data-service-link="asd-assessment.html">Autism (ASD) Assessment</a> and our
+                        <a class="term" data-service-link="adhd-asd-combined-adult-assessment.html">Adult Combined ADHD &amp; Autism Assessment</a></span>.
+                        It can be one 1-hour appointment or two 30-minute ones, booked in the month after the diagnosis, and is offered even where a diagnosis is not given.</p>
+
+                    <p class="pd-standalone">Appointments are 30&nbsp;minutes or 1&nbsp;hour, whichever suits you: <span class="term">$75</span> for 30&nbsp;minutes or <span class="term">$150</span> for an hour (inc GST).</p>
 
                     <div class="include-card include-card-wide">
                         <h4>What we can explore together</h4>
@@ -177,7 +192,7 @@
                         <ul class="included">
                             <li><strong>Understanding the diagnosis</strong><span class="li-detail">What ADHD or autism means for <span data-name-slot>your child</span> and your family.</span></li>
                             <li><strong>Exploring specific difficulties</strong><span class="li-detail">Talking through the particular challenges you are experiencing.</span></li>
-                            <li><strong>Non-medication strategies</strong><span class="li-detail">Practical tools and approaches for everyday life, at home and at school.</span></li>
+                            <li><strong>Non-medication strategies</strong><span class="li-detail">Practical tools and approaches for everyday life, at home, at school or at work.</span></li>
                             <li><strong>Planning the next steps</strong><span class="li-detail">Where to go next, including a pathway into our <a class="term" data-service-link="adhd-titration-clinic.html">ADHD Titration Clinic</a> if medication is being considered.</span></li>
                         </ul>
                     </div>
@@ -187,12 +202,12 @@
                         <ul class="included">
                             <li>Post-diagnostic support session
                                 <span class="pill-line">
-                                    <span class="pill pill-time">1 hour</span>
+                                    <span class="pill pill-time">30 minutes or 1 hour</span>
                                     <span class="pill pill-mode">In person or online</span>
                                     <span class="pill pill-who">Nurse Specialist</span>
                                 </span>
                             </li>
-                            <li class="svc-ot">Sensory assessment and written report
+                            <li class="svc-ot not-adult">Sensory assessment and written report
                                 <span class="pill-line">
                                     <span class="pill pill-time">1&ndash;1.5 hours</span>
                                     <span class="pill pill-mode">In person</span>
@@ -215,15 +230,15 @@
                         </div>
                         <div class="price-panel-title">
                             <h3>Further sessions</h3>
-                            <p>Whenever they would be helpful</p>
+                            <p>30&nbsp;minutes or 1&nbsp;hour, whenever they would be helpful</p>
                         </div>
                     </div>
 
-                    <p>There is no limit on how often we can help. Some families come back once; others check in as things change.</p>
+                    <p>A 30-minute appointment is <span class="term">$75</span>, and an hour <span class="term">$150</span>. There is no limit on how often we can help. Some people come back once; others check in as things change.</p>
 
                 </div>
 
-                <div class="price-panel price-panel-alt svc-ot">
+                <div class="price-panel price-panel-alt svc-ot not-adult">
 
                     <div class="price-panel-head">
                         <div class="price-block">
@@ -270,9 +285,9 @@
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
                 <div class="stage-body" id="body-referral" hidden>
-                    <p class="leaflet-only">Post-diagnostic support follows naturally from one of our own assessments, and we also accept referrals for people diagnosed elsewhere &mdash; from a GP or another referrer, or directly from a parent or legal guardian.</p>
+                    <p class="leaflet-only">Post-diagnostic support follows naturally from one of our own assessments, and we also accept referrals for people diagnosed elsewhere &mdash; from a GP or another referrer, <span class="not-adult">or directly from a parent or legal guardian</span><span class="adult-only">or directly from you</span>.</p>
 
-                    <p class="guide-only via-assessment-only">Because <span data-name-slot>your child</span> was assessed with us, there is nothing to arrange here &mdash; post-diagnostic support follows on directly from the assessment.</p>
+                    <p class="guide-only via-assessment-only">Because we assessed <span data-name-slot>your child</span>, there is nothing to arrange here &mdash; post-diagnostic support follows on directly from the assessment.</p>
 
                     <p class="guide-only via-referral-only">We have received <span data-name-slot="possessive">your child&rsquo;s</span> referral for post-diagnostic support and would be delighted to help. All referrals are reviewed and triaged by our directors, including Dr Sarah Castle, Consultant Child &amp; Adolescent Psychiatrist.</p>
 
@@ -358,7 +373,7 @@
                                  form, so this sentence would be describing a card that is not
                                  on the page. -->
                             <p class="new-only">The Patient Registration Form can be completed by either <span data-name-slot>your child</span> or any of their parents or guardians.</p>
-                            <p>Parents and guardians are still welcome to be involved throughout the assessment &mdash; this is separate from the consent process.</p>
+                            <p>Parents and guardians are still welcome to be involved throughout <span data-name-slot="possessive">your child&rsquo;s</span> care with us &mdash; this is separate from the consent process.</p>
                         </div>
 
                         <div class="highlight">
@@ -455,6 +470,109 @@
             </li>
 
 
+            <!-- The adult version's registration step. Inert until for=adult,
+                 when guide-core.js swaps it in for the one above. -->
+            <template id="registration-adult">
+            <!-- ============ REGISTRATION & CONSENT (ADULT) ============
+                 The adult counterpart of registration-consent. An adult always
+                 consents for themselves, so there is no age question and only one
+                 consent form. The same three states are kept: new client,
+                 consent refresh (reconsent=1) and already registered.
+
+                 Used directly by the adult assessments, and inside a <template>
+                 by the Titration Clinic and Post-Diagnostic Support, which swap
+                 it in for the adult version. So nothing here may assume an
+                 assessment.
+
+                 The form cards sit in a .branch that is never hidden. That is
+                 what lets guide.js keep the per-form ticks and the summary tick
+                 in step, and lets leaflet mode hide the forms. The id is
+                 deliberately not branch-16plus: guide-core.js hides that one
+                 unless the age question has been answered, and here it is never
+                 asked. -->
+            <li id="step-registration">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-registration">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag you reg-needed">Your action</span>
+                        <span class="stage-tag ok reg-done">Already done</span>
+                        <span class="stage-title new-only">Registration &amp; consent forms</span>
+                        <span class="stage-title reconsent-only">Updated consent form</span>
+                        <span class="stage-peek reg-needed new-only">We cannot book anything until these are in</span>
+                        <span class="stage-peek reg-needed reconsent-only">We cannot book anything further until this is in</span>
+                        <span class="stage-peek reg-done">Completed when you registered with us</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+
+                <div class="stage-body" id="body-registration" hidden>
+
+                    <!-- Shown when the client is already registered with us. -->
+                    <div class="reg-done">
+                        <p>You are already registered with us, so there is nothing to complete here. Your Patient Registration Form and Consent and Terms of Service Form were completed when you first came to Kinder Minds, and still apply.</p>
+                        <p>If anything has changed &mdash; a new address or new contact details &mdash; please let us know and we will send you an updated form.</p>
+                    </div>
+
+                    <div class="reg-needed">
+
+                    <!-- Returning client whose consent needs renewing. Registration
+                         stands; only the consent form is reissued.
+
+                         The class sits on each paragraph rather than on a wrapping
+                         <div>: a paragraph alone in a div is its last child, and
+                         .task-steps p:last-child takes its margin away, leaving it
+                         flush against the paragraph after. -->
+                    <p class="reconsent-only">Your registration with us is current, so there is nothing to complete there. Our Consent and Terms of Service Form has been updated since you last came to us, so we need a fresh copy before we can book anything further.</p>
+
+                    <!-- Prose rather than a list: the form cards below already list
+                         the two forms, and a list here would sit flush against the
+                         paragraph after it (stage bodies give lists no margin). -->
+                    <p class="new-only">To be able to start booking the next steps, we need two forms completed by you: the <span class="term">Patient Registration Form</span>, with your details, contact information and GP, and the <span class="term">Consent and Terms of Service Form</span>, with your consent to care with us and our terms of service.</p>
+
+                    <p>As an adult you consent for yourself, so only one consent form is needed. Parents, partners and family are still welcome to be involved throughout your care with us &mdash; this is separate from the consent process.</p>
+
+                    <p class="leaflet-only">We will email you a personalised link with your own forms ready to complete.</p>
+
+                    <div class="branch" id="branch-adult">
+                        <div class="highlight">
+                            <p>If you may need support to make this decision, please contact us before completing the forms.</p>
+                        </div>
+
+                        <ul class="form-list">
+                            <li class="form-card card-reg">
+                                <span class="form-name term">Patient Registration Form</span>
+                                <span class="form-who">Completed by you</span>
+                                <a class="button" data-form="reg" target="_blank" rel="noopener">Open form</a>
+                                <label class="tick">
+                                    <input type="checkbox" id="form-reg-adult">
+                                    <span>Submitted</span>
+                                </label>
+                            </li>
+                            <li class="form-card">
+                                <span class="form-name term">Consent and Terms of Service Form</span>
+                                <span class="form-who">Completed by you</span>
+                                <a class="button" data-form="c1" target="_blank" rel="noopener">Open form</a>
+                                <label class="tick">
+                                    <input type="checkbox" id="form-c1-adult">
+                                    <span>Submitted</span>
+                                </label>
+                            </li>
+                        </ul>
+
+                        <div class="action-panel">
+                            <label class="tick">
+                                <input type="checkbox" id="step-forms-adult" data-step-tick>
+                                <span class="new-only">Both my registration and consent forms are submitted</span>
+                                <span class="reconsent-only">My updated consent form is submitted</span>
+                            </label>
+                        </div>
+                    </div>
+                    </div><!-- /.reg-needed -->
+                </div>
+            </li>
+            </template>
+
             <!-- ============ FREE INTRODUCTORY CALL ============ -->
             <li id="step-intro-call">
                 <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-intro-call">
@@ -475,7 +593,7 @@
                         <span class="pill pill-note">Free</span>
                     </p>
 
-                    <p>Support begins with a free 15-minute phone call with one of our Nurse Specialists. It is a chance to tell us what you are hoping to get from a session, so we can make sure the time is spent on what matters most to you.</p>
+                    <p>Support begins with a free 15-minute phone call with one of our Nurse Specialists. It is a chance to tell us what you are hoping to get from a session, so we can make sure the time is spent on what matters most to you, and to decide whether 30&nbsp;minutes or an hour suits you better.</p>
 
                     <p class="pd-standalone">Because post-diagnostic support is being arranged on its own rather than following an assessment with us, this call is also how we make sure it is the right fit before anything is booked or charged.</p>
 
@@ -504,10 +622,10 @@
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
                 <div class="stage-body" id="body-book" hidden>
-                    <p>After the call we will help you book your session on our Client Booking Portal, in person at our Whangārei clinic or online, whichever suits you.</p>
+                    <p>After the call we will help you book your session on our Client Booking Portal: 30&nbsp;minutes or 1&nbsp;hour, in person at our Whangārei clinic or online, whichever suits you.</p>
 
                     <div class="highlight pd-included">
-                        <p>Please book the included session within a month of the diagnosis.</p>
+                        <p>Please book the included hour within a month of the diagnosis, as one 1-hour appointment or two 30-minute ones.</p>
                     </div>
 
                     <div class="action-panel">
@@ -526,26 +644,27 @@
                     <span class="stage-head-text">
                         <span class="stage-tag you">Your action</span>
                         <span class="stage-title">Your post-diagnostic support session</span>
-                        <span class="stage-peek">One relaxed hour, led by what matters to you</span>
+                        <span class="stage-peek">30&nbsp;minutes or an hour, led by what matters to you</span>
                     </span>
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
                 <div class="stage-body" id="body-session" hidden>
                     <p class="pill-line">
-                        <span class="pill pill-time">1 hour</span>
+                        <span class="pill pill-time">30 minutes or 1 hour</span>
                         <span class="pill pill-mode">In person or online</span>
                         <span class="pill pill-who">Nurse Specialist</span>
                     </p>
 
-                    <p>A relaxed, one-to-one hour. There is no set script &mdash; we follow what matters most to you, working through the diagnosis, the challenges you are facing, and the strategies most likely to help.</p>
+                    <p>A relaxed, one-to-one session of 30&nbsp;minutes or an hour. There is no set script &mdash; we follow what matters most to you, working through the diagnosis, the challenges you are facing, and the strategies most likely to help.</p>
 
                     <p>If medication is being considered, this session can open the door to our <a class="term" data-service-link="adhd-titration-clinic.html">ADHD Titration Clinic</a>. If you would rather focus on non-medication approaches, we will talk through the strategies that fit.</p>
 
                     <div class="action-panel">
                         <label class="tick">
                             <input type="checkbox" id="step-attended" data-step-tick>
-                            <span>We have attended the session</span>
+                            <span class="not-adult">We have attended the session</span>
+                            <span class="adult-only">I have attended the session</span>
                         </label>
                     </div>
                 </div>
@@ -564,7 +683,7 @@
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
                 <div class="stage-body" id="body-further" hidden>
-                    <p>Additional post-diagnostic support sessions are available any time they would be helpful, at <span class="term">$150 per hour (inc GST)</span>. Some families come back once; others check in as things change.</p>
+                    <p>Additional post-diagnostic support sessions are available any time they would be helpful, as 30-minute appointments at <span class="term">$75</span> or 1-hour appointments at <span class="term">$150</span> (inc GST). Some people come back once; others check in as things change.</p>
                     <p>Our <a class="term" href="#programmes">programmes</a> run alongside this support. Just get in touch when you would like to arrange something.</p>
                 </div>
             </li>
@@ -575,7 +694,9 @@
             <h2>Programmes alongside post-diagnostic support</h2>
             <p>These run alongside post-diagnostic support rather than replacing it. None is open yet &mdash; ask us about availability and we will let you know as soon as each one starts.</p>
 
-            <div class="callout">
+            <!-- Not offered to adults for now, so hidden in the adult version, as
+                 are the .svc-ot blocks above. -->
+            <div class="callout not-adult">
                 <h4>Sensory assessment &amp; support <span class="pill pill-soon">Coming soon</span></h4>
                 <p>One-to-one occupational therapy with our Occupational Therapist, covering sensory strategies, everyday activities and connection through play, in person or by telehealth at <span class="term">$200 per hour (inc GST)</span>. A full sensory assessment and written report is <span class="term">$800 (inc GST)</span>.</p>
             </div>
@@ -585,7 +706,8 @@
                 <p>Acceptance and Commitment Therapy, one to one, at <span class="term">$150 per hour (inc GST)</span>. ACT for ADHD with Kezia Schroyen, and ACT for autism with Chris Jackson, from September 2026.</p>
             </div>
 
-            <div class="callout">
+            <!-- A parenting programme, so not offered in the adult version. -->
+            <div class="callout not-adult">
                 <h4>Tuning into Kids <span class="pill pill-soon">Coming soon</span></h4>
                 <p>An evidence-based emotion-coaching programme that helps parents understand and respond to their child&rsquo;s feelings, building warmer, calmer connections at home. Offered by Kezia Schroyen &mdash; ask us about current availability.</p>
             </div>

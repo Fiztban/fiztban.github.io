@@ -129,6 +129,7 @@
     .alert.bad  { background: #FBEAEA; border: 1px solid #D9A0A0; color: #7A2020; }
     .alert.warn { background: #FDF6E3; border: 1px solid #E8D9A8; color: #6B551A; }
     .alert.good { background: #EDF6F0; border: 1px solid #BFD8CB; color: #23543C; }
+    .alert.info { background: var(--light-background); border: 1px solid var(--mid-background); color: var(--heading-dark); }
 
     /* The reference list. Deliberately plain: it is a lookup table, not a
        feature, and it should read as one. */
@@ -226,13 +227,28 @@
         <fieldset>
             <legend>1 &middot; Who and what</legend>
 
-            <div class="field">
-                <label for="in-name">Client first name</label>
-                <p class="hint">Used throughout the page &mdash; &ldquo;Is Iris 16 or older?&rdquo;. Leave blank to use &ldquo;your child&rdquo;. Names ending in s take a bare apostrophe (Iris&rsquo; report).</p>
-                <input type="text" id="in-name" placeholder="Iris" autocomplete="off">
+            <!-- Asked first, because it decides everything below: which page
+                 each service opens, and which consent questions and form links
+                 apply. Elements marked data-audience show for one answer only. -->
+            <div class="field" id="field-audience">
+                <label>Client</label>
+                <p class="hint">Adult opens the adult page for each service, speaks to the client as &ldquo;you&rdquo;, and takes one consent form, completed by them. A 16- or 17-year-old is Child: the page lets them consent for themselves.</p>
+                <div class="radio-row">
+                    <label><input type="radio" name="audience" value="child" checked> Child (under 18)</label>
+                    <label><input type="radio" name="audience" value="adult"> Adult (18 and over)</label>
+                </div>
             </div>
 
             <div class="field">
+                <label for="in-name">Client first name</label>
+                <p class="hint" data-audience="child">Used throughout the page &mdash; &ldquo;Is Iris 16 or older?&rdquo;. Leave blank to use &ldquo;your child&rdquo;. Names ending in s take a bare apostrophe (Iris&rsquo; report).</p>
+                <p class="hint" data-audience="adult" hidden>Heads the page (&ldquo;Prepared for Iris&rdquo;) and names the browser tab. The page itself speaks to the client as &ldquo;you&rdquo;.</p>
+                <input type="text" id="in-name" placeholder="Iris" autocomplete="off">
+            </div>
+
+            <!-- Hidden for an adult, whose pages speak to the client as "you"
+                 and have no "your child" wording for this to replace. -->
+            <div class="field" id="field-ref">
                 <label for="in-ref">If no name is given, refer to them as</label>
                 <p class="hint">Only used when the name field is blank &mdash; a name always wins. Lets the page read naturally either way.</p>
                 <select id="in-ref">
@@ -243,21 +259,23 @@
                 </select>
             </div>
 
+            <!-- Values are service keys, not pages: SERVICES in the script maps
+                 each one to the page for a child or an adult. -->
             <div class="field">
                 <label for="in-service">Service</label>
                 <select id="in-service">
-                    <option value="guide/adhd-child-assessment.html">ADHD Assessment (Under 18s)</option>
-                    <option value="guide/adhd-asd-combined-assessment.html">Combined ADHD &amp; Autism (Under 18s) — $3,000</option>
-                    <option value="guide/adhd-titration-clinic.html">ADHD Titration Clinic — $250/$350 + monthly</option>
-                    <option value="guide/asd-assessment.html">Autism (ASD) Assessment — $2,600</option>
-                    <option value="guide/post-diagnostic-support.html">Post-Diagnostic Support</option>
+                    <option value="adhd">ADHD Assessment</option>
+                    <option value="combined">Combined ADHD &amp; Autism — $3,000</option>
+                    <option value="titration">ADHD Titration Clinic — $250/$350 + monthly</option>
+                    <option value="asd">Autism (ASD) Assessment — $2,600</option>
+                    <option value="pds">Post-Diagnostic Support</option>
                     <option value="" disabled>Psychiatric Services — guide not yet built</option>
                 </select>
             </div>
 
             <div class="field" id="pathway-field">
                 <label>Which pathway did triage decide?</label>
-                <p class="hint">ADHD Assessment only. Leaving this unset is safe &mdash; the page then shows both prices and says triage decides, rather than quoting one that may be wrong.</p>
+                <p class="hint">ADHD Assessment only, under 18s or adult. Leaving this unset is safe &mdash; the page then shows both prices and says triage decides, rather than quoting one that may be wrong.</p>
                 <div class="radio-row">
                     <label><input type="radio" name="pathway" value="" checked> Not decided yet &mdash; show both</label>
                     <label><input type="radio" name="pathway" value="standard"> Standard &mdash; $1,500, Nurse Practitioner</label>
@@ -330,7 +348,7 @@
             </div>
 
             <div class="field" id="field-c1">
-                <label for="in-c1">Combined Consent &amp; Information Form &mdash; Guardian 1 (or the young person)</label>
+                <label for="in-c1">Combined Consent &amp; Information Form &mdash; <span data-audience="child">Guardian 1 (or the young person)</span><span data-audience="adult" hidden>the client</span></label>
                 <input type="url" id="in-c1" placeholder="https://clientportal.zandahealth.com/clientportal/kinderminds/customform/…" autocomplete="off" spellcheck="false">
             </div>
 
@@ -379,6 +397,11 @@
             </div>
 
             <p class="alert warn" id="version-note">Loading the guide version list&hellip;</p>
+
+            <!-- Said back in words before the link is copied: who it is for,
+                 which page it opens, and the client status. A wrong Client or
+                 Service choice is easy to miss in a URL and easy to see here. -->
+            <p class="alert info" id="link-summary" hidden></p>
 
             <div class="field">
                 <label for="output">Generated link</label>
@@ -471,13 +494,60 @@
       .catch(function (err) { fail(err && err.message ? err.message : String(err)); });
   }
 
-  /* The diagnosis-origin question only means anything on the Titration Clinic. */
+  /* The two ADHD-only assessments, under 18s and adult, share the pathway
+     question. The combined pages do not have a complex pathway. */
+  var ADHD_PATHWAY = /adhd-(child|adult)-assessment/;
+
+  /* Which page each service opens, for a child and for an adult. The ADHD and
+     Combined assessments have separate adult pages; the other three serve
+     every age, and take for=adult for their adult version (forAdult). The
+     reference list in section 4 is built from this table too. */
+  var SERVICES = {
+    adhd:      { label: 'ADHD Assessment',
+                 child: 'guide/adhd-child-assessment.html',
+                 adult: 'guide/adhd-adult-assessment.html' },
+    combined:  { label: 'Combined ADHD & Autism Assessment',
+                 child: 'guide/adhd-asd-combined-assessment.html',
+                 adult: 'guide/adhd-asd-combined-adult-assessment.html' },
+    titration: { label: 'ADHD Titration Clinic',
+                 child: 'guide/adhd-titration-clinic.html',
+                 adult: 'guide/adhd-titration-clinic.html', forAdult: true },
+    asd:       { label: 'Autism (ASD) Assessment',
+                 child: 'guide/asd-assessment.html',
+                 adult: 'guide/asd-assessment.html', forAdult: true },
+    pds:       { label: 'Post-Diagnostic Support',
+                 child: 'guide/post-diagnostic-support.html',
+                 adult: 'guide/post-diagnostic-support.html', forAdult: true }
+  };
+
+  /* An adult always consents alone, so an adult link takes one consent link,
+     never asks the age question, and has no "your child" wording for the ref
+     fallback to replace. */
+  function isAdult() {
+    return document.querySelector('input[name="audience"]:checked').value === 'adult';
+  }
+
+  /* The page the current choices open, as a path under the site root. */
+  function servicePath() {
+    var s = SERVICES[$('in-service').value];
+    return s ? s[isAdult() ? 'adult' : 'child'] : '';
+  }
+
+  /* Wording that differs by client, marked data-audience in the form. */
+  function syncAudience() {
+    var who = isAdult() ? 'adult' : 'child';
+    document.querySelectorAll('[data-audience]').forEach(function (el) {
+      el.hidden = el.getAttribute('data-audience') !== who;
+    });
+  }
+
+  /* The per-service questions show only on the service they belong to. */
   function syncDxVisibility() {
-    var svc = $('in-service').value;
+    var svc = servicePath();
     var dxf = $('dx-field');
     var pwf = $('pathway-field');
     if (dxf) { dxf.style.display = /titration/.test(svc) ? '' : 'none'; }
-    if (pwf) { pwf.style.display = /adhd-child-assessment/.test(svc) ? '' : 'none'; }
+    if (pwf) { pwf.style.display = ADHD_PATHWAY.test(svc) ? '' : 'none'; }
     var vf = $('via-field');
     if (vf) { vf.style.display = /post-diagnostic/.test(svc) ? '' : 'none'; }
   }
@@ -501,12 +571,20 @@
 
   function build() {
     var name = $('in-name').value.trim();
-    var service = $('in-service').value;
+    var service = servicePath();
+    var svcInfo = SERVICES[$('in-service').value];
     var site = $('in-site').value.trim().replace(/\/+$/, '');
     var age = document.querySelector('input[name="age"]:checked').value;
     var reconsent = document.querySelector('input[name="status"]:checked').value === 'reconsent';
     var rcWhoEl = document.querySelector('input[name="rcwho"]:checked');
     var rcWho = rcWhoEl ? rcWhoEl.value : '';
+
+    /* An adult signs alone, so on a refresh the answer is already known and
+       the question is not put to staff either. */
+    var adult = isAdult();
+    var adultVersion = adult && !!(svcInfo && svcInfo.forAdult);
+    if (adult) { rcWho = '16plus'; }
+    syncAudience();
 
     /* Which form fields this link can carry. On a refresh the answer follows
        from who signs, so the fields are offered rather than merely validated:
@@ -517,16 +595,18 @@
        The consent-branch control is a question put to the FAMILY, and a
        refresh never asks it — hidden here rather than left on screen setting a
        parameter the link will not carry. */
-    $('rc-who-wrap').hidden = !reconsent;
-    $('field-age').hidden   = reconsent;
+    $('rc-who-wrap').hidden = !reconsent || adult;
+    $('field-age').hidden   = reconsent || adult;
     $('field-reg').hidden   = reconsent;
-    $('field-c2').hidden    = reconsent && rcWho !== 'under16';
+    $('field-c2').hidden    = adult || (reconsent && rcWho !== 'under16');
+    $('field-ref').hidden   = adult;
 
     /* A hidden field may still hold what someone pasted before switching mode.
        Dropping those rows here rather than clearing the inputs keeps the URL,
        the diagnostics table and the visible fields all saying the same thing,
        without destroying a link the user may want back on switching mode. */
     var activeRows = ROWS.filter(function (row) {
+      if (adult && row.key === 'c2') { return false; }
       if (!reconsent) { return true; }
       if (row.key === 'reg') { return false; }
       if (row.key === 'c2')  { return rcWho === 'under16'; }
@@ -590,7 +670,7 @@
     var blocked = false;
     rEl.hidden = !reconsent;
     if (reconsent) {
-      var who = name || 'the young person';
+      var who = name || (adult ? 'the client' : 'the young person');
       if (!rcWho) {
         rEl.className = 'alert bad';
         rEl.textContent = 'Choose who signs the new consent, above. Until then there is no '
@@ -611,6 +691,10 @@
         rEl.className = 'alert good';
         rEl.textContent = 'Two consent forms. The page will tell them ' + who + ' is under 16 '
                         + 'and both legal guardians must sign. No registration form is asked for.';
+      } else if (adult) {
+        rEl.className = 'alert good';
+        rEl.textContent = 'One consent form, completed by ' + who + '. '
+                        + 'No registration form is asked for.';
       } else {
         rEl.className = 'alert good';
         rEl.textContent = 'One consent form. The page will tell them ' + who + ' is 16 or older '
@@ -635,15 +719,17 @@
 
     var qs = [];
     if (name) { qs.push('name=' + encodeURIComponent(name)); }
+    if (adultVersion) { qs.push('for=adult'); }
     /* ref is only consulted when there is no name, so omit it when one is set. */
-    if (!name && ref) { qs.push('ref=' + ref); }
+    if (!name && ref && !adult) { qs.push('ref=' + ref); }
     /* age pre-answers a question the refresh never asks, so the two are
        mutually exclusive rather than merely redundant: emitting both would put
-       a contradiction in the URL for the next person to read. */
-    if (age && !reconsent) { qs.push('age=' + age); }
+       a contradiction in the URL for the next person to read. The adult
+       guides never ask it at all. */
+    if (age && !reconsent && !adult) { qs.push('age=' + age); }
     if (reconsent) { qs.push('reconsent=1'); }
     if (dx && /titration/.test(service)) { qs.push('dx=' + dx); }
-    if (pathway && /adhd-child-assessment/.test(service)) { qs.push('pathway=' + pathway); }
+    if (pathway && ADHD_PATHWAY.test(service)) { qs.push('pathway=' + pathway); }
     if (via && /post-diagnostic/.test(service)) { qs.push('via=' + via); }
 
     if (canShorten) {
@@ -670,6 +756,22 @@
     else { $('output').removeAttribute('data-version'); }
     $('copy-btn').disabled = !url;
 
+    /* The link in words. textContent, so a name typed above cannot become
+       markup here. */
+    var sumEl = $('link-summary');
+    if (sumEl) {
+      sumEl.hidden = !url;
+      if (url && svcInfo) {
+        var page = adult
+          ? (svcInfo.forAdult ? svcInfo.label + ', adult version' : 'Adult ' + svcInfo.label)
+          : (svcInfo.forAdult ? svcInfo.label : svcInfo.label + ' (under 18s)');
+        sumEl.textContent = (adult ? 'Adult (18 and over)' : 'Child (under 18)')
+          + ' · ' + page
+          + ' · ' + (reconsent ? 'consent refresh' : 'new client')
+          + (name ? ' · ' + name : '');
+      }
+    }
+
     var lenEl = $('len-note');
     if (lenEl) {
       lenEl.textContent = url
@@ -689,7 +791,9 @@
     $(id).addEventListener('input', build);
     $(id).addEventListener('change', build);
   });
-  document.querySelectorAll('input[name="age"], input[name="fmt"], input[name="dx"], input[name="pathway"], input[name="via"], input[name="status"]').forEach(function (r) {
+  /* rcwho was missing from this list until 2026-10-23, so choosing who signs
+     a consent refresh left the link blocked until something else changed. */
+  document.querySelectorAll('input[name="audience"], input[name="age"], input[name="fmt"], input[name="dx"], input[name="pathway"], input[name="via"], input[name="status"], input[name="rcwho"]').forEach(function (r) {
     r.addEventListener('change', build);
   });
 
@@ -717,10 +821,10 @@
      Reference list. A lookup table for the pages that already exist, kept
      separate from the builder above: nothing here is personalised.
 
-     The five guides are read out of the Service <select> rather than retyped,
-     so a guide added there appears here for free and the two cannot disagree.
-     Its labels carry prices, which are noise in a link list, so everything
-     from the first em dash on is trimmed off.
+     The guides are read out of SERVICES rather than retyped, so a service
+     added there appears here for free and the two cannot disagree. Every
+     version is listed, child and adult, whatever the Client choice above:
+     this is a lookup table, not a link for one client.
      --------------------------------------------------------------------- */
 
   var EXTRA_GROUPS = [
@@ -732,16 +836,23 @@
 
   function guideGroup() {
     var items = [];
-    Array.prototype.forEach.call($('in-service').options, function (opt) {
-      if (!opt.value) { return; }              /* skip "guide not yet built" */
-      /* Snapshot, not the living page. A guide URL that anyone might keep has
-         to be one we can still reason about after the next release: the dated
-         folder stands still, so it can later carry a superseded notice, while
-         guide/<page>.html silently becomes something else. This follows LATEST
-         rather than a fixed date, so it moves to each new release on its own. */
-      var path = versionedPath(opt.value);
-      if (!path) { return; }                   /* no registry yet: no guide rows */
-      items.push({ path: path, name: opt.textContent.split('—')[0].trim() });
+    Object.keys(SERVICES).forEach(function (key) {
+      var s = SERVICES[key];
+      var label = s.label.replace(/&/g, '&amp;');     /* names are set as markup */
+      /* A page for every age needs no "under 18s": its family version is the
+         page itself. */
+      [['child', s.forAdult ? '' : ' (under 18s)'], ['adult', ' (adult)']].forEach(function (v) {
+        /* Snapshot, not the living page. A guide URL that anyone might keep has
+           to be one we can still reason about after the next release: the
+           dated folder stands still, so it can later carry a superseded notice,
+           while guide/<page>.html silently becomes something else. This follows
+           LATEST rather than a fixed date, so it moves to each new release on
+           its own. */
+        var path = versionedPath(s[v[0]]);
+        if (!path) { return; }                 /* no registry yet: no guide rows */
+        if (v[0] === 'adult' && s.forAdult) { path += '?for=adult'; }
+        items.push({ path: path, name: label + v[1] });
+      });
     });
     return { title: 'Client guides', items: items };
   }
@@ -856,7 +967,6 @@
   /* The list follows the Site address field, so a staging host shows through
      here as well as in the built link. */
   $('in-site').addEventListener('input', renderLinkList);
-  $('in-service').addEventListener('change', renderLinkList);
 
   renderLinkList();
 

@@ -276,13 +276,18 @@
      an impersonal page. dx=km is added because reaching this link means we made
      the diagnosis — which is also what tells the titration page that
      registration is already complete. Form links are deliberately NOT carried:
-     they belong to the assessment, not to titration. */
+     they belong to the assessment, not to titration.
+
+     for=adult is carried whenever this page has it, so the adult version
+     survives every hop: Titration to Post-Diagnostic Support and back, or an
+     autism assessment passing it on. A page that does not act on it simply
+     hands it along. */
   function initServiceLinks() {
     var here = new URLSearchParams(window.location.search);
 
     document.querySelectorAll('a[data-service-link]').forEach(function (a) {
       var out = new URLSearchParams();
-      ['name', 'ref'].forEach(function (k) {
+      ['name', 'ref', 'for'].forEach(function (k) {
         var v = (here.get(k) || '').trim();
         if (v) { out.set(k, v); }
       });

@@ -32,6 +32,14 @@
       if ((q.get('reconsent') || '').trim() === '1') {
         document.documentElement.classList.add('reg-reconsent');
       }
+
+      /* The adult version: the same assessment, spoken to the client as
+         "you", with an observer check, the adult registration step and links
+         to the adult assessments. Set here, before first paint, and only on
+         pages that have an adult version — see guide-core.js. */
+      if ((q.get('for') || '').trim().toLowerCase() === 'adult') {
+        document.documentElement.classList.add('for-adult');
+      }
     })();
     </script>
 
@@ -97,12 +105,22 @@
                 <p class="guide-only">This guide is designed to cover everything you need to know, with an interactive flow that allows you to keep track of where you are in the process.</p>
                 <p class="leaflet-only">This guide is designed to cover everything you need to know about the assessment and what it includes.</p>
 
-                <div class="highlight">
+                <div class="highlight not-adult">
                     <h4>Who this assessment is for</h4>
                     <p>We assess autism from <span class="term">age 5 upwards</span>. This guide is written for parents and families, which is who most of our autism assessments are for.</p>
 
                     <h5>For adults</h5>
                     <p>If you are an adult seeking an assessment for yourself, the pathway is the same &mdash; please contact us and we will talk it through with you.</p>
+                </div>
+
+                <!-- The adult version: eligibility as plain text, then what the
+                     client must have, as on the adult ADHD and Combined pages. -->
+                <p class="adult-only">This assessment is for adults aged <span class="term">18 and over</span>. A diagnosis of autism requires evidence from your early development as well as from today, so the assessment gathers both.</p>
+
+                <div class="highlight adult-only">
+                    <h4>What is required for the assessment</h4>
+                    <p><strong>An observer for the ADI-R.</strong> The <span class="term">Autism Diagnostic Interview&ndash;Revised (ADI-R)</span> is a structured interview about your early years, with someone who knows you well. Ideally this is someone who has known you well from childhood through to today. A parent is the best option if available, as the interview covers your early childhood; otherwise a sibling, close relative, partner or friend.</p>
+                    <p>You can confirm you have an observer in <a class="step-link" href="#step-requirements">step 2</a>.</p>
                 </div>
 
                 <div class="sub-block">
@@ -126,7 +144,7 @@
                     <div class="include-card include-card-wide">
                         <h4>During the assessment</h4>
                         <ul class="included">
-                            <li>ADI-R developmental history interview
+                            <li><span class="not-adult">ADI-R developmental history interview</span><span class="adult-only">Autism observer interview (ADI-R)</span>
                                 <span class="pill-line">
                                     <span class="pill pill-time">1 hour</span>
                                     <span class="pill pill-mode">Online only</span>
@@ -169,8 +187,11 @@
                         </ul>
                         <h5>As needed</h5>
                         <ul class="included">
-                            <li>Letter to <span data-name-slot="possessive">your child&rsquo;s</span> school, with strategies</li>
-                            <li>Child Disability Allowance form completed</li>
+                            <li class="not-adult">Letter to <span data-name-slot="possessive">your child&rsquo;s</span> school, with strategies</li>
+                            <li class="not-adult">Child Disability Allowance form completed</li>
+                            <li class="adult-only">Letter to your employer, with strategies</li>
+                            <li class="adult-only">Letter to your university or other place of study, with strategies</li>
+                            <li class="adult-only">Work and Income Disability Allowance form completed</li>
                             <li>Northable or local service referral for autism support</li>
                             <li>Onward referrals</li>
                         </ul>
@@ -181,7 +202,7 @@
                 <div class="sub-block">
                     <h3>Assessment components and pathway options</h3>
 
-                    <p>An autism assessment cannot be completed in a single appointment. Diagnostic criteria ask both how <span data-name-slot>your child</span> has developed over time and how they present today, so the assessment is built from two components.</p>
+                    <p>An autism assessment cannot be completed in a single appointment. <span class="not-adult">Diagnostic criteria ask both how <span data-name-slot>your child</span> has developed over time and how they present today,</span><span class="adult-only">Diagnostic criteria ask both how you have developed over time and how you present today,</span> so the assessment is built from two components.</p>
 
                     <div class="included-groups">
                         <div class="include-card include-card-component">
@@ -191,7 +212,8 @@
                                 <span class="pill pill-mode">Online only</span>
                                 <span class="pill pill-who">Nurse Specialist</span>
                             </p>
-                            <p>A structured interview covering <span data-name-slot="possessive">your child&rsquo;s</span> early years, with the people who know them best &mdash; usually both parents. <span data-name-slot="cap">Your child</span> does not attend, so you can speak freely.</p>
+                            <p class="not-adult">A structured interview covering <span data-name-slot="possessive">your child&rsquo;s</span> early years, with the people who know them best &mdash; usually both parents. <span data-name-slot="cap">Your child</span> does not attend, so you can speak freely.</p>
+                            <p class="adult-only">A structured interview covering your early years, with someone who has known you well, ideally from childhood &mdash; a parent if available, or a sibling, close relative, partner or friend. Only your observer needs to attend.</p>
                             <div class="component-price">
                                 <p class="component-price-tag">Component price</p>
                                 <p class="component-price-figure">$900 <span class="price-gst-inline">(inc GST)</span></p>
@@ -228,8 +250,9 @@
 
                     <ul class="included">
                         <li>Autism does not seem likely, and we suggest discontinuing the assessment.</li>
-                        <li>ADHD seems more likely than autism, and we suggest moving to our <a class="term" data-service-link="adhd-child-assessment.html">ADHD Assessment</a>.</li>
-                        <li>Both autism and ADHD seem likely, and we suggest moving to our <a class="term" data-service-link="adhd-asd-combined-assessment.html">Combined ADHD &amp; Autism Assessment</a>.</li>
+                        <!-- The adult version points at the adult assessments. -->
+                        <li>ADHD seems more likely than autism, and we suggest moving to our <a class="term not-adult" data-service-link="adhd-child-assessment.html">ADHD Assessment</a><a class="term adult-only" data-service-link="adhd-adult-assessment.html">Adult ADHD Assessment</a>.</li>
+                        <li>Both autism and ADHD seem likely, and we suggest moving to our <a class="term not-adult" data-service-link="adhd-asd-combined-assessment.html">Combined ADHD &amp; Autism Assessment</a><a class="term adult-only" data-service-link="adhd-asd-combined-adult-assessment.html">Adult Combined ADHD &amp; Autism Assessment</a>.</li>
                     </ul>
 
                     <p>Where we move to another assessment, any component already completed that also forms part of that pathway is covered by its price &mdash; you are not charged twice. Only components that sit outside the new pathway are charged at the prices above, and we will always set out the figures with you first.</p>
@@ -262,10 +285,66 @@
                 </button>
                 <div class="stage-body" id="body-referral" hidden>
                     <p class="guide-only">We have received <span data-name-slot="possessive">your child&rsquo;s</span> referral, from either yourself or your GP or referring person. On review of the information provided to us, we would be delighted to see <span data-name-slot>your child</span> for an <span class="term">Autism (ASD) Comprehensive Assessment</span>.</p>
-                    <p class="leaflet-only">A referral can come from a GP or another referrer, or from a parent or legal guardian directly. Adults can refer themselves. We assess autism from age 5 upwards.</p>
+                    <p class="leaflet-only not-adult">A referral can come from a GP or another referrer, or from a parent or legal guardian directly. Adults can refer themselves. We assess autism from age 5 upwards.</p>
+                    <p class="leaflet-only adult-only">You can refer yourself to Kinder Minds, or be referred by your GP or another referrer. A parent or family member is also welcome to get in touch on your behalf.</p>
                     <p>All referrals are reviewed and triaged by our directors, including Dr Castle, so we can plan the right assessment for <span data-name-slot>your child</span>.</p>
                 </div>
             </li>
+
+            <!-- ============ ADULT · OBSERVER CHECK ============
+                 Only in the adult version, where it becomes step 2. One
+                 question, answered on the client's device and never sent to us:
+                 an autism assessment needs no school reports, so this is the
+                 adult ADHD pages' requirements check without its first
+                 question. guide-core.js sets req-met / req-contact from the
+                 answer; the tick is shown only in the contact outcome. -->
+            <template data-adult-step>
+            <li id="step-requirements">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-requirements">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag you">Your action</span>
+                        <span class="stage-title">Confirm your observer</span>
+                        <span class="stage-peek">Someone to take part in the ADI-R interview &mdash; one quick question</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+                <div class="stage-body" id="body-requirements" hidden>
+                    <p>The assessment needs a history of your early years, which comes from your observer in the ADI-R interview. Before anything is booked, please check you have someone who can take part.</p>
+
+                    <fieldset class="age-question">
+                        <legend>Do you have someone who could be your observer for the ADI-R &mdash; a parent, sibling, close relative, partner or friend, ideally someone who has known you from childhood?</legend>
+                        <div class="age-options">
+                            <label>
+                                <input type="radio" name="req-observer" value="yes">
+                                <span>Yes</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="req-observer" value="no">
+                                <span>No</span>
+                            </label>
+                        </div>
+                        <p class="req-hint">A parent is the best option if available, as the interview covers your early childhood.</p>
+                    </fieldset>
+
+                    <div class="callout callout-ok req-met-only">
+                        <p><strong>You have an observer</strong>, so you are ready to go ahead with the assessment.</p>
+                    </div>
+
+                    <div class="highlight req-contact-only">
+                        <p><strong>Please contact us before going any further.</strong> Without an observer, we may not be able to complete the assessment, but we can talk through your options. Your answer here is not sent to us, so please <a href="#contact">get in touch</a>.</p>
+                    </div>
+
+                    <div class="action-panel req-contact-only">
+                        <label class="tick">
+                            <input type="checkbox" id="step-req-check" data-step-tick>
+                            <span>I have spoken to Kinder Minds about this</span>
+                        </label>
+                    </div>
+                </div>
+            </li>
+            </template>
 
             <!-- ============ 2 · REGISTRATION & CONSENT ============ -->
             <li id="step-registration">
@@ -345,7 +424,7 @@
                                  form, so this sentence would be describing a card that is not
                                  on the page. -->
                             <p class="new-only">The Patient Registration Form can be completed by either <span data-name-slot>your child</span> or any of their parents or guardians.</p>
-                            <p>Parents and guardians are still welcome to be involved throughout the assessment &mdash; this is separate from the consent process.</p>
+                            <p>Parents and guardians are still welcome to be involved throughout <span data-name-slot="possessive">your child&rsquo;s</span> care with us &mdash; this is separate from the consent process.</p>
                         </div>
 
                         <div class="highlight">
@@ -442,14 +521,119 @@
             </li>
 
 
+            <!-- The adult version's registration step. Inert until for=adult,
+                 when guide-core.js swaps it in for the one above. -->
+            <template id="registration-adult">
+            <!-- ============ REGISTRATION & CONSENT (ADULT) ============
+                 The adult counterpart of registration-consent. An adult always
+                 consents for themselves, so there is no age question and only one
+                 consent form. The same three states are kept: new client,
+                 consent refresh (reconsent=1) and already registered.
+
+                 Used directly by the adult assessments, and inside a <template>
+                 by the Titration Clinic and Post-Diagnostic Support, which swap
+                 it in for the adult version. So nothing here may assume an
+                 assessment.
+
+                 The form cards sit in a .branch that is never hidden. That is
+                 what lets guide.js keep the per-form ticks and the summary tick
+                 in step, and lets leaflet mode hide the forms. The id is
+                 deliberately not branch-16plus: guide-core.js hides that one
+                 unless the age question has been answered, and here it is never
+                 asked. -->
+            <li id="step-registration">
+                <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-registration">
+                    <span class="stage-num"></span>
+                    <span class="stage-head-text">
+                        <span class="stage-tag you reg-needed">Your action</span>
+                        <span class="stage-tag ok reg-done">Already done</span>
+                        <span class="stage-title new-only">Registration &amp; consent forms</span>
+                        <span class="stage-title reconsent-only">Updated consent form</span>
+                        <span class="stage-peek reg-needed new-only">We cannot book anything until these are in</span>
+                        <span class="stage-peek reg-needed reconsent-only">We cannot book anything further until this is in</span>
+                        <span class="stage-peek reg-done">Completed when you registered with us</span>
+                    </span>
+                    <span class="stage-check" aria-hidden="true"></span>
+                    <span class="stage-chev" aria-hidden="true"></span>
+                </button>
+
+                <div class="stage-body" id="body-registration" hidden>
+
+                    <!-- Shown when the client is already registered with us. -->
+                    <div class="reg-done">
+                        <p>You are already registered with us, so there is nothing to complete here. Your Patient Registration Form and Consent and Terms of Service Form were completed when you first came to Kinder Minds, and still apply.</p>
+                        <p>If anything has changed &mdash; a new address or new contact details &mdash; please let us know and we will send you an updated form.</p>
+                    </div>
+
+                    <div class="reg-needed">
+
+                    <!-- Returning client whose consent needs renewing. Registration
+                         stands; only the consent form is reissued.
+
+                         The class sits on each paragraph rather than on a wrapping
+                         <div>: a paragraph alone in a div is its last child, and
+                         .task-steps p:last-child takes its margin away, leaving it
+                         flush against the paragraph after. -->
+                    <p class="reconsent-only">Your registration with us is current, so there is nothing to complete there. Our Consent and Terms of Service Form has been updated since you last came to us, so we need a fresh copy before we can book anything further.</p>
+
+                    <!-- Prose rather than a list: the form cards below already list
+                         the two forms, and a list here would sit flush against the
+                         paragraph after it (stage bodies give lists no margin). -->
+                    <p class="new-only">To be able to start booking the next steps, we need two forms completed by you: the <span class="term">Patient Registration Form</span>, with your details, contact information and GP, and the <span class="term">Consent and Terms of Service Form</span>, with your consent to care with us and our terms of service.</p>
+
+                    <p>As an adult you consent for yourself, so only one consent form is needed. Parents, partners and family are still welcome to be involved throughout your care with us &mdash; this is separate from the consent process.</p>
+
+                    <p class="leaflet-only">We will email you a personalised link with your own forms ready to complete.</p>
+
+                    <div class="branch" id="branch-adult">
+                        <div class="highlight">
+                            <p>If you may need support to make this decision, please contact us before completing the forms.</p>
+                        </div>
+
+                        <ul class="form-list">
+                            <li class="form-card card-reg">
+                                <span class="form-name term">Patient Registration Form</span>
+                                <span class="form-who">Completed by you</span>
+                                <a class="button" data-form="reg" target="_blank" rel="noopener">Open form</a>
+                                <label class="tick">
+                                    <input type="checkbox" id="form-reg-adult">
+                                    <span>Submitted</span>
+                                </label>
+                            </li>
+                            <li class="form-card">
+                                <span class="form-name term">Consent and Terms of Service Form</span>
+                                <span class="form-who">Completed by you</span>
+                                <a class="button" data-form="c1" target="_blank" rel="noopener">Open form</a>
+                                <label class="tick">
+                                    <input type="checkbox" id="form-c1-adult">
+                                    <span>Submitted</span>
+                                </label>
+                            </li>
+                        </ul>
+
+                        <div class="action-panel">
+                            <label class="tick">
+                                <input type="checkbox" id="step-forms-adult" data-step-tick>
+                                <span class="new-only">Both my registration and consent forms are submitted</span>
+                                <span class="reconsent-only">My updated consent form is submitted</span>
+                            </label>
+                        </div>
+                    </div>
+                    </div><!-- /.reg-needed -->
+                </div>
+            </li>
+            </template>
+
             <!-- ============ 3 · ADI-R ============ -->
             <li id="step-adir">
                 <button type="button" class="stage-head" aria-expanded="false" aria-controls="body-adir">
                     <span class="stage-num"></span>
                     <span class="stage-head-text">
                         <span class="stage-tag you">Your action</span>
-                        <span class="stage-title">ADI-R developmental history interview</span>
-                        <span class="stage-peek">Parents only &mdash; the developmental history</span>
+                        <span class="stage-title not-adult">ADI-R developmental history interview</span>
+                        <span class="stage-title adult-only">Autism observer interview (ADI-R)</span>
+                        <span class="stage-peek not-adult">Parents only &mdash; the developmental history</span>
+                        <span class="stage-peek adult-only">With your observer &mdash; your early years, online</span>
                     </span>
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
@@ -460,8 +644,10 @@
                         <span class="pill pill-mode">Online only</span>
                         <span class="pill pill-who">Nurse Specialist</span>
                     </p>
-                    <p>Following completion of <a class="step-link" href="#step-registration">step 2</a> we will assist in booking the ADI-R. The <span class="term">Autism Diagnostic Interview&ndash;Revised (ADI-R)</span> is an interview with parents only, looking for signs of autism in the early years. It is led by our Nurse Specialist and is held online.</p>
-                    <p>This appointment is attended only by the parents or legal guardians &mdash; <span data-name-slot>your child</span> is not required to attend. It helps to have to hand anything that records the early years: a Plunket or Well Child book, early school reports, or any previous reports from other services.</p>
+                    <p class="not-adult">Following completion of <a class="step-link" href="#step-registration">step 2</a> we will assist in booking the ADI-R. The <span class="term">Autism Diagnostic Interview&ndash;Revised (ADI-R)</span> is an interview with parents only, looking for signs of autism in the early years. It is led by our Nurse Specialist and is held online.</p>
+                    <p class="not-adult">This appointment is attended only by the parents or legal guardians &mdash; <span data-name-slot>your child</span> is not required to attend. It helps to have to hand anything that records the early years: a Plunket or Well Child book, early school reports, or any previous reports from other services.</p>
+                    <p class="adult-only">Following completion of <a class="step-link" href="#step-registration">step 3</a> we will assist in booking the ADI-R with your observer. The <span class="term">Autism Diagnostic Interview&ndash;Revised (ADI-R)</span> is an interview with your observer, looking for signs of autism in your early years. It only requires your observer to attend, is led by our Nurse Specialist and is held online.</p>
+                    <p class="adult-only">Your observer is the person you confirmed in <a class="step-link" href="#step-requirements">step 2</a>. Ideally they have known you well from childhood through to today, and a parent is the best option if available, as the interview covers your early childhood. It helps if they have to hand anything that records your early years: a Plunket or Well Child book, early school reports, or any previous reports from other services.</p>
                     <div class="action-panel">
                         <label class="tick">
                             <input type="checkbox" id="step-adir-booked" data-step-tick>
@@ -489,7 +675,7 @@
                         <span class="pill pill-must">In person, Whangārei only</span>
                     </p>
                     <p>The <span class="term">Autism Diagnostic Observation Schedule (ADOS-2)</span> is a structured observation carried out with <span data-name-slot>your child</span>, taking approximately one hour.</p>
-                    <p>There is nothing to prepare. It is not a test and there is no pass or fail &mdash; the activities are designed so that social communication can show itself naturally. Please do not coach <span data-name-slot>your child</span> beforehand, as that makes the observation harder to read.</p>
+                    <p>There is nothing to prepare. It is not a test and there is no pass or fail &mdash; the activities are designed so that social communication can show itself naturally.<span class="not-adult"> Please do not coach <span data-name-slot>your child</span> beforehand, as that makes the observation harder to read.</span></p>
                     <div class="highlight">
                         <p>This is the one appointment that must be completed face to face at our Whangārei clinic &mdash; it cannot be done online.</p>
                     </div>
@@ -537,11 +723,13 @@
                         <span class="pill pill-who">Dr Castle</span>
                     </p>
                     <p>This appointment is booked after completion of <a class="step-link" href="#step-registration">step 2</a>, based on availability and allowing enough time for steps <a class="step-link" href="#step-adir">3</a> to <a class="step-link" href="#step-ados">4</a> to be completed.</p>
-                    <p>The one-hour appointment is attended by <span data-name-slot>your child</span> and any parents or legal guardians, and can be held either online or in person at our Whangārei clinic. During the session, led by Dr Castle, the outcome of the assessment is discussed &mdash; and regardless of the diagnosis you will leave with a tailored management plan to fully support <span data-name-slot>your child</span>.</p>
+                    <p class="not-adult">The one-hour appointment is attended by <span data-name-slot>your child</span> and any parents or legal guardians, and can be held either online or in person at our Whangārei clinic. During the session, led by Dr Castle, the outcome of the assessment is discussed &mdash; and regardless of the diagnosis you will leave with a tailored management plan to fully support <span data-name-slot>your child</span>.</p>
+                    <p class="adult-only">The one-hour appointment is for you, and you are welcome to bring someone with you, such as a parent or partner. It can be held either online or in person at our Whangārei clinic. During the session, led by Dr Castle, the outcome of the assessment is discussed &mdash; and regardless of the diagnosis you will leave with a tailored management plan to support you.</p>
                     <div class="action-panel">
                         <label class="tick">
                             <input type="checkbox" id="step-feedback-attended" data-step-tick>
-                            <span>We have attended the diagnosis appointment</span>
+                            <span class="not-adult">We have attended the diagnosis appointment</span>
+                            <span class="adult-only">I have attended the diagnosis appointment</span>
                         </label>
                     </div>
                 </div>
@@ -582,11 +770,14 @@
                     <span class="stage-chev" aria-hidden="true"></span>
                 </button>
                 <div class="stage-body" id="body-shared" hidden>
-                    <p>Once the report is finalised we can send it to your GP on your behalf. As needed, we can also write to <span data-name-slot="possessive">your child&rsquo;s</span> school offering suggestions and strategies that may help, complete a Child Disability Allowance form, and make a Northable or local service referral for autism support.</p>
+                    <p class="not-adult">Once the report is finalised we can send it to your GP on your behalf. As needed, we can also write to <span data-name-slot="possessive">your child&rsquo;s</span> school offering suggestions and strategies that may help, complete a Child Disability Allowance form, and make a Northable or local service referral for autism support.</p>
+                    <p class="adult-only">Once the report is finalised we can send it to your GP on your behalf. As needed, we can also write to your employer or place of study offering suggestions and strategies that may help, complete a Work and Income Disability Allowance form, and make a Northable or local service referral for autism support.</p>
                     <p class="pill-line">
                         <span class="pill pill-note">Report to GP: optional</span>
-                        <span class="pill pill-note">School letter: as needed</span>
-                        <span class="pill pill-note">CDA form: as needed</span>
+                        <span class="pill pill-note not-adult">School letter: as needed</span>
+                        <span class="pill pill-note not-adult">CDA form: as needed</span>
+                        <span class="pill pill-note adult-only">Employer or study letter: as needed</span>
+                        <span class="pill pill-note adult-only">Disability Allowance form: as needed</span>
                         <span class="pill pill-note">Northable referral: as needed</span>
                     </p>
                 </div>
@@ -599,7 +790,10 @@
                     <span class="stage-head-text">
                         <span class="stage-tag you">Your action</span>
                         <span class="stage-title">Post-diagnostic support</span>
-                        <span class="stage-peek">Included &mdash; book within a month of step 6</span>
+                        <!-- Plain text, so not renumbered: the adult version has
+                             one more step before the diagnosis appointment. -->
+                        <span class="stage-peek not-adult">Included &mdash; book within a month of step 6</span>
+                        <span class="stage-peek adult-only">Included &mdash; book within a month of step 7</span>
                     </span>
                     <span class="stage-check" aria-hidden="true"></span>
                     <span class="stage-chev" aria-hidden="true"></span>
@@ -610,7 +804,8 @@
                         <span class="pill pill-mode">In person or online</span>
                         <span class="pill pill-who">Nurse Specialist</span>
                     </p>
-                    <p>To further support <span data-name-slot>your child</span> and family, we include with the assessment a one-hour post-diagnostic support appointment with one of our Nurse Specialists.</p>
+                    <p class="not-adult">To further support <span data-name-slot>your child</span> and family, we include with the assessment one hour of post-diagnostic support (a single 1-hour appointment, or two 30-minute appointments) with one of our Nurse Specialists.</p>
+                    <p class="adult-only">To further support you, we include with the assessment one hour of post-diagnostic support (a single 1-hour appointment, or two 30-minute appointments) with one of our Nurse Specialists.</p>
                     <p>This session is ideal for talking through the outcome of the diagnosis and what it means, asking questions, planning next steps, and getting practical advice on how to implement any of the advice you have received.</p>
                     <div class="callout">
                         <p>Even if a diagnosis isn&rsquo;t given, this session is still valuable &mdash; a chance to look at other strategies and understand more about what may be going on for <span data-name-slot>your child</span>. If further therapeutic support is helpful, we can refer you on to our <a class="term" data-service-link="post-diagnostic-support.html" data-service-params="via=assessment">post-diagnostic clinic</a>.</p>
@@ -639,7 +834,8 @@
             <p>If further therapeutic support would be helpful after that, we can refer you on to our <a class="term" data-service-link="post-diagnostic-support.html" data-service-params="via=assessment">post-diagnostic clinic</a>.</p>
         </section>
 
-        <section class="after-stages" id="school-visit">
+        <!-- Not in the adult version, as on the adult ADHD and Combined pages. -->
+        <section class="after-stages not-adult" id="school-visit">
             <h2>School visit or school meeting</h2>
             <p>A nurse from our team can attend a school visit or school meeting (within Northland), to share additional strategies that may help support <span data-name-slot="possessive">your child&rsquo;s</span> education. This is charged at <span class="term">$200 per hour (inc GST)</span>.</p>
         </section>
@@ -660,7 +856,7 @@
     <footer class="leaflet-footer">
         <div class="wrap">
             <a href="/">kinderminds.nz</a> &middot; Kinder Minds Limited
-            <p class="guide-version" data-release="20260827" data-effective="2026-08-27">Guide version <time datetime="2026-08-27">27 August 2026</time></p>
+            <p class="guide-version" data-release="20261023" data-effective="2026-08-27">Guide release <time datetime="2026-10-23">23 October 2026</time> &middot; fees and terms for this service effective <time datetime="2026-08-27">27 August 2026</time></p>
         </div>
     </footer>
 

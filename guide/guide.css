@@ -333,6 +333,44 @@ html.titr-no .titr-with-us {
   display: none;
 }
 
+/* ============ REQUIREMENTS CHECK ========= */
+/* Only the adult guides use these; the selectors are inert elsewhere.
+
+   guide-core.js sets the classes on <html> from the two answers:
+     req-reports-yes / req-reports-no   school reports, the first answer
+     req-met / req-contact              the outcome, once both are answered
+   Hidden by negation, as the other state classes are, so whatever shows keeps
+   its own display. Unanswered, only the first question shows. */
+
+html:not(.req-reports-yes):not(.req-reports-no) .req-observer,
+html:not(.req-reports-yes) .req-if-reports,
+html:not(.req-reports-no) .req-if-no-reports,
+html:not(.req-met) .req-met-only,
+html:not(.req-contact) .req-contact-only,
+html:not(.req-reports-no) .req-skipped,
+html.req-reports-no .req-not-skipped {
+  display: none;
+}
+
+.req-hint {
+  clear: both;
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* No school reports: their step is skipped. Greyed like an unchosen titration
+   step, so it can still be read; guide-core.js disables its tick and leaves it
+   out of the count. The tag and note saying why stay at full strength. */
+html.req-reports-no .req-reports-step .stage-head-text > :not(.req-skipped),
+html.req-reports-no .req-reports-step .stage-body > :not(.req-skipped) {
+  opacity: 0.5;
+}
+
+html.req-reports-no .req-reports-step .stage-num {
+  background-color: var(--text-highlight);
+}
+
 /* ============ INCLUDED LIST ========= */
 
 .included-groups {
@@ -1261,6 +1299,15 @@ html:not(.via-referral)   .via-referral-only   { display: none; }
 html.via-assessment .via-unknown-only { display: none; }
 html.via-referral   .via-unknown-only { display: none; }
 
+/* ============ ADULT VERSION ========= */
+/* for=adult on the Titration Clinic and Post-Diagnostic Support. Most of the
+   page is the same at any age; these mark the few lines that are not.
+   adult-only shows only in the adult version, not-adult in every other one.
+   The class is set by the page's own <head> script, so a page that has no
+   adult version never gets it. */
+html:not(.for-adult) .adult-only,
+html.for-adult .not-adult { display: none; }
+
 /* ============ REGISTRATION ALREADY COMPLETE ========= */
 /* reg-complete is set only by a page that knows the client is already
    registered — currently the Titration Clinic, when dx=km. The shared
@@ -1354,6 +1401,15 @@ html.reg-reconsent .card-reg { display: none; }
 }
 
 .highlight p:last-child { margin-bottom: 0; }
+
+/* A short numbered list of requirements, as on the adult intros. The reset
+   zeroes list padding, which would leave the numbers hanging outside the box. */
+.highlight ol {
+  padding-left: 1.3rem;
+  margin: 0.5rem 0 0.85rem;
+}
+
+.highlight ol li + li { margin-top: 0.6rem; }
 
 /* ============ ABOUT-THE-ASSESSMENT PANEL ========= */
 /* Sits before and outside the numbered sequence: it is what most families want
